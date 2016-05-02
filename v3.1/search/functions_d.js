@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['search',['search',['../classvirgil_1_1sdk_1_1client_1_1_card_client.html#af80fb698b15def2831f826d16a79a8ae',1,'virgil::sdk::client::CardClient']]],
+  ['search',['search',['../classvirgil_1_1sdk_1_1client_1_1_card_client.html#a6694da05be9f530dd20bde41fd568b3a',1,'virgil::sdk::client::CardClient']]],
   ['searchapp',['searchApp',['../classvirgil_1_1sdk_1_1client_1_1_card_client.html#a480b4675762a94ad35e8848ecab5217f',1,'virgil::sdk::client::CardClient']]],
   ['send',['send',['../classvirgil_1_1sdk_1_1http_1_1_connection.html#a1520a0b2f7d8359218a9f9ab77a0bb1a',1,'virgil::sdk::http::Connection']]],
   ['serviceshub',['ServicesHub',['../classvirgil_1_1sdk_1_1_services_hub.html#a4acd0818c15bd0fe3a93dc25234ed6d1',1,'virgil::sdk::ServicesHub::ServicesHub(const std::string &amp;accessToken, const virgil::sdk::ServiceUri &amp;baseServiceUri=virgil::sdk::ServiceUri())'],['../classvirgil_1_1sdk_1_1_services_hub.html#ab45039e51dbe885ede475a9e2c53918c',1,'virgil::sdk::ServicesHub::ServicesHub(const std::string &amp;accessToken, const virgil::sdk::ServiceCardLoader &amp;serviceCards, const virgil::sdk::ServiceUri &amp;baseServiceUri=virgil::sdk::ServiceUri())']]],

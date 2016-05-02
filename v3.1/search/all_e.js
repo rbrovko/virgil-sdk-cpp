@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['search',['search',['../classvirgil_1_1sdk_1_1client_1_1_card_client.html#af80fb698b15def2831f826d16a79a8ae',1,'virgil::sdk::client::CardClient']]],
+  ['search',['search',['../classvirgil_1_1sdk_1_1client_1_1_card_client.html#a6694da05be9f530dd20bde41fd568b3a',1,'virgil::sdk::client::CardClient']]],
   ['searchapp',['searchApp',['../classvirgil_1_1sdk_1_1client_1_1_card_client.html#a480b4675762a94ad35e8848ecab5217f',1,'virgil::sdk::client::CardClient']]],
   ['send',['send',['../classvirgil_1_1sdk_1_1http_1_1_connection.html#a1520a0b2f7d8359218a9f9ab77a0bb1a',1,'virgil::sdk::http::Connection']]],
   ['servicecardloader',['ServiceCardLoader',['../classvirgil_1_1sdk_1_1_service_card_loader.html',1,'virgil::sdk']]],

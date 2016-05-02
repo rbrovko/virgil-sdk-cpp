@@ -134,9 +134,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abbfb2bc1e47f9120b9d96be98329b459"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html">virgil::sdk::models::CardModel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1client_1_1_card_client.html#abbfb2bc1e47f9120b9d96be98329b459">create</a> (const <a class="el" href="classvirgil_1_1sdk_1_1dto_1_1_identity.html">virgil::sdk::dto::Identity</a> &amp;identity, const std::string &amp;publicKeyId, const <a class="el" href="classvirgil_1_1sdk_1_1_credentials.html">virgil::sdk::Credentials</a> &amp;credentials, const std::map&lt; std::string, std::string &gt; &amp;customData=std::map&lt; std::string, std::string &gt;())</td></tr>
 <tr class="memdesc:abbfb2bc1e47f9120b9d96be98329b459"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates not validated Virgil Card entity attached to known public key.  <a href="#abbfb2bc1e47f9120b9d96be98329b459">More...</a><br /></td></tr>
 <tr class="separator:abbfb2bc1e47f9120b9d96be98329b459"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af80fb698b15def2831f826d16a79a8ae"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html">virgil::sdk::models::CardModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1client_1_1_card_client.html#af80fb698b15def2831f826d16a79a8ae">search</a> (const <a class="el" href="classvirgil_1_1sdk_1_1dto_1_1_identity.html">virgil::sdk::dto::Identity</a> &amp;identity, const bool includeUnconfirmed, const std::vector&lt; std::string &gt; &amp;relations=std::vector&lt; std::string &gt;())</td></tr>
-<tr class="memdesc:af80fb698b15def2831f826d16a79a8ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the search of Virgil Cards.  <a href="#af80fb698b15def2831f826d16a79a8ae">More...</a><br /></td></tr>
-<tr class="separator:af80fb698b15def2831f826d16a79a8ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6694da05be9f530dd20bde41fd568b3a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html">virgil::sdk::models::CardModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1client_1_1_card_client.html#a6694da05be9f530dd20bde41fd568b3a">search</a> (const <a class="el" href="classvirgil_1_1sdk_1_1dto_1_1_identity.html">virgil::sdk::dto::Identity</a> &amp;identity, const bool includeUnconfirmed)</td></tr>
+<tr class="memdesc:a6694da05be9f530dd20bde41fd568b3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the search of Virgil Cards.  <a href="#a6694da05be9f530dd20bde41fd568b3a">More...</a><br /></td></tr>
+<tr class="separator:a6694da05be9f530dd20bde41fd568b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a480b4675762a94ad35e8848ecab5217f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html">virgil::sdk::models::CardModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1client_1_1_card_client.html#a480b4675762a94ad35e8848ecab5217f">searchApp</a> (const std::string &amp;applicationIdentity, bool skipVerification=false) const </td></tr>
 <tr class="memdesc:a480b4675762a94ad35e8848ecab5217f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the global search fot the applications' Virgil Cards.  <a href="#a480b4675762a94ad35e8848ecab5217f">More...</a><br /></td></tr>
 <tr class="separator:a480b4675762a94ad35e8848ecab5217f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -562,7 +562,7 @@ typedef std::function&lt; <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_c
 
 </div>
 </div>
-<a class="anchor" id="af80fb698b15def2831f826d16a79a8ae"></a>
+<a class="anchor" id="a6694da05be9f530dd20bde41fd568b3a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -576,13 +576,7 @@ typedef std::function&lt; <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_c
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>includeUnconfirmed</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
-          <td class="paramname"><em>relations</em> = <code>std::vector&lt;&#160;std::string&#160;&gt;()</code>&#160;</td>
+          <td class="paramname"><em>includeUnconfirmed</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
