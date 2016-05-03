@@ -114,9 +114,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#aa8a5663b494711abcea9ab9a13f13989">CardModel</a> ()=default</td></tr>
 <tr class="memdesc:aa8a5663b494711abcea9ab9a13f13989"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create empty non valid Virgil Card. <br /></td></tr>
 <tr class="separator:aa8a5663b494711abcea9ab9a13f13989"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa18a934a0e0e031246149433539f97bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#aa18a934a0e0e031246149433539f97bc">CardModel</a> (const std::string &amp;id, const std::string &amp;createdAt, const std::string &amp;hash, const <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_identity_model.html">virgil::sdk::models::IdentityModel</a> &amp;cardIdentity, const std::map&lt; std::string, std::string &gt; &amp;data, const <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_public_key_model.html">virgil::sdk::models::PublicKeyModel</a> &amp;publicKey, const bool confirmed)</td></tr>
-<tr class="memdesc:aa18a934a0e0e031246149433539f97bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create Virgil Card with all associated data.  <a href="#aa18a934a0e0e031246149433539f97bc">More...</a><br /></td></tr>
-<tr class="separator:aa18a934a0e0e031246149433539f97bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcce0036e052247cc99c3dd16654bb63"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#abcce0036e052247cc99c3dd16654bb63">CardModel</a> (const std::string &amp;id, const std::string &amp;createdAt, const std::string &amp;hash, const <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_identity_model.html">virgil::sdk::models::IdentityModel</a> &amp;cardIdentity, const std::map&lt; std::string, std::string &gt; &amp;data, const <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_public_key_model.html">virgil::sdk::models::PublicKeyModel</a> &amp;publicKey, const std::string &amp;<a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#a268f5d20f1e6aaa41f0f4bf042388a78">authorizedBy</a>)</td></tr>
+<tr class="memdesc:abcce0036e052247cc99c3dd16654bb63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create Virgil Card with all associated data.  <a href="#abcce0036e052247cc99c3dd16654bb63">More...</a><br /></td></tr>
+<tr class="separator:abcce0036e052247cc99c3dd16654bb63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe8b29d4113ccb4907cc681f2b80e009"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abe8b29d4113ccb4907cc681f2b80e009"></a>
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#abe8b29d4113ccb4907cc681f2b80e009">getId</a> () const </td></tr>
 <tr class="memdesc:abe8b29d4113ccb4907cc681f2b80e009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return Virgil Card identifier. <br /></td></tr>
@@ -140,15 +140,15 @@ const std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRig
 const <a class="el" href="classvirgil_1_1sdk_1_1models_1_1_public_key_model.html">virgil::sdk::models::PublicKeyModel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#aeaff5727268f054db4c8eaef32455f97">getPublicKey</a> () const </td></tr>
 <tr class="memdesc:aeaff5727268f054db4c8eaef32455f97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return Public Key connected to the Virgil Card. <br /></td></tr>
 <tr class="separator:aeaff5727268f054db4c8eaef32455f97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5138aebaf3dc4ac40018dddaaf61b6ce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5138aebaf3dc4ac40018dddaaf61b6ce"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#a5138aebaf3dc4ac40018dddaaf61b6ce">authorizedBy</a> () const </td></tr>
-<tr class="memdesc:a5138aebaf3dc4ac40018dddaaf61b6ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return whether Identity connected to the Virgil Card is confirmed by user, or not. <br /></td></tr>
-<tr class="separator:a5138aebaf3dc4ac40018dddaaf61b6ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a268f5d20f1e6aaa41f0f4bf042388a78"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a268f5d20f1e6aaa41f0f4bf042388a78"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvirgil_1_1sdk_1_1models_1_1_card_model.html#a268f5d20f1e6aaa41f0f4bf042388a78">authorizedBy</a> () const </td></tr>
+<tr class="memdesc:a268f5d20f1e6aaa41f0f4bf042388a78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return whether Identity connected to the Virgil Card is confirmed by user, or not. <br /></td></tr>
+<tr class="separator:a268f5d20f1e6aaa41f0f4bf042388a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Data object represent "Virgil Card" entity. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="aa18a934a0e0e031246149433539f97bc"></a>
+<a class="anchor" id="abcce0036e052247cc99c3dd16654bb63"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -191,8 +191,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>confirmed</em>&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>authorizedBy</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -211,7 +211,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">cardIdentity</td><td>- identity associated with Virgil Card </td></tr>
     <tr><td class="paramname">data</td><td>- custom data </td></tr>
     <tr><td class="paramname">publicKey</td><td>- Public Key connected to the Virgil Card </td></tr>
-    <tr><td class="paramname">confirmed</td><td>- defines whether Identity connected to the Virgil Card is confirmed by user, or not </td></tr>
   </table>
   </dd>
 </dl>
