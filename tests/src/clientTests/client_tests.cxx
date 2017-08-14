@@ -47,6 +47,8 @@
 #include <virgil/sdk/client/CardValidator.h>
 
 #include <virgil/sdk/util/Memory.h>
+#include <virgil/sdk/client/RequestSigner.h>
+#include <virgil/sdk/client/RequestManager.h>
 
 using virgil::sdk::client::Client;
 using virgil::sdk::client::ServiceConfig;
@@ -58,6 +60,11 @@ using virgil::sdk::test::TestUtils;
 using virgil::sdk::client::CardValidator;
 using virgil::sdk::VirgilBase64;
 using virgil::sdk::client::interfaces::CardValidatorInterface;
+
+using virgil::sdk::client::RequestSigner;
+using virgil::sdk::client::CreateCardParams;
+using virgil::sdk::client::RevokeCardParams;
+using virgil::sdk::client::RequestManager;
 
 TEST_CASE("test001_CreateCard", "[client]") {
     TestConst consts;
@@ -199,3 +206,150 @@ TEST_CASE("test005_RevokeCard", "[client]") {
 
     REQUIRE(errorWasThrown);
 }
+
+TEST_CASE("test006_FreeTest", "[client]") {
+
+    TestConst consts;
+    TestUtils utils((TestConst()));
+
+    //accessing service with token
+    auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
+    Client client(std::move(serviceConfig));
+
+    //making crypta
+    const std::shared_ptr<CryptoInterface> crypto(utils.crypto());
+
+    auto keyPair = crypto->generateKeyPair();
+    auto exportedPublicKey = crypto->exportPublicKey(keyPair.publicKey());
+
+    auto identity = "Alice";
+    auto identityType = consts.applicationIdentityType();
+
+    //making request
+    auto request = CreateCardRequest::createRequest(
+            identity,
+            identityType,
+            exportedPublicKey
+    );
+
+    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
+    auto appPrivateKey = crypto->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
+
+    auto signer = RequestSigner(crypto);
+
+    signer.selfSign(request, keyPair.privateKey());
+    signer.authoritySign(request, consts.applicationId(), appPrivateKey);
+
+    //pushing request
+    auto future = client.createCard(request);
+
+    //taking card
+    auto card = future.get();
+
+    //creating validator
+    auto validator = std::make_unique<CardValidator>(utils.crypto());
+    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
+
+    //if card isValid
+    auto isValid = validator->validateCardResponse(card.cardResponse());
+
+    if (isValid) {
+
+    }
+}
+
+
+TEST_CASE("test007_NewCreateCardTest", "[client]") {
+    TestConst consts;
+    TestUtils utils((TestConst()));
+
+    //accessing service with token
+    Client client(consts.applicationToken());
+
+    //making crypta
+    const std::shared_ptr<CryptoInterface> crypto(utils.crypto());
+
+    //making KeyPair
+    auto keyPair = crypto->generateKeyPair();
+
+    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
+    auto appPrivateKey = crypto->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
+
+    //maiking CardParams
+    CreateCardParams parameters(
+            "Alice",                                 //Identity
+            consts.applicationIdentityType(),        //IdentityType
+            keyPair,                                 //keyPair
+            {{consts.applicationId(), appPrivateKey}}//RequestSigners
+    );
+
+    //creating RequestManager
+    RequestManager manager(crypto);
+
+    auto CreateCardRequest = manager.CreateCardRequest(parameters);
+
+    auto future = client.createCard(CreateCardRequest);
+
+    auto card = future.get();
+
+    REQUIRE(utils.checkCardEquality(card, CreateCardRequest));
+}
+
+TEST_CASE("test008_NewRevokeCardTest", "[client]") {
+    TestConst consts;
+    TestUtils utils((TestConst()));
+
+    //accessing service with token
+    Client client(consts.applicationToken());
+
+    //making crypt
+    const std::shared_ptr<CryptoInterface> crypto(utils.crypto());
+
+    //making KeyPair
+    auto keyPair = crypto->generateKeyPair();
+
+    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
+    auto appPrivateKey = crypto->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
+
+    //maiking CardParams
+    CreateCardParams parameters(
+            "Alice",                                 //Identity
+            consts.applicationIdentityType(),        //IdentityType
+            keyPair,                                 //keyPair
+            {{consts.applicationId(), appPrivateKey}}//RequestSigners
+    );
+
+    //creating RequestManager
+    RequestManager manager(crypto);
+
+    auto CreateCardRequest = manager.CreateCardRequest(parameters);
+
+    auto future = client.createCard(CreateCardRequest);
+    auto card = future.get();
+
+
+    //Revoking
+    RevokeCardParams params(
+            card.identifier(),
+            {{consts.applicationId(), appPrivateKey}}//RequestSigners
+    );
+
+
+    auto RevokeCardRequest = manager.RevokeCardRequest(params);
+
+    auto future_1 = client.revokeCard(RevokeCardRequest);
+    future_1.get();
+
+    auto future_2 = client.getCard(card.identifier());
+
+    bool errorWasThrown = false;
+    try {
+        future_2.get();
+    }
+    catch (...) {
+        errorWasThrown = true;
+    }
+
+    REQUIRE(errorWasThrown);
+}
+

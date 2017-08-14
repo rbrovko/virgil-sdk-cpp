@@ -40,15 +40,24 @@
 using virgil::sdk::test::TestConst;
 
 std::string TestConst::applicationToken() const {
-    return "AT.931f8eb623be4e4709cbc241bfc89dde3a518527faccf2e1da7f9bd1a71fe78b";
+    return "AT.89cce2fac2fc9260cafb6d5dd2c6f12e7b992c1f85798ca5b3048f9b559d9a2f";
 }
 
 std::string TestConst::applicationPublicKeyBase64() const {
-    return "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0NCk1Db3dCUVlESzJWd0F5RUExblJKZHpWeDVDcE10VGJjbTNLZVk1b3Q2OU5OV3lNTjV1cDNRbDE1N1ZJPQ0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tDQo=";
+    /*  Getting Public appkey from private one
+     crypto::Crypto crypto_;
+
+     auto privateAppKeyData = VirgilBase64::decode(this->applicationPrivateKeyBase64());
+     auto appPrivateKey = crypto_.importPrivateKey(privateAppKeyData, this->applicationPrivateKeyPassword());
+
+     auto appPublicKey = crypto_.extractPublicKeyFromPrivateKey(appPrivateKey);
+     return VirgilBase64::encode(crypto_.exportPublicKey(appPublicKey));
+     */
+    return "MCowBQYDK2VwAyEAAf7npot3FHPrp1j7AarKFVP6ABFbatF3IfOum1magqU=";
 }
 
 std::string TestConst::applicationPrivateKeyBase64() const {
-    return "LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVktLS0tLQ0KTUlHaE1GMEdDU3FHU0liM0RRRUZEVEJRTUM4R0NTcUdTSWIzRFFFRkREQWlCQkRROWFBSHdRbjFXckxlMDN5Sw0KR2R0aEFnSVJpakFLQmdncWhraUc5dzBDQ2pBZEJnbGdoa2dCWlFNRUFTb0VFTXhwQTNzVVVaMXlWR1V2VWVTTA0KUmE4RVFKcHVZOXV1eCs2d0NVSno0Ti9qVnZ2WmRPMTdmcnAwMytYZWhxN1ZhbUNwK0Y1RFE1cS82M2tGV0drMw0KcXA4Wk5GQlZ4VEpKY1grRkFLVGIvc0VGTnhFPQ0KLS0tLS1FTkQgRU5DUllQVEVEIFBSSVZBVEUgS0VZLS0tLS0NCg==";
+    return "MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBB/r4nA7LSZdSRdKiQCnknkAgINljAKBggqhkiG9w0CCjAdBglghkgBZQMEASoEEGizST9TJBV1O43/z+VSw80EQPWRUCGGFQ97yK9Cn0uDA8pRsJ3BN16nyke1LS2maFY/xnn/e//nhJDpnAQPHJPDNKusygYex5Ta5Ky+2TgoD1U=";
 }
 
 std::string TestConst::applicationPrivateKeyPassword() const {
@@ -60,5 +69,5 @@ std::string TestConst::applicationIdentityType() const {
 }
 
 std::string TestConst::applicationId() const {
-    return "c53035253366736218ea3ebc924275073aafc2e78d09fe4f910e6b33a7297dd7";
+    return "e683aa8ad95095d8baa86760892722189a534c76617ad1cddd041829fd055390";
 }

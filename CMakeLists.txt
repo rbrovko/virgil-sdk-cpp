@@ -44,7 +44,7 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Configurable variables
 ## Features
-set (ENABLE_TESTING OFF CACHE BOOL "Enable unit tests")
+set (ENABLE_TESTING ON CACHE BOOL "Enable unit tests")
 set (ENABLE_EXAMPLES OFF CACHE BOOL "Enable build of Examples")
 set (INSTALL_EXAMPLES OFF CACHE BOOL "Enable Examples installation")
 
@@ -151,7 +151,7 @@ foreach (SRC_FILE ${SRC_CONF})
 endforeach ()
 file (GLOB_RECURSE SRC_LIST_BIN "${CMAKE_CURRENT_BINARY_DIR}/src/*.cxx")
 file (GLOB_RECURSE SRC_LIST_SRC "src/*.cxx")
-set (SRC_LIST ${SRC_LIST_BIN} ${SRC_LIST_SRC})
+set (SRC_LIST ${SRC_LIST_BIN} ${SRC_LIST_SRC} src/virgil/sdk/client/CreateCardParams.cpp src/virgil/sdk/client/RevokeCardParams.cpp src/virgil/sdk/client/RequestManager.cpp)
 
 # Configure library build
 add_library (${PROJECT_NAME} ${SRC_LIST})
