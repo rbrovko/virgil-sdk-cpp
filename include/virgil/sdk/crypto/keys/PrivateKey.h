@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_PRIVATEKEY_H
 
 #include <virgil/sdk/Common.h>
+#include "../../../../../ext/CryptoInterfaces/PrivateKeyInterface.h"
 
 /// forward decl
 namespace virgil {
@@ -56,12 +57,14 @@ namespace crypto {
          * @brief Container for Private Key which is used for crypto operations.
          * @see CryptoInterface
          */
-        class PrivateKey {
+        class PrivateKey: public cryptointerfaces::PrivateKeyInterface {
+        public:
+
+            const VirgilByteArray &key() const override { return key_; }
+            const VirgilByteArray &identifier() const override { return identifier_; }
+
         private:
             PrivateKey(VirgilByteArray key, VirgilByteArray identifier);
-
-            const VirgilByteArray &key() const { return key_; }
-            const VirgilByteArray &identifier() const { return identifier_; }
 
             VirgilByteArray key_;
             VirgilByteArray identifier_;

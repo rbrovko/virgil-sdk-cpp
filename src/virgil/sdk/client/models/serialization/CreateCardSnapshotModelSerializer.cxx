@@ -71,10 +71,6 @@ namespace models {
                         j[JsonKey::Data] = model.data();
                     }
 
-                    if (model.info().size() > 0) {
-                        j[JsonKey::Info] = model.info();
-                    }
-
                     return j.dump(INDENT);
                 } catch (std::exception &exception) {
                     throw std::logic_error(
@@ -110,8 +106,7 @@ namespace models {
                                                                 j[JsonKey::IdentityType],
                                                                 VirgilBase64::decode(j[JsonKey::PublicKey]),
                                                                 data,
-                                                                strToCardScope(j[JsonKey::CardScope]),
-                                                                info);
+                                                                strToCardScope(j[JsonKey::CardScope]));
                 } catch (std::exception &exception) {
                     throw std::logic_error(
                             std::string("virgil-sdk:\n JsonDeserializer<CreateCardSnapshotModel>::fromJson ")

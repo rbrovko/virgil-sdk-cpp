@@ -68,6 +68,7 @@ using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::crypto::keys::PublicKey;
 using virgil::sdk::crypto::keys::KeyPair;
 using virgil::sdk::VirgilHashAlgorithm;
+using virgil::cryptointerfaces::PublicKeyInterface;
 
 const auto CustomParamKeySignature = VirgilByteArrayUtils::stringToBytes("VIRGIL-DATA-SIGNATURE");
 
@@ -113,7 +114,7 @@ PublicKey Crypto::extractPublicKeyFromPrivateKey(const PrivateKey &privateKey) c
     return PublicKey(exportedPublicKey, privateKey.identifier());
 }
 
-VirgilByteArray Crypto::exportPrivateKey(const PrivateKey &privateKey, const std::string &password) const {
+VirgilByteArray Crypto::exportPrivateKey(const cryptointerfaces::PrivateKeyInterface &privateKey, const std::string &password) const {
     if (password.length() == 0)
         return VirgilKeyPair::privateKeyToDER(privateKey.key());
 
@@ -125,7 +126,7 @@ VirgilByteArray Crypto::exportPrivateKey(const PrivateKey &privateKey, const std
     return VirgilKeyPair::privateKeyToDER(encryptedPrivateKeyData, passwordBytes);
 }
 
-VirgilByteArray Crypto::exportPublicKey(const PublicKey &publicKey) const {
+VirgilByteArray Crypto::exportPublicKey(const cryptointerfaces::PublicKeyInterface &publicKey) const {
     return VirgilKeyPair::publicKeyToDER(publicKey.key());
 }
 
@@ -160,7 +161,16 @@ void Crypto::encrypt(std::istream &istream, std::ostream &ostream, const std::ve
 }
 
 bool Crypto::verify(const VirgilByteArray &data, const VirgilByteArray &signature,
-                    const PublicKey &signerPublicKey) const {
+                    const byteArray &signerPublicKeyData) const {
+    auto signer = VirgilSigner();
+
+   // auto signerPublicKeyData = exportPublicKey(signerPublicKey);
+
+    return signer.verify(data, signature, signerPublicKeyData);
+}
+
+bool Crypto::verify(const VirgilByteArray &data, const VirgilByteArray &signature,
+            const PublicKey &signerPublicKey) const {
     auto signer = VirgilSigner();
 
     auto signerPublicKeyData = exportPublicKey(signerPublicKey);
@@ -168,7 +178,7 @@ bool Crypto::verify(const VirgilByteArray &data, const VirgilByteArray &signatur
     return signer.verify(data, signature, signerPublicKeyData);
 }
 
-bool Crypto::verify(std::istream &istream, const VirgilByteArray &signature, const PublicKey &signerPublicKey) const {
+bool Crypto::verify(std::istream &istream, const VirgilByteArray &signature, const cryptointerfaces::PublicKeyInterface &signerPublicKey) const {
     auto signer = VirgilStreamSigner();
 
     auto signerPublicKeyData = exportPublicKey(signerPublicKey);
@@ -238,7 +248,7 @@ VirgilByteArray Crypto::decryptThenVerify(const VirgilByteArray &data, const Pri
     return decryptedData;
 }
 
-VirgilByteArray Crypto::generateSignature(const VirgilByteArray &data, const PrivateKey &privateKey) const {
+VirgilByteArray Crypto::generateSignature(const VirgilByteArray &data, const cryptointerfaces::PrivateKeyInterface &privateKey) const {
     auto signer = VirgilSigner();
 
     auto privateKeyData = exportPrivateKey(privateKey);
@@ -246,7 +256,7 @@ VirgilByteArray Crypto::generateSignature(const VirgilByteArray &data, const Pri
     return signer.sign(data, privateKeyData);
 }
 
-VirgilByteArray Crypto::generateSignature(std::istream &istream, const PrivateKey &privateKey) const {
+VirgilByteArray Crypto::generateSignature(std::istream &istream, const cryptointerfaces::PrivateKeyInterface &privateKey) const {
     auto signer = VirgilStreamSigner();
 
     auto dataSource = VirgilStreamDataSource(istream);
@@ -256,8 +266,8 @@ VirgilByteArray Crypto::generateSignature(std::istream &istream, const PrivateKe
 }
 
 //Utils
-Fingerprint Crypto::calculateFingerprint(const VirgilByteArray &data) const {
-    return Fingerprint(computeHash(data, VirgilHashAlgorithm::SHA256));
+byteArray Crypto::calculateFingerprint(const VirgilByteArray &data) const {
+    return computeHash(data, VirgilHashAlgorithm::SHA256);
 }
 
 VirgilByteArray Crypto::computeHash(const VirgilByteArray &data, VirgilHashAlgorithm algorithm) const {

@@ -63,7 +63,7 @@ TEST_CASE("test001_CardImportExport", "[models]") {
     data["some_random_key1"] = "some_random_data1";
     data["some_random_key2"] = "some_random_data2";
 
-    auto createCardRequest = utils.instantiateCreateCardRequest(data, "mac", "very_good_mac");
+    auto createCardRequest = utils.instantiateCreateCardRequest(data);
 
     auto request = createCardRequest.exportAsString();
 

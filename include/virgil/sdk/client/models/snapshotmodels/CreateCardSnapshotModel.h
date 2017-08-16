@@ -72,8 +72,7 @@ namespace models {
             static CreateCardSnapshotModel createModel(const std::string &identity, const std::string &identityType,
                                                        const VirgilByteArray &publicKeyData,
                                                        const std::unordered_map<std::string, std::string> &data,
-                                                       CardScope scope,
-                                                       const std::unordered_map<std::string, std::string> &info);
+                                                       CardScope scope);
 
             /*!
              * @brief Getter.
@@ -105,23 +104,15 @@ namespace models {
              */
             CardScope scope() const { return scope_; }
 
-            /*!
-             * @brief Getter.
-             * @return std::unordered_map with info about device on which Card was created
-             */
-            const std::unordered_map<std::string, std::string>& info() const { return info_; }
-
         private:
             CreateCardSnapshotModel(std::string identity, std::string identityType, VirgilByteArray publicKeyData,
-                                    std::unordered_map<std::string, std::string> data, CardScope scope,
-                                    std::unordered_map<std::string, std::string> info);
+                                    std::unordered_map<std::string, std::string> data, CardScope scope);
 
             std::string identity_;
             std::string identityType_;
             VirgilByteArray publicKeyData_;
             std::unordered_map<std::string, std::string> data_;
             CardScope scope_;
-            std::unordered_map<std::string, std::string> info_;
         };
     }
 }

@@ -51,16 +51,16 @@ using virgil::sdk::VirgilByteArrayUtils;
 Card Card::buildCard(const responses::CardResponse &cardResponse) {
     return Card(cardResponse, cardResponse.identifier(), cardResponse.model().identity(),
                 cardResponse.model().identityType(), cardResponse.model().publicKeyData(), cardResponse.model().data(),
-                cardResponse.model().scope(), cardResponse.model().info(), cardResponse.createdAt(),
+                cardResponse.model().scope(), cardResponse.createdAt(),
                 cardResponse.cardVersion());
 }
 
 Card::Card(CardResponse cardResponse, std::string identifier, std::string identity, std::string identityType,
            VirgilByteArray publicKeyData, std::unordered_map<std::string, std::string> data, CardScope scope,
-           std::unordered_map<std::string, std::string> info, std::string createdAt, std::string cardVersion)
+           std::string createdAt, std::string cardVersion)
         : cardResponse_(std::move(cardResponse)), identifier_(std::move(identifier)), identity_(std::move(identity)),
           identityType_(std::move(identityType)), publicKeyData_(std::move(publicKeyData)), data_(std::move(data)),
-          scope_(scope), info_(std::move(info)), createdAt_(std::move(createdAt)),
+          scope_(scope), createdAt_(std::move(createdAt)),
           cardVersion_(std::move(cardVersion)) {
 }
 

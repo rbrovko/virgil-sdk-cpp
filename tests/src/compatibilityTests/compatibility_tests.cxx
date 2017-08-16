@@ -43,7 +43,9 @@
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/crypto/Crypto.h>
 #include <virgil/sdk/client/models/requests/CreateCardRequest.h>
+#include <virgil/sdk/crypto/Fingerprint.h>
 
+using virgil::sdk::crypto::Fingerprint;
 using virgil::sdk::VirgilBase64;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::VirgilByteArrayUtils;
@@ -238,7 +240,7 @@ TEST_CASE("test007_ExportSignableData_ShouldBeEqual", "[compatibility]") {
 
     auto request = CreateCardRequest::importFromString(exportedRequest);
 
-    auto fingerprint = crypto.calculateFingerprint(request.snapshot());
+    auto fingerprint = Fingerprint(crypto.calculateFingerprint(request.snapshot()));
 
     auto creatorPublicKey = crypto.importPublicKey(request.snapshotModel().publicKeyData());
 

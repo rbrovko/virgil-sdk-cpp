@@ -43,6 +43,7 @@
 #include <virgil/sdk/client/models/serialization/JsonDeserializer.h>
 
 #include <virgil/sdk/client/Client.h>
+#include <virgil/sdk/client/RequestManager.h>
 
 using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::client::models::CardRevocationReason;
@@ -54,41 +55,50 @@ using virgil::sdk::client::models::responses::CardResponse;
 using virgil::sdk::client::models::serialization::JsonDeserializer;
 
 using virgil::sdk::client::Client;
+using virgil::sdk::client::RequestManager;
+using virgil::sdk::client::CreateCardParams;
+using virgil::sdk::client::RevokeCardParams;
 
 CreateCardRequest TestUtils::instantiateCreateCardRequest(
-        const std::unordered_map<std::string, std::string> &data,
-        const std::string &device,
-        const std::string &deviceName) const {
-    auto keyPair = crypto_->generateKeyPair();
-    auto exportedPublicKey = crypto_->exportPublicKey(keyPair.publicKey());
+        const std::unordered_map<std::string, std::string> &data) const {
 
-    auto identity = Utils::generateRandomStr(40);
-    auto identityType = consts.applicationIdentityType();
-
-    auto request = CreateCardRequest::createRequest(identity, identityType, exportedPublicKey, data, device, deviceName);
+    RequestManager manager(crypto_);                                     //creating RequestManager
+    auto keyPair = crypto_->generateKeyPair();                           //making KeyPair
 
     auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
-    auto signer = RequestSigner(crypto_);
+    auto identity = Utils::generateRandomStr(40);
+    //making CardParams
+    CreateCardParams parameters(
+            identity,                                    //Identity
+            consts.applicationIdentityType(),            //IdentityType
+            keyPair,                                     //keyPair
+            {{consts.applicationId(), appPrivateKey}},   //RequestSigners
+            true,                                        //GenerateSignature
+            data                                         //CustomFields
+    );
+    auto CreateCardRequest = manager.CreateCardRequest(parameters);
 
-    signer.selfSign(request, keyPair.privateKey());
-    signer.authoritySign(request, consts.applicationId(), appPrivateKey);
-
-    return request;
+    return CreateCardRequest;
 }
 
 RevokeCardRequest TestUtils::instantiateRevokeCardRequest(const Card &card) const {
-    auto request = RevokeCardRequest::createRequest(card.identifier(), CardRevocationReason::unspecified);
 
-    auto signer = RequestSigner(crypto_);
+    RequestManager manager(crypto_);                                     //creating RequestManager
 
     auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
-    signer.authoritySign(request, consts.applicationId(), appPrivateKey);
+    //Revoking
+    RevokeCardParams params(
+            card.identifier(),                          //CardID
+            {{consts.applicationId(), appPrivateKey}}   //RequestSigners
+    );
 
-    return request;
+    auto RevokeCardRequest = manager.RevokeCardRequest(params);
+
+    return RevokeCardRequest;
 }
 
 Card TestUtils::instantiateCard() const {
@@ -109,7 +119,6 @@ bool TestUtils::checkCardEquality(const Card &card, const CreateCardRequest &req
     auto equals = card.identityType() == request.snapshotModel().identityType()
         && card.identity() == request.snapshotModel().identity()
         && card.data() == request.snapshotModel().data()
-        && card.info() == request.snapshotModel().info()
         && card.publicKeyData() == request.snapshotModel().publicKeyData()
         && card.scope() == request.snapshotModel().scope();
 
@@ -123,7 +132,6 @@ bool TestUtils::checkCardEquality(const Card &card1, const Card &card2) {
                   && card1.createdAt() == card2.createdAt()
                   && card1.cardVersion() == card2.cardVersion()
                   && card1.data() == card2.data()
-                  && card1.info() == card2.info()
                   && card1.publicKeyData() == card2.publicKeyData()
                   && card1.scope() == card2.scope();
 
@@ -136,7 +144,6 @@ bool TestUtils::checkCreateCardRequestEquality(const CreateCardRequest &request1
                   && request1.snapshotModel().data() == request2.snapshotModel().data()
                   && request1.snapshotModel().identity() == request2.snapshotModel().identity()
                   && request1.snapshotModel().identityType() == request2.snapshotModel().identityType()
-                  && request1.snapshotModel().info() == request2.snapshotModel().info()
                   && request1.snapshotModel().publicKeyData() == request2.snapshotModel().publicKeyData()
                   && request1.snapshotModel().scope() == request2.snapshotModel().scope();
 

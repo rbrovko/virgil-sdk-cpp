@@ -50,6 +50,8 @@ std::string VirgilSdkErrorCategory::message(int ev) const noexcept {
             return "Validation of Virgil Card failed.";
         case VirgilSdkError::ServiceQueryFailed:
             return "REST Query to Virgil Service failed.";
+        case VirgilSdkError::CreateRequestManagerFailed:
+            return "Creating Request Manager failed";
         default:
             return "Undefined error.";
     }

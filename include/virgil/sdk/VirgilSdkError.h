@@ -53,6 +53,7 @@ namespace virgil {
             VerificationFailed, ///< Verification of signature failed.
             CardValidationFailed, ///< Validation of Virgil Card failed.
             ServiceQueryFailed, ///< REST Query to Virgil Service failed.
+            CreateRequestManagerFailed, ///< Creating RequestManager failed.
             Undefined = std::numeric_limits<int>::max()
         };
 

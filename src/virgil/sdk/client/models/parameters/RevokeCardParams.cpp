@@ -3,7 +3,7 @@
 //
 
 
-#include <virgil/sdk/client/RevokeCardParams.h>
+#include <virgil/sdk/client/models/parameters/RevokeCardParams.h>
 #include <unordered_map>
 
 using virgil::sdk::client::RevokeCardParams;

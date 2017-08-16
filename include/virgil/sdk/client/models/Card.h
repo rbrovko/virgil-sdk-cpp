@@ -115,12 +115,6 @@ namespace client {
 
             /*!
              * @brief Getter.
-             * @return std::unordered_map with info about device on which card was created
-             */
-            const std::unordered_map<std::string, std::string>& info() const { return info_; }
-
-            /*!
-             * @brief Getter.
              * @return std::string with date of Card creation (format is yyyy-MM-dd'T'HH:mm:ssZ)
              */
             const std::string& createdAt() const { return createdAt_; }
@@ -141,7 +135,7 @@ namespace client {
             Card(responses::CardResponse cardResponse, std::string identifier, std::string identity,
                  std::string identityType, VirgilByteArray publicKeyData,
                  std::unordered_map<std::string, std::string> data, CardScope scope,
-                 std::unordered_map<std::string, std::string> info, std::string createdAt, std::string cardVersion);
+                 std::string createdAt, std::string cardVersion);
 
             responses::CardResponse cardResponse_;
             std::string identifier_;
@@ -150,7 +144,6 @@ namespace client {
             VirgilByteArray publicKeyData_;
             std::unordered_map<std::string, std::string> data_;
             CardScope scope_;
-            std::unordered_map<std::string, std::string> info_;
             std::string createdAt_;
             std::string cardVersion_;
         };

@@ -69,9 +69,7 @@ namespace models {
                     const std::string &identityType,
                     const VirgilByteArray &publicKeyData,
                     const std::unordered_map<std::string, std::string> &data
-                          = std::unordered_map<std::string, std::string>(),
-                    const std::string& device = "",
-                    const std::string& deviceName = "");
+                          = std::unordered_map<std::string, std::string>());
 
             // This is private API
             //! @cond Doxygen_Suppress
@@ -85,8 +83,7 @@ namespace models {
                               const std::string &identityType,
                               const VirgilByteArray &publicKeyData,
                               const std::unordered_map<std::string, std::string> &data,
-                              CardScope scope,
-                              const std::unordered_map<std::string, std::string> &info);
+                              CardScope scope);
 
             CreateCardRequest(const snapshotmodels::CreateCardSnapshotModel &model,
                               const std::unordered_map<std::string, VirgilByteArray> &signatures

@@ -50,26 +50,16 @@ using virgil::sdk::client::models::serialization::CanonicalSerializer;
 
 CreateCardRequest CreateCardRequest::createRequest(const std::string &identity, const std::string &identityType,
                                                    const VirgilByteArray &publicKeyData,
-                                                   const std::unordered_map<std::string, std::string> &data,
-                                                   const std::string &device, const std::string &deviceName) {
-    std::unordered_map<std::string, std::string> info;
-    if (!device.empty()) {
-        info["device"] = device;
-    }
-
-    if (!deviceName.empty()) {
-        info["device_name"] = deviceName;
-    }
-
-    return CreateCardRequest(identity, identityType, publicKeyData, data, CardScope::application, info);
+                                                   const std::unordered_map<std::string, std::string> &data) {
+    return CreateCardRequest(identity, identityType, publicKeyData, data, CardScope::application);
 }
 
 CreateCardRequest::CreateCardRequest(const std::string &identity, const std::string &identityType,
                                      const VirgilByteArray &publicKeyData,
                                      const std::unordered_map<std::string, std::string> &data,
-                                     CardScope scope, const std::unordered_map<std::string, std::string> &info)
+                                     CardScope scope)
         : CreateCardRequest(
-            CreateCardSnapshotModel::createModel(identity, identityType, publicKeyData, data, scope, info)) {
+            CreateCardSnapshotModel::createModel(identity, identityType, publicKeyData, data, scope)) {
 }
 
 CreateCardRequest::CreateCardRequest(const VirgilByteArray &snapshot,

@@ -55,7 +55,7 @@ namespace client {
              * @param privateKey PrivateKey instance used to sign request
              */
             virtual void selfSign(models::interfaces::SignableInterface &request,
-                                  const crypto::keys::PrivateKey &privateKey) const = 0;
+                                  const virgil::cryptointerfaces::PrivateKeyInterface &privateKey) const = 0;
 
             /*!
              * @brief Adds Authority signature to given request using provided Private Key and Application ID
@@ -65,7 +65,7 @@ namespace client {
               */
             virtual void authoritySign(models::interfaces::SignableInterface &request,
                                        const std::string &appId,
-                                       const crypto::keys::PrivateKey &privateKey) const = 0;
+                                       const virgil::cryptointerfaces::PrivateKeyInterface &privateKey) const = 0;
 
             /*!
              * @brief Virtual destructor

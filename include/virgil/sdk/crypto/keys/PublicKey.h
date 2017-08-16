@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_PUBLICKEY_H
 
 #include <virgil/sdk/Common.h>
+#include "../../../../../ext/CryptoInterfaces/PublicKeyInterface.h"
 
 /// forward decl
 namespace virgil {
@@ -56,7 +57,7 @@ namespace crypto {
          * @brief Container for Public Key which is used for crypto operations.
          * @see CryptoInterface
          */
-        class PublicKey {
+        class PublicKey: public cryptointerfaces::PublicKeyInterface {
         private:
             PublicKey(VirgilByteArray key, VirgilByteArray identifier);
 

@@ -39,7 +39,7 @@
 
 #include <memory>
 
-#include <virgil/sdk/crypto/CryptoInterface.h>
+#include "../../../../ext/CryptoInterfaces/CryptoInterface.h"
 #include <virgil/sdk/client/interfaces/RequestSignerInterface.h>
 
 namespace virgil {
@@ -54,16 +54,17 @@ namespace sdk {
              * @brief Constructor
              * @param crypto std::shared_ptr with some CryptoInterface implementation
              */
-            RequestSigner(const std::shared_ptr<crypto::CryptoInterface> &crypto);
+            RequestSigner(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto);
 
             void selfSign(models::interfaces::SignableInterface &request,
-                          const crypto::keys::PrivateKey &privateKey) const override;
+                          const virgil::cryptointerfaces::PrivateKeyInterface &privateKey) const override;
 
             void authoritySign(models::interfaces::SignableInterface &request,
-                               const std::string &appId, const crypto::keys::PrivateKey &privateKey) const override;
+                               const std::string &appId,
+                               const virgil::cryptointerfaces::PrivateKeyInterface &privateKey) const override;
 
         private:
-            std::shared_ptr<crypto::CryptoInterface> crypto_;
+            std::shared_ptr<cryptointerfaces::CryptoInterface> crypto_;
         };
     }
 }

@@ -45,15 +45,13 @@ CreateCardSnapshotModel CreateCardSnapshotModel::createModel(
         const std::string &identity, const std::string &identityType,
         const VirgilByteArray &publicKeyData,
         const std::unordered_map<std::string, std::string> &data,
-        CardScope scope,
-        const std::unordered_map<std::string, std::string> &info) {
-    return CreateCardSnapshotModel(identity, identityType, publicKeyData, data, scope, info);
+        CardScope scope) {
+    return CreateCardSnapshotModel(identity, identityType, publicKeyData, data, scope);
 }
 
 CreateCardSnapshotModel::CreateCardSnapshotModel(std::string identity, std::string identityType,
                                                  VirgilByteArray publicKeyData,
-                                                 std::unordered_map<std::string, std::string> data, CardScope scope,
-                                                 std::unordered_map<std::string, std::string> info)
+                                                 std::unordered_map<std::string, std::string> data, CardScope scope)
         : identity_(std::move(identity)), identityType_(std::move(identityType)), publicKeyData_(std::move(publicKeyData)),
-        data_(std::move(data)), scope_(scope), info_(std::move(info)) {
+        data_(std::move(data)), scope_(scope) {
 }
