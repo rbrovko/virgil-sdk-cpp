@@ -1,0 +1,8 @@
+//
+// Created by Eugen Pivovarov on 8/17/17.
+//
+
+#ifndef VIRGIL_SDK_CARDIDGENERATOR_H
+#define VIRGIL_SDK_CARDIDGENERATOR_H
+
+#endif //VIRGIL_SDK_CARDIDGENERATOR_H
