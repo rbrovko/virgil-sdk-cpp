@@ -37,23 +37,23 @@
 #ifndef VIRGIL_SDK_CARDVALIDATORINTERFACE_H
 #define VIRGIL_SDK_CARDVALIDATORINTERFACE_H
 
-#include <virgil/sdk/client/models/responses/CardResponse.h>
+#include <virgil/sdk/client/models/Card.h>
 
 namespace virgil {
 namespace sdk {
 namespace client {
     namespace interfaces {
         /*!
-         * Interface designed for validation of CardResponse instances.
+         * Interface designed for validation of Card instances.
          */
         class CardValidatorInterface {
         public:
             /*!
-             * @brief Validates CardResponse.
-             * @param response CardResponse to be validated
-             * @return true if CardResponse passed validation, false otherwise
+             * @brief Validates Card.
+             * @param instance Card to be validated
+             * @return true if Card passed validation, false otherwise
              */
-            virtual bool validateCardResponse(const models::responses::CardResponse &response) const = 0;
+            virtual bool validateCard(const models::Card &card) const = 0;
 
             /*!
              * @brief Virtual destructor.

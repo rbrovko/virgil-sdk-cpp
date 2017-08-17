@@ -69,7 +69,7 @@ namespace models {
 
         /*!
          * @brief This class is responsible for model deserialization.
-         * @note Supported classes: CardResponse, CardsResponse, VirgilError
+         * @note Supported classes: CardRaw, VirgilError
          * @tparam T Class to be deserialized
          */
         template<typename T>

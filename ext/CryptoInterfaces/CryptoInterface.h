@@ -52,6 +52,14 @@ namespace virgil {
          */
         class CryptoInterface {
         public:
+
+        /*!
+         * @brief Imports Public Key from raw representation.
+         * @param data raw representation of Public Key
+         * @return pointer to implementation instance of PublicKeyInterface
+         */
+        virtual PublicKeyInterface* importPublicKey(const byteArray &data) = 0;
+
         /*!
          * @brief Exports Private Key to raw representation.
          * @param privateKey PrivateKey instance

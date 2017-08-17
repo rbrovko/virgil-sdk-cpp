@@ -39,8 +39,6 @@
 
 #include <virgil/sdk/Common.h>
 #include "../../../../ext/CryptoInterfaces/CryptoInterface.h"
-#include "../../../../ext/CryptoInterfaces/PrivateKeyInterface.h"
-#include "../../../../ext/CryptoInterfaces/PublicKeyInterface.h"
 #include <virgil/sdk/crypto/keys/KeyPair.h>
 
 namespace virgil {
@@ -71,6 +69,8 @@ namespace sdk {
 
             byteArray calculateFingerprint(const VirgilByteArray &data) const override;
 
+            keys::PublicKey* importPublicKey(const VirgilByteArray &data) override;
+
             /*!
              * @brief Generates key pair using ed25519 algorithm.
              * @see KeyPair
@@ -85,14 +85,7 @@ namespace sdk {
              * @return imported PrivateKey instance
              */
             keys::PrivateKey importPrivateKey(const VirgilByteArray &data,
-                                              const std::string& password = "") const ;
-
-            /*!
-             * @brief Imports Public Key from raw representation.
-             * @param data raw representation of Public Key
-             * @return imported PublicKey instance
-             */
-            keys::PublicKey importPublicKey(const VirgilByteArray &data) const;
+                                              const std::string& password = "") const;
 
             /*!
              * @brief Extracts corresponding Public Key from Private Key.

@@ -39,14 +39,14 @@
 #include <nlohman/json.hpp>
 
 #include <virgil/sdk/client/models/serialization/JsonDeserializer.h>
-#include <virgil/sdk/client/models/responses/CardsResponse.h>
+#include <virgil/sdk/client/models/responses/CardRaw.h>
 #include <virgil/sdk/util/JsonKey.h>
 #include <virgil/sdk/util/JsonUtils.h>
 
 using json = nlohmann::json;
 
-using virgil::sdk::client::models::responses::CardResponse;
-using virgil::sdk::client::models::responses::CardsResponse;
+using virgil::sdk::client::models::responses::CardRaw;
+//using virgil::sdk::client::models::responses::CardsResponse;
 using virgil::sdk::util::JsonKey;
 using virgil::sdk::util::JsonUtils;
 
@@ -59,17 +59,17 @@ namespace models {
          * @brief JSONSerializer<CardsResponse> specialization.
          */
         template<>
-        class JsonDeserializer<CardsResponse> {
+        class JsonDeserializer<std::vector<CardRaw>> {
         public:
             template<int FAKE = 0>
-            static CardsResponse fromJson(const json &j) {
+            static std::vector<CardRaw> fromJson(const json &j) {
                 try {
-                    std::vector<CardResponse> response;
+                    std::vector<CardRaw> response;
                     for (const auto& jElement : j) {
-                        response.push_back(JsonDeserializer<CardResponse>::fromJson(jElement));
+                        response.push_back(JsonDeserializer<CardRaw>::fromJson(jElement));
                     }
 
-                    return CardsResponse(response);
+                    return response;
                 } catch (std::exception &exception) {
                     throw std::logic_error(std::string("virgil-sdk:\n JsonDeserializer<CardsResponse>::fromJson ") +
                                            exception.what());
@@ -87,5 +87,5 @@ namespace models {
 /**
  * Explicit methods instantiation
  */
-template CardsResponse
-virgil::sdk::client::models::serialization::JsonDeserializer<CardsResponse>::fromJson(const json&);
+template std::vector<CardRaw>
+virgil::sdk::client::models::serialization::JsonDeserializer<std::vector<CardRaw>>::fromJson(const json&);

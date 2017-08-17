@@ -43,9 +43,11 @@
 
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/client/models/ClientCommon.h>
-#include <virgil/sdk/client/models/responses/CardResponse.h>
 #include <virgil/sdk/client/models/interfaces/Exportable.h>
 #include <virgil/sdk/client/models/interfaces/Importable.h>
+
+#include <virgil/sdk/client/models/responses/CardRaw.h>
+#include <virgil/sdk/crypto/Crypto.h>
 
 namespace virgil {
 namespace sdk {
@@ -66,16 +68,23 @@ namespace client {
             Card() = default;
 
             /*!
-             * @brief Creates Card instance from CardResponse with response form Virgil Service.
-             * @param cardResponse CardResponse instance
+             * @brief Creates Card instance from CardRaw with response form Virgil Service.
+             * @param cardRaw CardRaw instance
              * @return instantiated Card instance
              */
-            static Card buildCard(const responses::CardResponse &cardResponse);
+            static Card ImportRaw(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto,
+                                  const responses::CardRaw &cardRaw);
 
             std::string exportAsString() const override;
 
             /// WARNING: Calling side is responsible for validating cardResponse using CardValidator after this import!
-            static Card importFromString(const std::string &data);
+            static Card importFromString(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto, const std::string &data);
+
+            /*!
+             * @brief Getter.
+             * @return byteArray with snapshot
+             */
+            const VirgilByteArray& snapshot() const { return snapshot_; }
 
             /*!
              * @brief Getter.
@@ -99,7 +108,7 @@ namespace client {
              * @brief Getter.
              * @return raw representation of Public Key which corresponds to this Card
              */
-            const VirgilByteArray& publicKeyData() const { return publicKeyData_; }
+            const std::shared_ptr<cryptointerfaces::PublicKeyInterface>& publicKey() const { return publicKey_; }
 
             /*!
              * @brief Getter.
@@ -126,26 +135,29 @@ namespace client {
             const std::string& cardVersion() const { return cardVersion_; }
 
             /*!
-             * @brief Getter.
-             * @return Card Response with response from Virgil Service
-             */
-            const responses::CardResponse& cardResponse() const { return cardResponse_; };
+            * @brief Getter.
+            * @return unordered map with signatures
+            */
+            const std::unordered_map<std::string, VirgilByteArray>& signatures() const { return signatures_; }
 
         private:
-            Card(responses::CardResponse cardResponse, std::string identifier, std::string identity,
-                 std::string identityType, VirgilByteArray publicKeyData,
+            Card(responses::CardRaw cardRaw, VirgilByteArray snapshot, std::string identifier, std::string identity,
+                 std::string identityType, std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey,
                  std::unordered_map<std::string, std::string> data, CardScope scope,
-                 std::string createdAt, std::string cardVersion);
+                 std::string createdAt, std::string cardVersion,
+                 std::unordered_map<std::string, VirgilByteArray> signatures);
 
-            responses::CardResponse cardResponse_;
+            responses::CardRaw cardRaw_;
+            VirgilByteArray snapshot_;
             std::string identifier_;
             std::string identity_;
             std::string identityType_;
-            VirgilByteArray publicKeyData_;
+            std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey_;
             std::unordered_map<std::string, std::string> data_;
             CardScope scope_;
             std::string createdAt_;
             std::string cardVersion_;
+            std::unordered_map<std::string, VirgilByteArray> signatures_;
         };
     }
 }

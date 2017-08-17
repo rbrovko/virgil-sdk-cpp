@@ -43,14 +43,15 @@
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/crypto/Crypto.h>
 #include <virgil/sdk/client/models/requests/CreateCardRequest.h>
-#include <virgil/sdk/crypto/Fingerprint.h>
+#include <virgil/sdk/client/models/CardIdGenerator.h>
 
-using virgil::sdk::crypto::Fingerprint;
 using virgil::sdk::VirgilBase64;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::client::models::requests::CreateCardRequest;
+using virgil::cryptointerfaces::PublicKeyInterface;
+using virgil::sdk::client::models::CardIdGenerator;
 
 using json = nlohmann::json;
 
@@ -225,7 +226,7 @@ TEST_CASE("test006_GenerateSignature_ShouldBeEqual", "[compatibility]") {
 }
 
 TEST_CASE("test007_ExportSignableData_ShouldBeEqual", "[compatibility]") {
-    auto crypto = Crypto();
+    auto crypto = std::make_shared<Crypto>(Crypto());
 
     std::ifstream input("sdk_compatibility_data.json");
 
@@ -240,14 +241,14 @@ TEST_CASE("test007_ExportSignableData_ShouldBeEqual", "[compatibility]") {
 
     auto request = CreateCardRequest::importFromString(exportedRequest);
 
-    auto fingerprint = Fingerprint(crypto.calculateFingerprint(request.snapshot()));
+    auto fingerprint = crypto->calculateFingerprint(request.snapshot());
 
-    auto creatorPublicKey = crypto.importPublicKey(request.snapshotModel().publicKeyData());
+    auto CardId = CardIdGenerator::generate(crypto, fingerprint);
 
-    auto fingerprintHex = fingerprint.hexValue();
+    auto creatorPublicKey = crypto->importPublicKey(request.snapshotModel().publicKeyData());
 
-    auto signature = request.signatures().at(fingerprintHex);
+    auto signature = request.signatures().at(CardId);
 
-    auto verified = crypto.verify(fingerprint.value(), signature, creatorPublicKey);
+    auto verified = crypto->verify(fingerprint, signature, *creatorPublicKey);
     REQUIRE(verified);
 }

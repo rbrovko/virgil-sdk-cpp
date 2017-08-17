@@ -38,40 +38,48 @@
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/client/models/serialization/JsonSerializer.h>
 #include <virgil/sdk/client/models/serialization/JsonDeserializer.h>
+#include <virgil/sdk/client/models/serialization/CanonicalSerializer.h>
+#include <virgil/sdk/client/models/snapshotmodels/CreateCardSnapshotModel.h>
 
 static_assert(!std::is_abstract<virgil::sdk::client::models::Card>(), "Card must not be abstract.");
 
 using virgil::sdk::client::models::Card;
 using virgil::sdk::client::models::CardScope;
-using virgil::sdk::client::models::responses::CardResponse;
 using virgil::sdk::client::models::serialization::JsonDeserializer;
 using virgil::sdk::client::models::serialization::JsonSerializer;
 using virgil::sdk::VirgilByteArrayUtils;
+using virgil::sdk::client::models::serialization::CanonicalSerializer;
 
-Card Card::buildCard(const responses::CardResponse &cardResponse) {
-    return Card(cardResponse, cardResponse.identifier(), cardResponse.model().identity(),
-                cardResponse.model().identityType(), cardResponse.model().publicKeyData(), cardResponse.model().data(),
-                cardResponse.model().scope(), cardResponse.createdAt(),
-                cardResponse.cardVersion());
+using virgil::cryptointerfaces::PublicKeyInterface;
+
+
+Card Card::ImportRaw(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto, const responses::CardRaw &cardRaw) {
+    auto model =
+            CanonicalSerializer<snapshotmodels::CreateCardSnapshotModel>::fromCanonicalForm(cardRaw.ContentSnapshot());
+
+    std::shared_ptr<PublicKeyInterface> publicKey(crypto->importPublicKey(model.publicKeyData()));
+
+    return Card(cardRaw, cardRaw.ContentSnapshot(), cardRaw.Identifier(), model.identity(), model.identityType(), publicKey,
+                model.data(), model.scope(), cardRaw.Meta().createdAt(), cardRaw.Meta().cardVersion(), cardRaw.Meta().signatures());
 }
 
-Card::Card(CardResponse cardResponse, std::string identifier, std::string identity, std::string identityType,
-           VirgilByteArray publicKeyData, std::unordered_map<std::string, std::string> data, CardScope scope,
-           std::string createdAt, std::string cardVersion)
-        : cardResponse_(std::move(cardResponse)), identifier_(std::move(identifier)), identity_(std::move(identity)),
-          identityType_(std::move(identityType)), publicKeyData_(std::move(publicKeyData)), data_(std::move(data)),
+Card::Card(responses::CardRaw cardRaw, VirgilByteArray snapshot, std::string identifier, std::string identity, std::string identityType,
+           std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey, std::unordered_map<std::string, std::string> data, CardScope scope,
+           std::string createdAt, std::string cardVersion, std::unordered_map<std::string, VirgilByteArray> signatures)
+        : cardRaw_(cardRaw), snapshot_(std::move(snapshot)), identifier_(std::move(identifier)), identity_(std::move(identity)),
+          identityType_(std::move(identityType)), publicKey_(std::move(publicKey)), data_(std::move(data)),
           scope_(scope), createdAt_(std::move(createdAt)),
-          cardVersion_(std::move(cardVersion)) {
+          cardVersion_(std::move(cardVersion)), signatures_(signatures) {
 }
 
 std::string Card::exportAsString() const {
-    auto json = JsonSerializer<CardResponse>::toJson(cardResponse_);
+    auto json = JsonSerializer<responses::CardRaw>::toJson(cardRaw_);
     return VirgilBase64::encode(VirgilByteArrayUtils::stringToBytes(json));
 }
 
-Card Card::importFromString(const std::string &data) {
+Card Card::importFromString(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto, const std::string &data) {
     auto jsonStr = VirgilByteArrayUtils::bytesToString(VirgilBase64::decode(data));
-    auto cardResponse = JsonDeserializer<CardResponse>::fromJsonString(jsonStr);
+    auto cardRaw = JsonDeserializer<responses::CardRaw>::fromJsonString(jsonStr);
 
-    return Card::buildCard(cardResponse);
+    return Card::ImportRaw(crypto, cardRaw);
 }

@@ -37,7 +37,7 @@
 #ifndef VIRGIL_SDK_SERVICECONFIG_H
 #define VIRGIL_SDK_SERVICECONFIG_H
 
-#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
+#include <string>
 
 namespace virgil {
 namespace sdk {
@@ -78,14 +78,6 @@ namespace sdk {
             ServiceConfig& cardsServiceROURL(std::string cardsServiceROURL);
 
             /*!
-             * @brief Setter.
-             * @param validator std::unique_ptr with CardValidator implementation
-             * @note Can be null
-             * @return current ServiceConfig instance
-             */
-            ServiceConfig& cardValidator(std::unique_ptr<interfaces::CardValidatorInterface> validator);
-
-            /*!
              * @brief Getter.
              * @return std::string with token.
              */
@@ -103,20 +95,12 @@ namespace sdk {
              */
             const std::string& cardsServiceROURL() const { return cardsServiceROURL_; }
 
-            /*!
-             * @brief Getter.
-             * @note Can be null
-             * @return std::unique_ptr with CardValidator interface.
-             */
-            const std::unique_ptr<interfaces::CardValidatorInterface>& cardValidator() const { return validator_; }
-
         private:
             ServiceConfig(std::string token);
 
             std::string token_;
             std::string cardsServiceURL_;
             std::string cardsServiceROURL_;
-            std::unique_ptr<interfaces::CardValidatorInterface> validator_;
         };
     }
 }

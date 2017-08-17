@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_CARDSRESPONSE_H
 
 #include <vector>
+#include <virgil/sdk/client/models/responses/CardResponse.h>
 
 namespace virgil {
 namespace sdk {

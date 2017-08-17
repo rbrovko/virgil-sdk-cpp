@@ -75,22 +75,20 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
 
-    auto validator = std::make_unique<CardValidator>(crypto);           //adding validator
-    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
-    REQUIRE(validator->verifiers().size() == 2);
-    serviceConfig.cardValidator(std::move(validator));
-
     Client client(std::move(serviceConfig));                            //creating client
 
     auto CreateCardRequest = utils.instantiateCreateCardRequest();
 
     auto future = client.createCard(CreateCardRequest);
-    auto card = future.get();
+    auto cardRaw = future.get();
+
+    auto card = Card::ImportRaw(crypto, cardRaw);
 
     //if card isValid
-    auto validator1 = std::make_unique<CardValidator>(crypto);
-    validator1->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
-    auto isValid = validator1->validateCardResponse(card.cardResponse());
+    auto validator = std::make_unique<CardValidator>(crypto);
+    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
+    REQUIRE(validator->verifiers().size() == 2);
+    auto isValid = validator->validateCard(card);
 
     REQUIRE(isValid);
     REQUIRE(utils.checkCardEquality(card, CreateCardRequest));
@@ -101,10 +99,6 @@ TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
     TestUtils utils(consts);
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
-    auto validator = std::make_unique<CardValidator>(utils.crypto());
-    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
-    REQUIRE(validator->verifiers().size() == 2);
-    serviceConfig.cardValidator(std::move(validator));
 
     Client client(std::move(serviceConfig));
 
@@ -116,7 +110,9 @@ TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
 
     auto future = client.createCard(createCardRequest);
 
-    auto card = future.get();
+    auto cardRaw = future.get();
+
+    auto card = Card::ImportRaw(utils.crypto(), cardRaw);
 
     REQUIRE(utils.checkCardEquality(card, createCardRequest));
 }
@@ -127,10 +123,6 @@ TEST_CASE("test003_SearchCards", "[client]") {
     TestUtils utils(consts);
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
-    auto validator = std::make_unique<CardValidator>(utils.crypto());
-    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
-    REQUIRE(validator->verifiers().size() == 2);
-    serviceConfig.cardValidator(std::move(validator));
 
     Client client(std::move(serviceConfig));
 
@@ -138,17 +130,21 @@ TEST_CASE("test003_SearchCards", "[client]") {
 
     auto future = client.createCard(createCardRequest);
 
-    auto card = future.get();
+    auto cardRaw = future.get();
+
+    auto card = Card::ImportRaw(utils.crypto(), cardRaw);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
     auto future2 = client.searchCards(
             SearchCardsCriteria::createCriteria({ card.identity() }, CardScope::application, card.identityType()));
 
-    auto foundCards = future2.get();
+    auto list = future2.get();
 
-    REQUIRE(foundCards.size() == 1);
-    REQUIRE(utils.checkCardEquality(card, foundCards[0]));
+    auto foundCards = Card::ImportRaw(utils.crypto(), list[0]);
+
+    REQUIRE(list.size() == 1);
+    REQUIRE(utils.checkCardEquality(card, foundCards));
 }
 
 TEST_CASE("test004_GetCard", "[client]") {
@@ -156,10 +152,6 @@ TEST_CASE("test004_GetCard", "[client]") {
     TestUtils utils(consts);
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
-    auto validator = std::make_unique<CardValidator>(utils.crypto());
-    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
-    REQUIRE(validator->verifiers().size() == 2);
-    serviceConfig.cardValidator(std::move(validator));
 
     Client client(std::move(serviceConfig));
 
@@ -167,15 +159,19 @@ TEST_CASE("test004_GetCard", "[client]") {
 
     auto future = client.createCard(createCardRequest);
 
-    auto card = future.get();
+    auto cardRaw = future.get();
+
+    auto card = Card::ImportRaw(utils.crypto(), cardRaw);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
     auto future2 = client.getCard(card.identifier());
 
-    auto foundCard = future2.get();
+    auto foundCardRaw = future2.get();
 
-    REQUIRE(utils.checkCardEquality(card, foundCard));
+    auto card2 = Card::ImportRaw(utils.crypto(), foundCardRaw);
+
+    REQUIRE(utils.checkCardEquality(card, card2));
 }
 
 
@@ -187,17 +183,14 @@ TEST_CASE("test006_RevokeCardTest", "[client]") {
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
 
-    auto validator = std::make_unique<CardValidator>(crypto);           //adding validator
-    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
-    REQUIRE(validator->verifiers().size() == 2);
-    serviceConfig.cardValidator(std::move(validator));
-
     Client client(std::move(serviceConfig));                            //creating client
 
     auto CreateCardRequest = utils.instantiateCreateCardRequest();
 
     auto future = client.createCard(CreateCardRequest);
-    auto card = future.get();
+    auto cardRaw = future.get();
+
+    auto card = Card::ImportRaw(utils.crypto(), cardRaw);
 
 
     //Revoking

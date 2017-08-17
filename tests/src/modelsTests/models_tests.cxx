@@ -96,12 +96,12 @@ TEST_CASE("test003_CardImportExport", "[models]") {
 
     auto cardStr = card.exportAsString();
 
-    auto importedCard = Card::importFromString(cardStr);
+    auto importedCard = Card::importFromString(utils.crypto(), cardStr);
 
     auto validator = std::make_unique<CardValidator>(utils.crypto());
     validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
     REQUIRE(validator->verifiers().size() == 2);
 
     REQUIRE(utils.checkCardEquality(card, importedCard));
-    REQUIRE(validator->validateCardResponse(importedCard.cardResponse()));
+    REQUIRE(validator->validateCard(importedCard));
 }

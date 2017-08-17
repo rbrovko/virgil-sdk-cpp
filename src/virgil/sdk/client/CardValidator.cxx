@@ -36,19 +36,15 @@
 
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/client/CardValidator.h>
-#include "../../../../ext/CryptoInterfaces/CryptoInterface.h"
-#include <virgil/sdk/crypto/keys/PublicKey.h>
-#include "../../../../ext/CryptoInterfaces/PublicKeyInterface.h"
-#include <virgil/sdk/crypto/Fingerprint.h>
-
-using virgil::sdk::crypto::Fingerprint;
+#include <virgil/sdk/client/models/CardIdGenerator.h>
+using virgil::sdk::client::models::Card;
 static_assert(!std::is_abstract<virgil::sdk::client::CardValidator>(), "CardValidator must not be abstract.");
 
 using virgil::sdk::client::CardValidator;
-using virgil::sdk::client::models::responses::CardResponse;
 using virgil::cryptointerfaces::CryptoInterface;
 using virgil::sdk::VirgilBase64;
 using virgil::cryptointerfaces::PublicKeyInterface;
+using virgil::sdk::client::models::CardIdGenerator;
 
 static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
 static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1RytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=";
@@ -64,26 +60,25 @@ void CardValidator::addVerifier(std::string verifierId, VirgilByteArray publicKe
     verifiers_[std::move(verifierId)] = std::move(publicKeyData);
 }
 
-bool CardValidator::validateCardResponse(const CardResponse &response) const {
-    if (response.cardVersion() == "3.0")
+bool CardValidator::validateCard(const Card &card) const {
+    if (card.cardVersion() == "3.0")
         return true;
 
-    auto fingerprint = Fingerprint(crypto_->calculateFingerprint(response.snapshot()));
+    auto fingerprint = crypto_->calculateFingerprint(card.snapshot());
+    auto CardId = CardIdGenerator::generate(crypto_, fingerprint);
 
-    if (response.identifier() != fingerprint.hexValue())
+    if (card.identifier() != CardId)
         return false;
 
     auto verifiers = verifiers_;
 
-    verifiers[fingerprint.hexValue()] = response.model().publicKeyData();
+    verifiers[CardId] = crypto_->exportPublicKey(*card.publicKey().get());
 
     for (const auto& verifier : verifiers) {
         try {
-            auto signature = response.signatures().at(verifier.first);
+            auto signature = card.signatures().at(verifier.first);
 
-            //PublicKeyInterface& publicKey = crypto_->importPublicKey(verifier.second);
-
-            auto isVerified = crypto_->verify(fingerprint.value(), signature, verifier.second);
+            auto isVerified = crypto_->verify(fingerprint, signature, verifier.second);
 
             if (!isVerified) {
                 return false;

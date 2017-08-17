@@ -36,7 +36,7 @@
 
 
 #include <virgil/sdk/client/RequestSigner.h>
-#include <virgil/sdk/crypto/Fingerprint.h>
+#include <virgil/sdk/client/models/CardIdGenerator.h>
 
 static_assert(!std::is_abstract<virgil::sdk::client::RequestSigner>(), "RequestSigner must not be abstract.");
 
@@ -44,22 +44,23 @@ using virgil::sdk::client::RequestSigner;
 using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::client::models::interfaces::SignableInterface;
 using virgil::cryptointerfaces::CryptoInterface;
-using virgil::sdk::crypto::Fingerprint;
 using virgil::cryptointerfaces::PrivateKeyInterface;
+using virgil::sdk::client::models::CardIdGenerator;
 
 RequestSigner::RequestSigner(const std::shared_ptr<CryptoInterface> &crypto)
         : crypto_(crypto) {
 }
 
 void RequestSigner::selfSign(SignableInterface &request, const PrivateKeyInterface &privateKey) const {
-    auto fingerprint = Fingerprint(crypto_->calculateFingerprint(request.snapshot()));
+    auto fingerprint = crypto_->calculateFingerprint(request.snapshot());
+    auto CardId = CardIdGenerator::generate(crypto_, fingerprint);
 
-    request.addSignature(crypto_->generateSignature(fingerprint.value(), privateKey), fingerprint.hexValue());
+    request.addSignature(crypto_->generateSignature(fingerprint, privateKey), CardId);
 }
 
 void RequestSigner::authoritySign(SignableInterface &request,
                                   const std::string &appId,
                                   const PrivateKeyInterface &privateKey) const {
-    auto fingerprint = Fingerprint(crypto_->calculateFingerprint(request.snapshot()));
-    request.addSignature(crypto_->generateSignature(fingerprint.value(), privateKey), appId);
+    auto fingerprint = crypto_->calculateFingerprint(request.snapshot());
+    request.addSignature(crypto_->generateSignature(fingerprint, privateKey), appId);
 }

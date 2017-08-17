@@ -151,7 +151,7 @@ foreach (SRC_FILE ${SRC_CONF})
 endforeach ()
 file (GLOB_RECURSE SRC_LIST_BIN "${CMAKE_CURRENT_BINARY_DIR}/src/*.cxx")
 file (GLOB_RECURSE SRC_LIST_SRC "src/*.cxx")
-set (SRC_LIST ${SRC_LIST_BIN} ${SRC_LIST_SRC} src/virgil/sdk/client/models/parameters/CreateCardParams.cpp src/virgil/sdk/client/models/parameters/RevokeCardParams.cpp src/virgil/sdk/client/RequestManager.cpp)
+set (SRC_LIST ${SRC_LIST_BIN} ${SRC_LIST_SRC} src/virgil/sdk/client/models/parameters/CreateCardParams.cxx src/virgil/sdk/client/models/parameters/RevokeCardParams.cxx src/virgil/sdk/client/RequestManager.cxx src/virgil/sdk/client/models/responses/CardRaw.cxx src/virgil/sdk/client/models/responses/CardRawMeta.cxx)
 
 # Configure library build
 add_library (${PROJECT_NAME} ${SRC_LIST})

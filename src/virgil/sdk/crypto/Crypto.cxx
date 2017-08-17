@@ -36,7 +36,6 @@
 
 
 #include <virgil/sdk/crypto/Crypto.h>
-#include <virgil/sdk/crypto/Fingerprint.h>
 #include <virgil/sdk/VirgilSdkError.h>
 #include <virgil/crypto/VirgilKeyPair.h>
 #include <virgil/crypto/foundation/VirgilHash.h>
@@ -55,7 +54,6 @@ using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::VirgilByteArray;
 using virgil::sdk::VirgilByteArrayUtils;
-using virgil::sdk::crypto::Fingerprint;
 using virgil::crypto::VirgilKeyPair;
 using virgil::crypto::VirgilSigner;
 using virgil::crypto::VirgilCipher;
@@ -97,12 +95,12 @@ PrivateKey Crypto::importPrivateKey(const VirgilByteArray &data, const std::stri
     return PrivateKey(std::move(exportedPrivateKeyData), std::move(keyIdentifier));
 }
 
-PublicKey Crypto::importPublicKey(const VirgilByteArray &data) const {
+PublicKey* Crypto::importPublicKey(const VirgilByteArray &data){
     auto keyIdentifier = computeHashForPublicKey(data);
 
     auto exportedPublicKey = VirgilKeyPair::publicKeyToDER(data);
 
-    return PublicKey(std::move(exportedPublicKey), std::move(keyIdentifier));
+    return new PublicKey(PublicKey(std::move(exportedPublicKey), std::move(keyIdentifier)));
 }
 
 PublicKey Crypto::extractPublicKeyFromPrivateKey(const PrivateKey &privateKey) const {

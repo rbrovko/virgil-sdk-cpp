@@ -71,11 +71,11 @@ namespace sdk {
              */
             const ServiceConfig& serviceConfig() const { return serviceConfig_; }
 
-            std::future<models::Card> createCard(const models::requests::CreateCardRequest &request) const override;
+            std::future<models::responses::CardRaw> createCard(const models::requests::CreateCardRequest &request) const override;
 
-            std::future<models::Card> getCard(const std::string &cardId) const override;
+            std::future<models::responses::CardRaw> getCard(const std::string &cardId) const override;
 
-            std::future<std::vector<models::Card>> searchCards(
+            std::future<std::vector<models::responses::CardRaw>> searchCards(
                     const models::SearchCardsCriteria &criteria) const override;
 
             std::future<void> revokeCard(const models::requests::RevokeCardRequest &request) const override;

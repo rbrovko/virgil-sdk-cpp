@@ -41,7 +41,6 @@
 #include <virgil/sdk/client/models/requests/CreateCardRequest.h>
 #include <virgil/sdk/client/models/requests/RevokeCardRequest.h>
 #include <virgil/sdk/client/models/Card.h>
-#include "../../ext/CryptoInterfaces/CryptoInterface.h"
 #include <virgil/sdk/crypto/Crypto.h>
 
 #include <TestConst.h>

@@ -37,7 +37,6 @@
 #ifndef VIRGIL_SDK_CARDVALIDATOR_H
 #define VIRGIL_SDK_CARDVALIDATOR_H
 
-#include "../../../../ext/CryptoInterfaces/CryptoInterface.h"
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
 
 namespace virgil {
@@ -67,7 +66,7 @@ namespace client {
          */
         const std::unordered_map<std::string, VirgilByteArray>& verifiers() const { return verifiers_; };
 
-        bool validateCardResponse(const models::responses::CardResponse &response) const override;
+        bool validateCard(const models::Card &card) const override;
 
     private:
         std::shared_ptr<cryptointerfaces::CryptoInterface> crypto_;
