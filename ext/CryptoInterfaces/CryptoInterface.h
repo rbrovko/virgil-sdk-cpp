@@ -84,7 +84,7 @@ namespace virgil {
            * @return true if data was successfully verified, false otherwise
            */
            virtual bool verify(const byteArray &data, const byteArray &signature,
-                                    const byteArray &signerPublicKeyData) const = 0;
+                                    const PublicKeyInterface &signerPublicKey) const = 0;
 
            /*!
             * @brief Verifies stream for genuineness.

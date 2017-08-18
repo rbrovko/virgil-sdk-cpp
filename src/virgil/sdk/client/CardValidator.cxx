@@ -78,7 +78,9 @@ bool CardValidator::validateCard(const Card &card) const {
         try {
             auto signature = card.signatures().at(verifier.first);
 
-            auto isVerified = crypto_->verify(fingerprint, signature, verifier.second);
+            auto publicKeyPointer = crypto_->importPublicKey(verifier.second);
+
+            auto isVerified = crypto_->verify(fingerprint, signature, *publicKeyPointer);
 
             if (!isVerified) {
                 return false;

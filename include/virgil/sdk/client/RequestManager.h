@@ -68,14 +68,14 @@ namespace virgil {
                  * @param parameters all needed parameters for Creating Card
                  * @return CreateCardRequest for creating card
                  */
-                CreateCardRequest CreateCardRequest(CreateCardParams &parameters);
+                CreateCardRequest CreateCardRequest(parameters::CreateCardParams &parameters);
 
                 /*!
                  * @brief Creating signed RevokeCardRequest
                  * @param parameters all needed parameters for Revoking Card
                  * @return RevokeCardRequest for revoking card
                  */
-                RevokeCardRequest RevokeCardRequest(RevokeCardParams &parameters);
+                RevokeCardRequest RevokeCardRequest(parameters::RevokeCardParams &parameters);
             private:
                 const std::shared_ptr<CryptoInterface> crypto_;
             };

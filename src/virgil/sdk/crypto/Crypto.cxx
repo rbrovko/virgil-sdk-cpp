@@ -159,16 +159,7 @@ void Crypto::encrypt(std::istream &istream, std::ostream &ostream, const std::ve
 }
 
 bool Crypto::verify(const VirgilByteArray &data, const VirgilByteArray &signature,
-                    const byteArray &signerPublicKeyData) const {
-    auto signer = VirgilSigner();
-
-   // auto signerPublicKeyData = exportPublicKey(signerPublicKey);
-
-    return signer.verify(data, signature, signerPublicKeyData);
-}
-
-bool Crypto::verify(const VirgilByteArray &data, const VirgilByteArray &signature,
-            const PublicKey &signerPublicKey) const {
+            const PublicKeyInterface &signerPublicKey) const {
     auto signer = VirgilSigner();
 
     auto signerPublicKeyData = exportPublicKey(signerPublicKey);

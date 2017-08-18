@@ -38,7 +38,7 @@
 #define VIRGIL_SDK_CRYPTO_H
 
 #include <virgil/sdk/Common.h>
-#include "../../../../ext/CryptoInterfaces/CryptoInterface.h"
+#include <CryptoInterface.h>
 #include <virgil/sdk/crypto/keys/KeyPair.h>
 
 namespace virgil {
@@ -56,10 +56,10 @@ namespace sdk {
 
             VirgilByteArray exportPublicKey(const cryptointerfaces::PublicKeyInterface &publicKey) const override;
 
-            bool verify(const VirgilByteArray &data, const VirgilByteArray &signature,
-                        const byteArray &signerPublicKeyData) const override;
-
             bool verify(std::istream &istream, const VirgilByteArray &signature,
+                        const cryptointerfaces::PublicKeyInterface &signerPublicKey) const override;\
+
+            bool verify(const VirgilByteArray &data, const VirgilByteArray &signature,
                         const cryptointerfaces::PublicKeyInterface &signerPublicKey) const override;
 
             VirgilByteArray generateSignature(const VirgilByteArray &data,
@@ -116,8 +116,6 @@ namespace sdk {
             void encrypt(std::istream &istream, std::ostream &ostream,
                          const std::vector<keys::PublicKey> &recipients) const ;
 
-            bool verify(const VirgilByteArray &data, const VirgilByteArray &signature,
-                        const keys::PublicKey &signerPublicKey) const;
 
             /*!
              * @brief Decrypts data.
