@@ -38,7 +38,7 @@
 #define VIRGIL_SDK_PRIVATEKEY_H
 
 #include <virgil/sdk/Common.h>
-#include "../../../../../ext/CryptoInterfaces/PrivateKeyInterface.h"
+#include <PrivateKeyInterface.h>
 
 /// forward decl
 namespace virgil {

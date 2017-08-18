@@ -39,7 +39,7 @@
 
 #include <memory>
 
-#include "../../../../ext/CryptoInterfaces/CryptoInterface.h"
+#include <CryptoInterface.h>
 #include <virgil/sdk/client/interfaces/RequestSignerInterface.h>
 
 namespace virgil {

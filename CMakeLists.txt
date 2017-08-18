@@ -137,6 +137,7 @@ virgil_find_package (RapidJSON) # Installed as virgil_crypto dependency, so foun
 
 include_directories (${CURL_INCLUDE_DIRS})
 include_directories (${NLOHMAN_JSON_INCLUDE_DIRS})
+include_directories("ext/CryptoInterfaces")
 
 # Grab source directory tree
 file (GLOB_RECURSE SRC_CONF "src/*.cxx.in")

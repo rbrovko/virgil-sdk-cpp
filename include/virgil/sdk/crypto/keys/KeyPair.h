@@ -39,8 +39,7 @@
 
 #include <virgil/sdk/crypto/keys/PrivateKey.h>
 #include <virgil/sdk/crypto/keys/PublicKey.h>
-
-#include "../../../../../ext/CryptoInterfaces/KeyPairInterface.h"
+#include <KeyPairInterface.h>
 
 /// forward decl
 namespace virgil {
