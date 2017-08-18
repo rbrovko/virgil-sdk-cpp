@@ -5,7 +5,7 @@
 #include <virgil/sdk/client/models/parameters/CreateCardParams.h>
 
 
-using virgil::sdk::client::CreateCardParams;
+using virgil::sdk::client::parameters::CreateCardParams;
 
 CreateCardParams::CreateCardParams(
         std::string Identity,

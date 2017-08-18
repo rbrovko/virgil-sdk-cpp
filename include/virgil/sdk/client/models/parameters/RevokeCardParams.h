@@ -16,24 +16,26 @@ using virgil::sdk::crypto::keys::PrivateKey;
 namespace virgil {
     namespace sdk {
         namespace client {
-            /*!
-             * @brief container for parameters needed to create Card
-             */
-            class RevokeCardParams {
-            public:
+            namespace parameters {
                 /*!
-                 * @brief Constructor
-                 * @param identifier Card ID
-                 * @param RequestSigners map of request signers
+                 * @brief container for parameters needed to create Card
                  */
-                RevokeCardParams(
-                        std::string identifier,
-                        std::map<std::string, PrivateKey> RequestSigners
-                );
+                class RevokeCardParams {
+                public:
+                    /*!
+                     * @brief Constructor
+                     * @param identifier Card ID
+                     * @param RequestSigners map of request signers
+                     */
+                    RevokeCardParams(
+                            std::string identifier,
+                            std::map<std::string, PrivateKey> RequestSigners
+                    );
 
-                std::string identifier;
-                std::map<std::string, PrivateKey> RequestSigners;
-            };
+                    std::string identifier;
+                    std::map<std::string, PrivateKey> RequestSigners;
+                };
+            }
         }
     }
 }

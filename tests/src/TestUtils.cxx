@@ -56,8 +56,8 @@ using virgil::sdk::client::models::serialization::JsonDeserializer;
 
 using virgil::sdk::client::Client;
 using virgil::sdk::client::RequestManager;
-using virgil::sdk::client::CreateCardParams;
-using virgil::sdk::client::RevokeCardParams;
+using virgil::sdk::client::parameters::CreateCardParams;
+using virgil::sdk::client::parameters::RevokeCardParams;
 using virgil::sdk::client::models::responses::CardRaw;
 
 CreateCardRequest TestUtils::instantiateCreateCardRequest(
@@ -70,12 +70,17 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
     auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
     auto identity = Utils::generateRandomStr(40);
+
+    std::map<std::string, PrivateKeyInterface&> RequestSigners = {
+            {consts.applicationId(), appPrivateKey}
+    };
+
     //making CardParams
     CreateCardParams parameters(
             identity,                                    //Identity
             consts.applicationIdentityType(),            //IdentityType
             keyPair,                                     //keyPair
-            {{consts.applicationId(), appPrivateKey}},   //RequestSigners
+            RequestSigners,                              //RequestSigners
             true,                                        //GenerateSignature
             data                                         //CustomFields
     );

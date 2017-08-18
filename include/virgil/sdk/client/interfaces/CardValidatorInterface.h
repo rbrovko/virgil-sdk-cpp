@@ -44,7 +44,7 @@ namespace sdk {
 namespace client {
     namespace interfaces {
         /*!
-         * Interface designed for validation of Card instances.
+         * @brief Interface designed for validation of Card instances.
          */
         class CardValidatorInterface {
         public:

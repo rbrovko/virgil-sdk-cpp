@@ -6,7 +6,7 @@
 #include <virgil/sdk/client/models/parameters/RevokeCardParams.h>
 #include <unordered_map>
 
-using virgil::sdk::client::RevokeCardParams;
+using virgil::sdk::client::parameters::RevokeCardParams;
 
 RevokeCardParams::RevokeCardParams(
         std::string identifier,

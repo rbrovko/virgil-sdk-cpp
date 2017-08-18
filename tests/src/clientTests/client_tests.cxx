@@ -62,8 +62,8 @@ using virgil::sdk::VirgilBase64;
 using virgil::sdk::client::interfaces::CardValidatorInterface;
 
 using virgil::sdk::client::RequestSigner;
-using virgil::sdk::client::CreateCardParams;
-using virgil::sdk::client::RevokeCardParams;
+using virgil::sdk::client::parameters::CreateCardParams;
+using virgil::sdk::client::parameters::RevokeCardParams;
 using virgil::sdk::client::RequestManager;
 
 
