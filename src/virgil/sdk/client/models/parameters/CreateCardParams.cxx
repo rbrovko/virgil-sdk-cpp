@@ -11,7 +11,7 @@ CreateCardParams::CreateCardParams(
         std::string Identity,
         std::string IdentityType,
         KeyPairInterface& keyPair,
-        std::map<std::string, PrivateKeyInterface&> RequestSigners,
+        std::list<CardSigner> RequestSigners,
         bool GenerateSelfSignature,
         std::unordered_map<std::string, std::string> customFields
 ) : Identity(Identity), IdentityType(IdentityType), keyPair(keyPair), RequestSigners(RequestSigners),

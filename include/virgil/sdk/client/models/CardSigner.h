@@ -34,35 +34,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_PRIVATEKEYINTERFACE_H
-#define VIRGIL_SDK_PRIVATEKEYINTERFACE_H
+#ifndef VIRGIL_SDK_CARDSIGNER_H
+#define VIRGIL_SDK_CARDSIGNER_H
 
-#include <string>
-
-using byteArray = std::vector<unsigned char>;
+#include <PrivateKeyInterface.h>
 
 namespace virgil {
-    namespace cryptointerfaces {
-        /*!
-        * @brief Interface for custom implemented PrivateKey
-        */
-        class PrivateKeyInterface {
-        public:
-            virtual ~PrivateKeyInterface() = default;
+    namespace sdk {
+        namespace client {
+            namespace models {
+                /*!
+                 * @brief class for card signers representation
+                 */
+                class CardSigner {
+                public:
+                    CardSigner(std::string cardId, cryptointerfaces::PrivateKeyInterface &privateKey);
 
-            /*!
-           * @brief Getter.
-           * @return key
-           */
-            virtual const byteArray &key() const = 0;
+                    const std::string& cardId() const { return cardId_; }
+                    const cryptointerfaces::PrivateKeyInterface& privateKey() const { return privateKey_; }
 
-            /*!
-           * @brief Getter.
-           * @return identifier
-           */
-            virtual const byteArray &identifier() const = 0;
-        };
+                private:
+                    std:: string cardId_;
+                    cryptointerfaces::PrivateKeyInterface &privateKey_;
+                };
+            }
+        }
     }
 }
 
-#endif //VIRGIL_SDK_PRIVATEKEYINTERFACE_H
+#endif //VIRGIL_SDK_CARDSIGNER_H

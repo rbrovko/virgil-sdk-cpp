@@ -43,7 +43,7 @@ CreateCardRequest RequestManager::CreateCardRequest(CreateCardParams &parameters
         signer.selfSign(request, parameters.keyPair.privateKey());
 
     for (const auto& elem : parameters.RequestSigners)
-        signer.authoritySign(request, elem.first, elem.second);
+        signer.authoritySign(request, elem.cardId(), elem.privateKey());
 
     return request;
 }

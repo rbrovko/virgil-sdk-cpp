@@ -6,13 +6,14 @@
 #define VIRGIL_SDK_CREATECARDPARAMS_H
 
 #include <string>
-#include <virgil/sdk/crypto/keys/KeyPair.h>
+#include <virgil/sdk/client/models/CardSigner.h>
+#include <KeyPairInterface.h>
 #include <unordered_map>
 #include <map>
-#include <virgil/sdk/crypto/keys/PrivateKey.h>
+#include <list>
 
-using virgil::sdk::crypto::keys::KeyPair;
-using virgil::sdk::crypto::keys::PrivateKey;
+
+using virgil::sdk::client::models::CardSigner;
 
 using virgil::cryptointerfaces::KeyPairInterface;
 using virgil::cryptointerfaces::PrivateKeyInterface;
@@ -39,7 +40,7 @@ namespace virgil {
                             std::string Identity,
                             std::string IdentityType,
                             KeyPairInterface &keyPair,
-                            std::map<std::string, PrivateKeyInterface &> RequestSigners,
+                            std::list<CardSigner> RequestSigners,
                             bool GenerateSelfSignature = true,
                             std::unordered_map<std::string, std::string> customFields
                             = std::unordered_map<std::string, std::string>()
@@ -48,7 +49,7 @@ namespace virgil {
                     std::string Identity;
                     std::string IdentityType;
                     KeyPairInterface &keyPair;
-                    std::map<std::string, PrivateKeyInterface &> RequestSigners;
+                    std::list<CardSigner> RequestSigners;
                     std::unordered_map<std::string, std::string> customFields;
                     bool GenerateSelfSignature;
                 };

@@ -43,8 +43,9 @@
 
 #include <virgil/sdk/client/Client.h>
 #include <virgil/sdk/client/RequestManager.h>
-
 #include <virgil/sdk/client/models/responses/CardRaw.h>
+#include <virgil/sdk/client/models/CardSigner.h>
+#include <list>
 
 using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::client::models::CardRevocationReason;
@@ -59,6 +60,7 @@ using virgil::sdk::client::RequestManager;
 using virgil::sdk::client::parameters::CreateCardParams;
 using virgil::sdk::client::parameters::RevokeCardParams;
 using virgil::sdk::client::models::responses::CardRaw;
+using virgil::sdk::client::models::CardSigner;
 
 CreateCardRequest TestUtils::instantiateCreateCardRequest(
         const std::unordered_map<std::string, std::string> &data) const {
@@ -71,9 +73,10 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
 
     auto identity = Utils::generateRandomStr(40);
 
-    std::map<std::string, PrivateKeyInterface&> RequestSigners = {
-            {consts.applicationId(), appPrivateKey}
-    };
+    std::list<CardSigner> RequestSigners;
+    RequestSigners.push_back(
+            CardSigner(consts.applicationId(), appPrivateKey)
+    );
 
     //making CardParams
     CreateCardParams parameters(
