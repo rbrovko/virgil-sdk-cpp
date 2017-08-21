@@ -96,12 +96,13 @@ Generate a new Public/Private keypair using *Crypto* class.
 auto aliceKeys = crypto->generateKeyPair();
 ```
 
-Create a map of Ids and PrivateKeys - to sign request with them. For example, with app key.
+Create a list of Card signers with their Ids and PrivateKeys - to sign request with them.
 
 ```cpp
-std::map<std::string, PrivateKeyInterface&> RequestSigners = {
-         {appId, appPrivateKey}
-};
+std::list<CardSigner RequestSigners;
+RequestSigners.push_back(
+        CardSigner(appId, appPrivateKey)
+);
 ```
 Prapare Card parameters to make Card.
 ```cpp
@@ -175,9 +176,10 @@ You can make Virgil Card unavailable for further use if its private key was comp
 ```cpp
 RequestManager manager(crypto);
 
-std::map<std::string, PrivateKeyInterface&> RequestSigners = {
-         {appId, appPrivateKey}
-};
+std::list<CardSigner> RequestSigners;
+RequestSigners.push_back(
+        CardSigner(consts.applicationId(), appPrivateKey)
+);
 
 RevokeCardParams parameters(
       <#Your cardId#>, 
