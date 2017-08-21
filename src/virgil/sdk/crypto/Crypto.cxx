@@ -95,7 +95,7 @@ PrivateKey Crypto::importPrivateKey(const VirgilByteArray &data, const std::stri
     return PrivateKey(std::move(exportedPrivateKeyData), std::move(keyIdentifier));
 }
 
-PublicKey* Crypto::importPublicKey(const VirgilByteArray &data){
+PublicKey* Crypto::importPublicKey(const VirgilByteArray &data) const {
     auto keyIdentifier = computeHashForPublicKey(data);
 
     auto exportedPublicKey = VirgilKeyPair::publicKeyToDER(data);

@@ -58,7 +58,7 @@ RevokeCardRequest RequestManager::RevokeCardRequest(RevokeCardParams &parameters
     auto signer = RequestSigner(crypto_);
 
     for (const auto& elem : parameters.RequestSigners)
-        signer.authoritySign(request, elem.first, elem.second);
+        signer.authoritySign(request, elem.cardId(), elem.privateKey());
 
     return request;
 }

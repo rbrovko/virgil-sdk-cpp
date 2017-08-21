@@ -10,6 +10,6 @@ using virgil::sdk::client::parameters::RevokeCardParams;
 
 RevokeCardParams::RevokeCardParams(
         std::string identifier,
-        std::map<std::string, PrivateKey> RequestSigners
+        std::list<CardSigner> RequestSigners
 ) : identifier(identifier), RequestSigners(RequestSigners) {}
 

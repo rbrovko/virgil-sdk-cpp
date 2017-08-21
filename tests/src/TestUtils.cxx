@@ -99,10 +99,15 @@ RevokeCardRequest TestUtils::instantiateRevokeCardRequest(const Card &card) cons
     auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
+    std::list<CardSigner> RequestSigners;
+    RequestSigners.push_back(
+            CardSigner(consts.applicationId(), appPrivateKey)
+    );
+
     //Revoking
     RevokeCardParams params(
             card.identifier(),                          //CardID
-            {{consts.applicationId(), appPrivateKey}}   //RequestSigners
+            RequestSigners                              //RequestSigners
     );
 
     auto RevokeCardRequest = manager.RevokeCardRequest(params);
@@ -140,7 +145,7 @@ bool TestUtils::checkCardEquality(const Card &card1, const Card &card2) {
                   && card1.createdAt() == card2.createdAt()
                   && card1.cardVersion() == card2.cardVersion()
                   && card1.data() == card2.data()
-                 // && card1.publicKeyData() == card2.publicKeyData()
+                  && card1.publicKey()->key() == card2.publicKey()->key()
                   && card1.scope() == card2.scope();
 
     return equals;

@@ -10,8 +10,11 @@
 #include <unordered_map>
 #include <map>
 #include <virgil/sdk/crypto/keys/PrivateKey.h>
+#include <virgil/sdk/client/models/CardSigner.h>
+#include <list>
 
 using virgil::sdk::crypto::keys::PrivateKey;
+using virgil::sdk::client::models::CardSigner;
 
 namespace virgil {
     namespace sdk {
@@ -29,11 +32,11 @@ namespace virgil {
                      */
                     RevokeCardParams(
                             std::string identifier,
-                            std::map<std::string, PrivateKey> RequestSigners
+                            std::list<CardSigner> RequestSigners
                     );
 
                     std::string identifier;
-                    std::map<std::string, PrivateKey> RequestSigners;
+                    std::list<CardSigner> RequestSigners;
                 };
             }
         }

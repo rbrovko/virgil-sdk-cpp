@@ -58,7 +58,7 @@ namespace virgil {
          * @param data raw representation of Public Key
          * @return pointer to implementation instance of PublicKeyInterface
          */
-        virtual PublicKeyInterface* importPublicKey(const byteArray &data) = 0;
+        virtual PublicKeyInterface* importPublicKey(const byteArray &data) const = 0;
 
         /*!
          * @brief Exports Private Key to raw representation.

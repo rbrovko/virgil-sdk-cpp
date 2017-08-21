@@ -69,7 +69,7 @@ namespace sdk {
 
             byteArray calculateFingerprint(const VirgilByteArray &data) const override;
 
-            keys::PublicKey* importPublicKey(const VirgilByteArray &data) override;
+            keys::PublicKey* importPublicKey(const VirgilByteArray &data) const override;
 
             /*!
              * @brief Generates key pair using ed25519 algorithm.
