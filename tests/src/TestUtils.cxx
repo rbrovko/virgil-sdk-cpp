@@ -57,8 +57,8 @@ using virgil::sdk::client::models::serialization::JsonDeserializer;
 
 using virgil::sdk::client::Client;
 using virgil::sdk::client::RequestManager;
-using virgil::sdk::client::parameters::CreateCardParams;
-using virgil::sdk::client::parameters::RevokeCardParams;
+using virgil::sdk::client::models::parameters::CreateCardParams;
+using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::sdk::client::models::responses::CardRaw;
 using virgil::sdk::client::models::CardSigner;
 

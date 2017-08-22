@@ -58,11 +58,13 @@ namespace crypto {
          * @see CryptoInterface
          */
         class PublicKey: public cryptointerfaces::PublicKeyInterface {
-        private:
-            PublicKey(VirgilByteArray key, VirgilByteArray identifier);
+        public:
 
             const VirgilByteArray &key() const { return key_; }
             const VirgilByteArray &identifier() const { return identifier_; }
+
+        private:
+            PublicKey(VirgilByteArray key, VirgilByteArray identifier);
 
             VirgilByteArray key_;
             VirgilByteArray identifier_;

@@ -19,25 +19,27 @@ using virgil::sdk::client::models::CardSigner;
 namespace virgil {
     namespace sdk {
         namespace client {
-            namespace parameters {
-                /*!
-                 * @brief container for parameters needed to create Card
-                 */
-                class RevokeCardParams {
-                public:
+            namespace models {
+                namespace parameters {
                     /*!
-                     * @brief Constructor
-                     * @param identifier Card ID
-                     * @param RequestSigners map of request signers
+                     * @brief container for parameters needed to create Card
                      */
-                    RevokeCardParams(
-                            std::string identifier,
-                            std::list<CardSigner> RequestSigners
-                    );
+                    class RevokeCardParams {
+                    public:
+                        /*!
+                         * @brief Constructor
+                         * @param identifier Card ID
+                         * @param RequestSigners map of request signers
+                         */
+                        RevokeCardParams(
+                                std::string identifier,
+                                std::list<CardSigner> RequestSigners
+                        );
 
-                    std::string identifier;
-                    std::list<CardSigner> RequestSigners;
-                };
+                        std::string identifier;
+                        std::list<CardSigner> RequestSigners;
+                    };
+                }
             }
         }
     }

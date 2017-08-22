@@ -5,13 +5,13 @@
 #include <virgil/sdk/client/models/parameters/CreateCardParams.h>
 
 
-using virgil::sdk::client::parameters::CreateCardParams;
+using virgil::sdk::client::models::parameters::CreateCardParams;
 
 CreateCardParams::CreateCardParams(
-        std::string Identity,
-        std::string IdentityType,
-        KeyPairInterface& keyPair,
-        std::list<CardSigner> RequestSigners,
+        const std::string &Identity,
+        const std::string &IdentityType,
+        const KeyPairInterface& keyPair,
+        const std::list<CardSigner> &RequestSigners,
         bool GenerateSelfSignature,
         std::unordered_map<std::string, std::string> customFields
 ) : Identity(Identity), IdentityType(IdentityType), keyPair(keyPair), RequestSigners(RequestSigners),

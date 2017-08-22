@@ -12,8 +12,8 @@ using virgil::sdk::client::RequestManager;
 using virgil::sdk::client::models::snapshotmodels::CreateCardSnapshotModel;
 using virgil::sdk::client::models::CardScope;
 using virgil::sdk::client::models::serialization::CanonicalSerializer;
-using virgil::sdk::client::parameters::CreateCardParams;
-using virgil::sdk::client::parameters::RevokeCardParams;
+using virgil::sdk::client::models::parameters::CreateCardParams;
+using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::sdk::client::RequestSigner;
 using virgil::sdk::client::models::requests::CreateCardRequest;
 using virgil::sdk::client::models::CardRevocationReason;
@@ -50,6 +50,9 @@ CreateCardRequest RequestManager::CreateCardRequest(CreateCardParams &parameters
 
 RevokeCardRequest RequestManager::RevokeCardRequest(RevokeCardParams &parameters) {
 
+    if (parameters.identifier.empty()) {
+        throw make_error(VirgilSdkError::CreateRequestManagerFailed, "Identity property is mandatory");
+    }
     auto request = RevokeCardRequest::createRequest(
             parameters.identifier,
             CardRevocationReason::unspecified

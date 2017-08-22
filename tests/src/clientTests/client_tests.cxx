@@ -62,8 +62,8 @@ using virgil::sdk::VirgilBase64;
 using virgil::sdk::client::interfaces::CardValidatorInterface;
 
 using virgil::sdk::client::RequestSigner;
-using virgil::sdk::client::parameters::CreateCardParams;
-using virgil::sdk::client::parameters::RevokeCardParams;
+using virgil::sdk::client::models::parameters::CreateCardParams;
+using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::sdk::client::RequestManager;
 
 
@@ -242,4 +242,8 @@ TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[
     }
 
     REQUIRE(errorWasThrown);
+}
+
+TEST_CASE("test008_Free_Test", "[client]") {
+
 }
