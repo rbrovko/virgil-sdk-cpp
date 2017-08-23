@@ -51,7 +51,16 @@ namespace virgil {
                 public:
                     CardSigner(std::string cardId, cryptointerfaces::PrivateKeyInterface &privateKey);
 
+                    /*!
+                    * @brief Getter.
+                    * @return string with Card Id
+                    */
                     const std::string& cardId() const { return cardId_; }
+
+                    /*!
+                    * @brief Getter.
+                    * @return instance of custom implemented Private Key class
+                    */
                     const cryptointerfaces::PrivateKeyInterface& privateKey() const { return privateKey_; }
 
                 private:

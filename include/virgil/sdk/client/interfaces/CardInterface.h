@@ -52,7 +52,10 @@ namespace virgil {
     namespace sdk {
         namespace client {
                 namespace interfaces {
-                    class CardInterface : models::interfaces::Exportable, models::interfaces::Importable<CardInterface> {
+                    /*!
+                     * @brief Interface for custom implemented Card
+                     */
+                    class CardInterface {
                     public:
 
                         /*!

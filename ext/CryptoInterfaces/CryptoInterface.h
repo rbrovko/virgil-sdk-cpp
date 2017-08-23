@@ -115,7 +115,7 @@ namespace virgil {
             /*!
              * @brief Calculates Fingerprint for data.
              * @param data data from which Fingerprint will be calculated
-             * @return Fingerprint
+             * @return fingerprint in bytes
              */
             virtual byteArray calculateFingerprint(const byteArray &data) const = 0;
 

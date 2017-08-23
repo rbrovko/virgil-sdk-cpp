@@ -37,8 +37,8 @@
 #include <catch.hpp>
 #include <virgil/sdk/client/RequestManager.h>
 
-#include <UnitTests/TestKeys.h>
-#include <UnitTests/TestCrypto.h>
+#include <UnitTests/KeysTest.h>
+#include <UnitTests/CryptoTest.h>
 
 using virgil::sdk::client::models::parameters::CreateCardParams;
 using virgil::sdk::client::models::parameters::RevokeCardParams;
@@ -46,6 +46,8 @@ using virgil::cryptointerfaces::PublicKeyInterface;
 
 using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
+using virgil::sdk::test::CryptoTest;
+using virgil::sdk::test::KeyPairTest;
 
 using virgil::sdk::client::RequestManager;
 

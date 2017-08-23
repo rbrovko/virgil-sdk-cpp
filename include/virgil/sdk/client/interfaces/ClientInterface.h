@@ -63,21 +63,21 @@ namespace client {
              *       Additional signatures may be applied if needed.
              * @see Card
              * @param request CreateCardRequest instance with Card data and signatures
-             * @return std::future with Card
+             * @return std::future with CardRaw
              */
             virtual std::future<models::responses::CardRaw> createCard(const models::requests::CreateCardRequest &request) const = 0;
 
             /*!
              * @brief Returns Virgil Card from the Virgil Cards Service with given ID, if exists.
              * @param cardId std::string with card ID
-             * @return std::future with Card
+             * @return std::future with CardRaw
              */
             virtual std::future<models::responses::CardRaw> getCard(const std::string &cardId) const = 0;
 
             /*!
              * @brief Performs search of Virgil Cards using search criteria on the Virgil Cards Service.
              * @param criteria SearchCardsCriteria instance with criteria for desired cards
-             * @return std::future with std::vector which contains found cards
+             * @return std::future with std::vector which contains found cards in CardRaw form
              */
             virtual std::future<std::vector<models::responses::CardRaw>> searchCards(
                     const models::SearchCardsCriteria &criteria) const = 0;

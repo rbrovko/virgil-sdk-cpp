@@ -51,13 +51,13 @@ namespace virgil {
 
             /*!
             * @brief Getter.
-            * @return Public Key
+            * @return implementetion of Public Key Interface
             */
             virtual const PublicKeyInterface& publicKey() const = 0;
 
             /*!
              * @brief Getter.
-             * @return Private Key
+             * @return implementation of Private Key Interface
              */
             virtual const PrivateKeyInterface& privateKey() const = 0;
         };

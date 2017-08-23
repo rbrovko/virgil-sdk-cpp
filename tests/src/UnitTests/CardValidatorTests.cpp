@@ -36,7 +36,7 @@
 
 #include <catch.hpp>
 #include <virgil/sdk/client/CardValidator.h>
-#include <UnitTests/TestCrypto.h>
+#include <UnitTests/CryptoTest.h>
 
 #include <UnitTests/CardTest.h>
 
@@ -50,6 +50,10 @@ static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS
 using virgil::sdk::client::CardValidator;
 using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
 using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
+using virgil::sdk::test::CryptoTest;
+using virgil::sdk::test::KeyPairTest;
+using virgil::sdk::test::PublicKeyTest;
+using virgil::sdk::test::CardTest;
 
 TEST_CASE("test_001_CreateValidator", "[CardValidator]") {
     auto crypto = std::make_shared<CryptoTest>();

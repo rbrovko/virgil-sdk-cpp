@@ -61,7 +61,9 @@ namespace client {
          * info about device on which Card was created, custom payload, version,
          * creation date and scope (global or application)
          */
-        class Card: public virgil::sdk::client::interfaces::CardInterface {
+        class Card: public virgil::sdk::client::interfaces::CardInterface,
+                    models::interfaces::Exportable,
+                    models::interfaces::Importable<Card>  {
         public:
             /*!
              * @brief Required within std::future
