@@ -69,9 +69,9 @@ TEST_CASE("test001_CreateCardRequest", "[RequestManager]") {
 
     auto request = manager.createCardRequest(parameters);
 
-    auto snap = VirgilByteArrayUtils::stringToBytes("{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}");
+    auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}";
 
-    REQUIRE(request.snapshot() == snap);
+    REQUIRE(VirgilByteArrayUtils::bytesToString(request.snapshot()) == snap);
     REQUIRE(request.signatures().size() == 2);
     auto m = request.signatures();
     REQUIRE(m[appId] == VirgilByteArrayUtils::stringToBytes("ƕ���Lą�o�鏆lR}\u001D�\u001E�\u0005"));
