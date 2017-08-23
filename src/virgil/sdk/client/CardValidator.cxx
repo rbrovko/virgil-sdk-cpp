@@ -37,9 +37,11 @@
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/client/CardValidator.h>
 #include <virgil/sdk/client/models/CardIdGenerator.h>
+#include <virgil/sdk/VirgilSdkError.h>
 using virgil::sdk::client::models::Card;
 static_assert(!std::is_abstract<virgil::sdk::client::CardValidator>(), "CardValidator must not be abstract.");
 
+using virgil::sdk::make_error;
 using virgil::sdk::client::CardValidator;
 using virgil::cryptointerfaces::CryptoInterface;
 using virgil::sdk::VirgilBase64;
@@ -57,10 +59,13 @@ CardValidator::CardValidator(const std::shared_ptr<CryptoInterface> &crypto)
 }
 
 void CardValidator::addVerifier(std::string verifierId, VirgilByteArray publicKeyData) {
-    verifiers_[std::move(verifierId)] = std::move(publicKeyData);
+    if (verifierId.empty() || publicKeyData.size() == 0)
+        throw make_error(VirgilSdkError::AddVerifierFailed, "Parameters must not be empty");
+    else
+        verifiers_[std::move(verifierId)] = std::move(publicKeyData);
 }
 
-bool CardValidator::validateCard(const Card &card) const {
+bool CardValidator::validateCard(const interfaces::CardInterface &card) const {
     if (card.cardVersion() == "3.0")
         return true;
 
@@ -82,9 +87,8 @@ bool CardValidator::validateCard(const Card &card) const {
 
             auto isVerified = crypto_->verify(fingerprint, signature, *publicKeyPointer);
 
-            if (!isVerified) {
+            if (!isVerified)
                 return false;
-            }
         }
         catch (...) {
             return false;

@@ -45,6 +45,7 @@
 #include <virgil/sdk/client/models/ClientCommon.h>
 #include <virgil/sdk/client/models/interfaces/Exportable.h>
 #include <virgil/sdk/client/models/interfaces/Importable.h>
+#include <virgil/sdk/client/interfaces/CardInterface.h>
 
 #include <virgil/sdk/client/models/responses/CardRaw.h>
 #include <virgil/sdk/crypto/Crypto.h>
@@ -60,7 +61,7 @@ namespace client {
          * info about device on which Card was created, custom payload, version,
          * creation date and scope (global or application)
          */
-        class Card: interfaces::Exportable, interfaces::Importable<Card> {
+        class Card: public virgil::sdk::client::interfaces::CardInterface {
         public:
             /*!
              * @brief Required within std::future
@@ -84,61 +85,61 @@ namespace client {
              * @brief Getter.
              * @return byteArray with snapshot
              */
-            const VirgilByteArray& snapshot() const { return snapshot_; }
+            const VirgilByteArray& snapshot() const override { return snapshot_; }
 
             /*!
              * @brief Getter.
              * @return std::string with card ID
              */
-            const std::string& identifier() const { return identifier_; }
+            const std::string& identifier() const override { return identifier_; }
 
             /*!
              * @brief Getter.
              * @return std::string with card identity
              */
-            const std::string& identity() const { return identity_; }
+            const std::string& identity() const override { return identity_; }
 
             /*!
              * @brief Getter.
              * @return std::string with card identity type
              */
-            const std::string& identityType() const { return identityType_; }
+            const std::string& identityType() const override { return identityType_; }
 
             /*!
              * @brief Getter.
              * @return raw representation of Public Key which corresponds to this Card
              */
-            const std::shared_ptr<cryptointerfaces::PublicKeyInterface>& publicKey() const { return publicKey_; }
+            const std::shared_ptr<cryptointerfaces::PublicKeyInterface>& publicKey() const override { return publicKey_; }
 
             /*!
              * @brief Getter.
              * @return std::unordered_map with custom user payload
              */
-            const std::unordered_map<std::string, std::string>& data() const { return data_; }
+            const std::unordered_map<std::string, std::string>& data() const override { return data_; }
 
             /*!
              * @brief Getter.
              * @return CardScope (application or global)
              */
-            CardScope scope() const { return scope_; }
+            CardScope scope() const override { return scope_; }
 
             /*!
              * @brief Getter.
              * @return std::string with date of Card creation (format is yyyy-MM-dd'T'HH:mm:ssZ)
              */
-            const std::string& createdAt() const { return createdAt_; }
+            const std::string& createdAt() const override { return createdAt_; }
 
             /*!
              * @brief Getter.
              * @return std::string with card version
              */
-            const std::string& cardVersion() const { return cardVersion_; }
+            const std::string& cardVersion() const override { return cardVersion_; }
 
             /*!
             * @brief Getter.
             * @return unordered map with signatures
             */
-            const std::unordered_map<std::string, VirgilByteArray>& signatures() const { return signatures_; }
+            const std::unordered_map<std::string, VirgilByteArray>& signatures() const override { return signatures_; }
 
         private:
             Card(responses::CardRaw cardRaw, VirgilByteArray snapshot, std::string identifier, std::string identity,

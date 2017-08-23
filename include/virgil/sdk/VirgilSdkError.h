@@ -54,6 +54,7 @@ namespace virgil {
             CardValidationFailed, ///< Validation of Virgil Card failed.
             ServiceQueryFailed, ///< REST Query to Virgil Service failed.
             CreateRequestManagerFailed, ///< Creating RequestManager failed.
+            AddVerifierFailed, ///< Adding verifier to CardValidator failed.
             Undefined = std::numeric_limits<int>::max()
         };
 

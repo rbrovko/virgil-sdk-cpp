@@ -8,6 +8,8 @@
 #include <virgil/sdk/Common.h>
 
 using virgil::cryptointerfaces::PublicKeyInterface;
+using virgil::cryptointerfaces::PrivateKeyInterface;
+using virgil::cryptointerfaces::KeyPairInterface;
 
 using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 

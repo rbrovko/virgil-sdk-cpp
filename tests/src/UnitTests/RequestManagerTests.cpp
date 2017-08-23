@@ -45,6 +45,7 @@ using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::cryptointerfaces::PublicKeyInterface;
 
 using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
+using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
 
 using virgil::sdk::client::RequestManager;
 
@@ -69,7 +70,7 @@ TEST_CASE("test001_CreateCardRequest", "[RequestManager]") {
 
     auto request = manager.createCardRequest(parameters);
 
-    auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}";
+    auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"dGVzdA==\",\"scope\":\"application\"}";
 
     REQUIRE(VirgilByteArrayUtils::bytesToString(request.snapshot()) == snap);
     REQUIRE(request.signatures().size() == 2);
@@ -106,9 +107,14 @@ TEST_CASE("test002_CreateCardRequest_withCustomData", "[RequestManager]") {
 
     auto request = manager.createCardRequest(parameters);
 
-    auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}";
+    auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"dGVzdA==\",\"scope\":\"application\"}";
 
     REQUIRE(VirgilByteArrayUtils::bytesToString(request.snapshot()) == snap);
+
+    //VirgilBase64::encode(request.snapshotModel().publicKeyData());
+
+    //std::cout << VirgilBase64::encode(request.snapshotModel().publicKeyData()) << std::endl;
+
     REQUIRE(request.signatures().size() == 2);
     auto m = request.signatures();
     REQUIRE(m[appId] == VirgilByteArrayUtils::stringToBytes("ƕ���Lą�o�鏆lR}\u001D�\u001E�\u0005"));
@@ -137,7 +143,7 @@ TEST_CASE("test003_CreateCardRequest_withoutSelfSign", "[RequestManager]") {
 
     auto request = manager.createCardRequest(parameters);
 
-    auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}";
+    auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"dGVzdA==\",\"scope\":\"application\"}";
 
     REQUIRE(VirgilByteArrayUtils::bytesToString(request.snapshot()) == snap);
     REQUIRE(request.signatures().size() == 1);

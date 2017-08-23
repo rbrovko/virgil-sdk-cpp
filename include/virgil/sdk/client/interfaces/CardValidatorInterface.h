@@ -53,7 +53,7 @@ namespace client {
              * @param instance Card to be validated
              * @return true if Card passed validation, false otherwise
              */
-            virtual bool validateCard(const models::Card &card) const = 0;
+            virtual bool validateCard(const CardInterface &card) const = 0;
 
             /*!
              * @brief Virtual destructor.
