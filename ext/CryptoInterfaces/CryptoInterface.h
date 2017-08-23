@@ -43,8 +43,6 @@
 #include "PrivateKeyInterface.h"
 #include "PublicKeyInterface.h"
 
-using byteArray = std::vector<unsigned char>;
-
 namespace virgil {
     namespace cryptointerfaces {
         /*!

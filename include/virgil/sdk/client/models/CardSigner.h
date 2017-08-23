@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_CARDSIGNER_H
 
 #include <PrivateKeyInterface.h>
+#include <string>
 
 namespace virgil {
     namespace sdk {
@@ -54,7 +55,7 @@ namespace virgil {
                     const cryptointerfaces::PrivateKeyInterface& privateKey() const { return privateKey_; }
 
                 private:
-                    std:: string cardId_;
+                    std::string cardId_;
                     cryptointerfaces::PrivateKeyInterface &privateKey_;
                 };
             }

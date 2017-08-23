@@ -37,7 +37,7 @@
 #ifndef VIRGIL_SDK_PRIVATEKEYINTERFACE_H
 #define VIRGIL_SDK_PRIVATEKEYINTERFACE_H
 
-#include <string>
+#include <vector>
 
 using byteArray = std::vector<unsigned char>;
 

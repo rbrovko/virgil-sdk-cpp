@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_CARDIDGENERATOR_H
 
 #include <string>
+#include <vector>
 
 using virgil::cryptointerfaces::CryptoInterface;
 using byteArray = std::vector<unsigned char>;

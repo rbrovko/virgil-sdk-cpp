@@ -5,6 +5,8 @@
 #ifndef VIRGIL_SDK_TESTCRYPTO_H
 #define VIRGIL_SDK_TESTCRYPTO_H
 
+#include <vector>
+
 using byteArray = std::vector<unsigned char>;
 
 class CryptoTest : public CryptoInterface {

@@ -37,6 +37,8 @@
 #ifndef VIRGIL_SDK_PUBLICKEYINTERFACE_H
 #define VIRGIL_SDK_PUBLICKEYINTERFACE_H
 
+#include <vector>
+
 using byteArray = std::vector<unsigned char>;
 
 namespace virgil {
