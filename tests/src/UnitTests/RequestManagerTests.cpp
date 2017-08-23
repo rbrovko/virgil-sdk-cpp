@@ -67,7 +67,7 @@ TEST_CASE("test001_CreateCardRequest", "[RequestManager]") {
             {{appId, privateKey}}                        //RequestSigners
     );
 
-    auto request = manager.CreateCardRequest(parameters);
+    auto request = manager.createCardRequest(parameters);
 
     auto snap = VirgilByteArrayUtils::stringToBytes("{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}");
 
@@ -104,7 +104,7 @@ TEST_CASE("test002_CreateCardRequest_withCustomData", "[RequestManager]") {
             CustomData                                   //CustomFields
     );
 
-    auto request = manager.CreateCardRequest(parameters);
+    auto request = manager.createCardRequest(parameters);
 
     auto snap = VirgilByteArrayUtils::stringToBytes("{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}");
 
@@ -135,7 +135,7 @@ TEST_CASE("test003_CreateCardRequest_withoutSelfSign", "[RequestManager]") {
             false                                        //GenerateSignature
     );
 
-    auto request = manager.CreateCardRequest(parameters);
+    auto request = manager.createCardRequest(parameters);
 
     auto snap = VirgilByteArrayUtils::stringToBytes("{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"MCowBQYDK2VwAyEwee+/vUou77+92Jc2QRobEdyPU++/ve+/vSlf\",\"scope\":\"application\"}");
 
@@ -161,7 +161,7 @@ TEST_CASE("test004_RevokeCardRequest", "[RequestManager]") {
             {{appId, privateKey}}
     );
 
-    auto request = manager.RevokeCardRequest(parameters);
+    auto request = manager.revokeCardRequest(parameters);
 
     auto snap = VirgilByteArrayUtils::stringToBytes("{\"card_id\":\"CardId\",\"revocation_reason\":\"unspecified\"}");
 
@@ -191,7 +191,7 @@ TEST_CASE("test005_CreateCardRequest_ShouldThrowExeption", "[RequestManager]") {
 
     bool errorWasThrown = false;
     try {
-        auto request = manager.CreateCardRequest(parameters);
+        auto request = manager.createCardRequest(parameters);
     }
     catch(...) {
         errorWasThrown = true;

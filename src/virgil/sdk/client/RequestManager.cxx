@@ -22,12 +22,11 @@ using virgil::sdk::make_error;
 RequestManager::RequestManager(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto)
         :crypto_(crypto){}
 
-CreateCardRequest RequestManager::CreateCardRequest(CreateCardParams &parameters) {
+const CreateCardRequest RequestManager::createCardRequest(const CreateCardParams &parameters) const {
 
     if (parameters.Identity.empty()) {
         throw make_error(VirgilSdkError::CreateRequestManagerFailed, "Identity property is mandatory");
     }
-
     auto identityType = parameters.IdentityType.empty() ? "unknown" : parameters.IdentityType;
 
     auto PublicKey = crypto_->exportPublicKey(parameters.keyPair.publicKey());
@@ -48,7 +47,7 @@ CreateCardRequest RequestManager::CreateCardRequest(CreateCardParams &parameters
     return request;
 }
 
-RevokeCardRequest RequestManager::RevokeCardRequest(RevokeCardParams &parameters) {
+const RevokeCardRequest RequestManager::revokeCardRequest(const RevokeCardParams &parameters) const {
 
     if (parameters.identifier.empty()) {
         throw make_error(VirgilSdkError::CreateRequestManagerFailed, "Identity property is mandatory");

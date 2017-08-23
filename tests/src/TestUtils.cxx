@@ -87,7 +87,7 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
             true,                                        //GenerateSignature
             data                                         //CustomFields
     );
-    auto CreateCardRequest = manager.CreateCardRequest(parameters);
+    auto CreateCardRequest = manager.createCardRequest(parameters);
 
     return CreateCardRequest;
 }
@@ -110,7 +110,7 @@ RevokeCardRequest TestUtils::instantiateRevokeCardRequest(const Card &card) cons
             RequestSigners                              //RequestSigners
     );
 
-    auto RevokeCardRequest = manager.RevokeCardRequest(params);
+    auto RevokeCardRequest = manager.revokeCardRequest(params);
 
     return RevokeCardRequest;
 }

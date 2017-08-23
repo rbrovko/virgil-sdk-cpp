@@ -235,7 +235,7 @@ TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[
 
     bool errorWasThrown = false;
     try {
-        auto CreateCardRequest = manager.CreateCardRequest(parameters);
+        auto CreateCardRequest = manager.createCardRequest(parameters);
     }
     catch(...) {
         errorWasThrown = true;
