@@ -52,14 +52,25 @@ namespace virgil {
                  */
                 class CardIdGenerator {
                 public:
+
                     /*!
                      * @brief generate Card id
                      * @param crypto shared pointer to CryptoInterface implementation
-                     * @param fingerprint fingerprint in bytes
+                     * @param snapshot snapshot of request in bytes
                      * @return generated Card id
                      */
                     static std::string generate(const std::shared_ptr<CryptoInterface> &crypto,
-                                                const byteArray &fingerprint){
+                                                const byteArray &snapshot){
+                        auto fingerprint = crypto->calculateFingerprint(snapshot);
+                        return generate(fingerprint);
+                    }
+
+                    /*!
+                     * @brief generate Card id
+                     * @param fingerprint fingerprint in bytes
+                     * @return generated Card id
+                     */
+                    static std::string generate(const byteArray &fingerprint) {
                         auto id = VirgilByteArrayUtils::bytesToHex(fingerprint);
                         return id;
                     }

@@ -64,7 +64,7 @@ namespace virgil {
 
                 byteArray generateSignature(const byteArray &data,
                                             const PrivateKeyInterface &privateKey) const override {
-                    return VirgilByteArrayUtils::stringToBytes("ƕ���Lą�o�鏆lR}\u001D�\u001E�\u0005");
+                    return VirgilByteArrayUtils::stringToBytes("signature");
                 }
 
                 bool verify(const byteArray &data, const byteArray &signature,
@@ -88,9 +88,9 @@ namespace virgil {
                 bool verify(std::istream &istream, const byteArray &signature,
                             const PublicKeyInterface &signerPublicKey) const override { return false; }
 
-
                 byteArray generateSignature(std::istream &istream, const
-                PrivateKeyInterface &privateKey) const override { return VirgilByteArrayUtils::stringToBytes("smth"); }
+                PrivateKeyInterface &privateKey) const override { return VirgilByteArrayUtils::stringToBytes("signature"); }
+
             };
         }
     }

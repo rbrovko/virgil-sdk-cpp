@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,33 +34,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef VIRGIL_SDK_SIGNABLEREQUESTTEST_H
+#define VIRGIL_SDK_SIGNABLEREQUESTTEST_H
 
-#include <virgil/sdk/client/RequestSigner.h>
-#include <virgil/sdk/client/models/CardIdGenerator.h>
+#include <virgil/sdk/client/models/interfaces/SignableRequestInterface.h>
+#include <unordered_map>
 
-static_assert(!std::is_abstract<virgil::sdk::client::RequestSigner>(), "RequestSigner must not be abstract.");
+using virgil::sdk::client::models::interfaces::SignableRequestInterface;
 
-using virgil::sdk::client::RequestSigner;
-using virgil::sdk::crypto::keys::PrivateKey;
-using virgil::sdk::client::models::interfaces::SignableInterface;
-using virgil::cryptointerfaces::CryptoInterface;
-using virgil::cryptointerfaces::PrivateKeyInterface;
-using virgil::sdk::client::models::CardIdGenerator;
+using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
+using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
 
-RequestSigner::RequestSigner(const std::shared_ptr<CryptoInterface> &crypto)
-        : crypto_(crypto) {
+namespace virgil {
+    namespace sdk {
+        namespace test {
+            /*!
+             * @brief signable request implementation
+             */
+            class SignableTest : public SignableRequestInterface {
+            public:
+                /*!
+                 * @brief default constructor
+                 */
+                SignableTest() = default;
+
+                const VirgilByteArray& snapshot() const override { return snapshot_; }
+
+                const std::unordered_map<std::string, VirgilByteArray>& signatures() const override
+                { return signatures_; };
+
+                void addSignature(VirgilByteArray signature, std::string fingerprint) override {
+                    signatures_[std::move(fingerprint)] = std::move(signature);
+                };
+
+            private:
+                std::unordered_map<std::string, VirgilByteArray> signatures_;
+                VirgilByteArray snapshot_;
+            };
+        }
+    }
 }
 
-void RequestSigner::selfSign(SignableInterface &request, const PrivateKeyInterface &privateKey) const {
-    auto fingerprint = crypto_->calculateFingerprint(request.snapshot());
-    auto CardId = CardIdGenerator::generate(fingerprint);
-
-    request.addSignature(crypto_->generateSignature(fingerprint, privateKey), CardId);
-}
-
-void RequestSigner::authoritySign(SignableInterface &request,
-                                  const std::string &appId,
-                                  const PrivateKeyInterface &privateKey) const {
-    auto fingerprint = crypto_->calculateFingerprint(request.snapshot());
-    request.addSignature(crypto_->generateSignature(fingerprint, privateKey), appId);
-}
+#endif //VIRGIL_SDK_SIGNABLEREQUESTTEST_H

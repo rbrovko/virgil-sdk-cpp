@@ -243,7 +243,7 @@ TEST_CASE("test007_ExportSignableData_ShouldBeEqual", "[compatibility]") {
 
     auto fingerprint = crypto->calculateFingerprint(request.snapshot());
 
-    auto CardId = CardIdGenerator::generate(crypto, fingerprint);
+    auto CardId = CardIdGenerator::generate(fingerprint);
 
     auto creatorPublicKey = crypto->importPublicKey(request.snapshotModel().publicKeyData());
 

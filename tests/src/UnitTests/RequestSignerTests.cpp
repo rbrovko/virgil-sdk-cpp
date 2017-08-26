@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,33 +34,51 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <catch.hpp>
+#include <UnitTests/SignableTest.h>
 
 #include <virgil/sdk/client/RequestSigner.h>
-#include <virgil/sdk/client/models/CardIdGenerator.h>
-
-static_assert(!std::is_abstract<virgil::sdk::client::RequestSigner>(), "RequestSigner must not be abstract.");
+#include <UnitTests/CryptoTest.h>
 
 using virgil::sdk::client::RequestSigner;
-using virgil::sdk::crypto::keys::PrivateKey;
-using virgil::sdk::client::models::interfaces::SignableInterface;
-using virgil::cryptointerfaces::CryptoInterface;
-using virgil::cryptointerfaces::PrivateKeyInterface;
-using virgil::sdk::client::models::CardIdGenerator;
+using virgil::sdk::test::CryptoTest;
+using virgil::sdk::test::SignableTest;
+using virgil::sdk::test::KeyPairTest;
 
-RequestSigner::RequestSigner(const std::shared_ptr<CryptoInterface> &crypto)
-        : crypto_(crypto) {
+TEST_CASE("test_001_AutoritySign", "[RequestSigner]") {
+    auto crypto = std::make_shared<CryptoTest>();
+    auto signer = RequestSigner(crypto);
+
+    KeyPairTest keyPair;
+    SignableTest request;
+    auto appId = "appId";
+
+    signer.authoritySign(
+            request,
+            appId,
+            keyPair.privateKey()
+    );
+
+    auto signatures = request.signatures();
+    REQUIRE(signatures.size() == 1);
+    REQUIRE(signatures[appId] == VirgilByteArrayUtils::stringToBytes("signature"));
 }
 
-void RequestSigner::selfSign(SignableInterface &request, const PrivateKeyInterface &privateKey) const {
-    auto fingerprint = crypto_->calculateFingerprint(request.snapshot());
-    auto CardId = CardIdGenerator::generate(fingerprint);
+TEST_CASE("test_002_SelfSign", "[RequestSigner]") {
+    auto crypto = std::make_shared<CryptoTest>();
+    auto signer = RequestSigner(crypto);
 
-    request.addSignature(crypto_->generateSignature(fingerprint, privateKey), CardId);
-}
+    KeyPairTest keyPair;
+    SignableTest request;
+    auto randData = VirgilByteArrayUtils::stringToBytes("data");
+    auto cardId = VirgilByteArrayUtils::bytesToHex(crypto->calculateFingerprint(randData));
 
-void RequestSigner::authoritySign(SignableInterface &request,
-                                  const std::string &appId,
-                                  const PrivateKeyInterface &privateKey) const {
-    auto fingerprint = crypto_->calculateFingerprint(request.snapshot());
-    request.addSignature(crypto_->generateSignature(fingerprint, privateKey), appId);
+    signer.selfSign(
+            request,
+            keyPair.privateKey()
+    );
+
+    auto signatures = request.signatures();
+    REQUIRE(signatures.size() == 1);
+    REQUIRE(signatures[cardId] == VirgilByteArrayUtils::stringToBytes("signature"));
 }

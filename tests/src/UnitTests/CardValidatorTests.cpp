@@ -88,7 +88,7 @@ TEST_CASE("test_003_addSameVerifier", "[CardValidator]") {
     REQUIRE(verifiers[kServiceCardId] == VirgilBase64::decode(kServicePublicKey));
 }
 
-TEST_CASE("test_004_addVarifierWithSameName_SouldReplaceOldOne", "[CardValidator]") {
+TEST_CASE("test_004_addVerifierWithSameName_SouldReplaceOldOne", "[CardValidator]") {
     auto crypto = std::make_shared<CryptoTest>();
     auto validator = std::make_shared<CardValidator>(crypto);
 

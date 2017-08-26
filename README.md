@@ -319,7 +319,7 @@ auto fingerprint = crypto->calculateFingerprint(data);
 
 ## Card Id Generation
 ```cpp
-auto cardId = CardIdGenerator::generate(crypto, fingerprint);
+auto cardId = CardIdGenerator::generate(crypto, snapshot);
 ```
 
 

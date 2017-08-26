@@ -70,7 +70,7 @@ bool CardValidator::validateCard(const interfaces::CardInterface &card) const {
         return true;
 
     auto fingerprint = crypto_->calculateFingerprint(card.snapshot());
-    auto CardId = CardIdGenerator::generate(crypto_, fingerprint);
+    auto CardId = CardIdGenerator::generate(fingerprint);
 
     if (card.identifier() != CardId)
         return false;
