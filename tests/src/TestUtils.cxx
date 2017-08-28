@@ -59,6 +59,8 @@ using virgil::sdk::client::Client;
 using virgil::sdk::client::RequestManager;
 using virgil::sdk::client::models::parameters::CreateCardParams;
 using virgil::sdk::client::models::parameters::RevokeCardParams;
+using virgil::sdk::client::models::interfaces::SignableRequestInterface;
+using virgil::sdk::client::models::serialization::JsonSerializer;
 using virgil::sdk::client::models::responses::CardRaw;
 using virgil::sdk::client::models::CardSigner;
 
@@ -91,6 +93,8 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
 
     return CreateCardRequest;
 }
+
+
 
 RevokeCardRequest TestUtils::instantiateRevokeCardRequest(const Card &card) const {
 

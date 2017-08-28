@@ -36,7 +36,7 @@
 
 #ifndef VIRGIL_SDK_TESTKEYS_H
 #define VIRGIL_SDK_TESTKEYS_H
-#include <PublicKeyInterface.h>
+#include <KeyPairInterface.h>
 #include <virgil/sdk/Common.h>
 
 using virgil::cryptointerfaces::PublicKeyInterface;

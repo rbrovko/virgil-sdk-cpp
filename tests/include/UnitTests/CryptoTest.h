@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_TESTCRYPTO_H
 
 #include <vector>
+#include <CryptoInterface.h>
 #include "KeysTest.h"
 
 using byteArray = std::vector<unsigned char>;
