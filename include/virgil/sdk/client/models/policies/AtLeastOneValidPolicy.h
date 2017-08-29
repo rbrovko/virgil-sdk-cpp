@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,48 +34,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_CARDVALIDATOR_H
-#define VIRGIL_SDK_CARDVALIDATOR_H
+#ifndef VIRGIL_SDK_ATLEASTONEPOLICY_H
+#define VIRGIL_SDK_ATLEASTONEPOLICY_H
 
-#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
+
+#include <virgil/sdk/client/interfaces/IntegrityPolicy.h>
+#include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
-namespace sdk {
-namespace client {
-    /*!
-     * @brief Default implementation of CardValidatorInterface
-     */
-    class CardValidator: public interfaces::CardValidatorInterface {
-    public:
-        /*!
-         * @brief Constructor.
-         * @param crypto std::shared_ptr to some CryptoInterface implementation
-         */
-        CardValidator(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto);
+    namespace sdk {
+        namespace client {
+            namespace models {
+                namespace policies {
+                    /*!
+                     * @brief implementation policy to validate at least one sign
+                     */
+                    class AtLeastOneValidPolicy : public IntegrityPolicy {
+                    public:
+                        AtLeastOneValidPolicy() = default;
 
-        /*!
-         * @brief Adds custom verifier to validator.
-         * @param verifierId std::string verifier ID
-         * @param publicKeyData exported Public Key of verifier
-         */
-        void addVerifier(std::string verifierId, VirgilByteArray publicKeyData);
+                        bool diagnose(const CardInterface &card,
+                                      const CardValidatorInterface &validator,
+                                      const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) override;
 
-        /*!
-         * @brief Getter.
-         * @return std::unordered_map of all verifiers, except owner
-         */
-        const std::unordered_map<std::string, VirgilByteArray>& verifiers() const { return verifiers_; };
-
-        bool validateCard(const interfaces::CardInterface &card) const override;
-
-        bool checkVerifier(const interfaces::CardInterface &card, const std::pair<std::string, VirgilByteArray> &verifier) const override;
-
-    private:
-        std::shared_ptr<cryptointerfaces::CryptoInterface> crypto_;
-        std::unordered_map<std::string, VirgilByteArray> verifiers_;
-    };
-}
-}
+                        friend ExtendedValidator;
+                    private:
+                        std::unordered_map<std::string, VirgilByteArray> verifiers_;
+                    };
+                }
+            }
+        }
+    }
 }
 
-#endif //VIRGIL_SDK_CARDVALIDATOR_H
+#endif //VIRGIL_SDK_ATLEASTONEPOLICY_H

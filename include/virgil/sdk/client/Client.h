@@ -56,6 +56,7 @@ namespace sdk {
              * @note For advanced setup see ServiceConfig
              * @param accessToken std::string with access token generated from Virgil dashboard
              */
+
             Client(std::string accessToken);
 
             /*!

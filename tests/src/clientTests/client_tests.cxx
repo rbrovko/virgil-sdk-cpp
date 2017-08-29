@@ -50,6 +50,9 @@
 #include <virgil/sdk/client/RequestSigner.h>
 #include <virgil/sdk/client/RequestManager.h>
 
+#include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/client/ValidationRules.h>
+
 using virgil::sdk::client::Client;
 using virgil::sdk::client::ServiceConfig;
 using virgil::sdk::client::models::requests::CreateCardRequest;
@@ -66,6 +69,8 @@ using virgil::sdk::client::models::parameters::CreateCardParams;
 using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::sdk::client::RequestManager;
 
+using virgil::sdk::client::ExtendedValidator;
+using virgil::sdk::client::ValidationRules;
 
 TEST_CASE("test001_CreateCardTest", "[client]") {
     TestConst consts;
@@ -84,10 +89,12 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
 
     auto card = Card::ImportRaw(crypto, cardRaw);
 
-    //if card isValid
-    auto validator = std::make_unique<CardValidator>(crypto);
-    validator->addVerifier(consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64()));
-    REQUIRE(validator->verifiers().size() == 2);
+    auto validator = std::make_unique<ExtendedValidator>(
+            crypto,
+            ValidationRules(
+                    {{consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64())}}
+            )
+    );
     auto isValid = validator->validateCard(card);
 
     REQUIRE(isValid);

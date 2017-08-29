@@ -60,7 +60,7 @@ std::string TestRevokeRequest;
 
 
 TEST_CASE("test_001_CreateCard", "[client]") {
-
+/*
     auto request = JsonTemplatedDeserializer<SignableRequestInterface>::fromJson<CreateCardRequest>(TestCreateRequest);
 
     TestConst consts;
@@ -68,6 +68,7 @@ TEST_CASE("test_001_CreateCard", "[client]") {
 
     auto future = client.createCard(request);
     auto cardRaw = future.get();
+    */
 }
 
 TEST_CASE("test_002_RevokeCard", "[client]") {

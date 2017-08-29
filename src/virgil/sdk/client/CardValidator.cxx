@@ -98,3 +98,9 @@ bool CardValidator::validateCard(const interfaces::CardInterface &card) const {
     return true;
 }
 
+
+bool CardValidator::checkVerifier(const interfaces::CardInterface &card,
+                                  const std::pair<std::string, VirgilByteArray> &verifier) const {
+    return false;
+}
+

@@ -56,6 +56,15 @@ namespace client {
             virtual bool validateCard(const CardInterface &card) const = 0;
 
             /*!
+             * @brief checks one verifier.
+             * @param card Card to be validated
+             * @param verifier std::pair of verifier to validate with
+             * @return true if Card passed validation, false otherwise
+             */
+            virtual bool checkVerifier(const interfaces::CardInterface &card,
+                                       const std::pair<std::string, VirgilByteArray> &verifier) const = 0;
+
+            /*!
              * @brief Virtual destructor.
              */
             virtual ~CardValidatorInterface() = default;

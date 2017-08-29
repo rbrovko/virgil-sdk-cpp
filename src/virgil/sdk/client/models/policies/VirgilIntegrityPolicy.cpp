@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,48 +34,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_CARDVALIDATOR_H
-#define VIRGIL_SDK_CARDVALIDATOR_H
+#include <virgil/sdk/client/models/policies/VirgilIntegrityPolicy.h>
 
-#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
+using virgil::sdk::client::models::policies::VirgilIntegrityPolicy;
 
-namespace virgil {
-namespace sdk {
-namespace client {
-    /*!
-     * @brief Default implementation of CardValidatorInterface
-     */
-    class CardValidator: public interfaces::CardValidatorInterface {
-    public:
-        /*!
-         * @brief Constructor.
-         * @param crypto std::shared_ptr to some CryptoInterface implementation
-         */
-        CardValidator(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto);
+static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
+static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1RytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=";
 
-        /*!
-         * @brief Adds custom verifier to validator.
-         * @param verifierId std::string verifier ID
-         * @param publicKeyData exported Public Key of verifier
-         */
-        void addVerifier(std::string verifierId, VirgilByteArray publicKeyData);
 
-        /*!
-         * @brief Getter.
-         * @return std::unordered_map of all verifiers, except owner
-         */
-        const std::unordered_map<std::string, VirgilByteArray>& verifiers() const { return verifiers_; };
+VirgilIntegrityPolicy::VirgilIntegrityPolicy() {}
 
-        bool validateCard(const interfaces::CardInterface &card) const override;
+bool VirgilIntegrityPolicy::diagnose(const CardInterface &card,
+                                     const CardValidatorInterface &validator,
+                                     const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
 
-        bool checkVerifier(const interfaces::CardInterface &card, const std::pair<std::string, VirgilByteArray> &verifier) const override;
+    auto verifier = std::make_pair(
+            kServiceCardId,
+            VirgilBase64::decode(kServicePublicKey)
+    );
 
-    private:
-        std::shared_ptr<cryptointerfaces::CryptoInterface> crypto_;
-        std::unordered_map<std::string, VirgilByteArray> verifiers_;
-    };
+    return validator.checkVerifier(card, verifier);
 }
-}
-}
-
-#endif //VIRGIL_SDK_CARDVALIDATOR_H

@@ -50,7 +50,6 @@
 static_assert(!std::is_abstract<virgil::sdk::crypto::Crypto>(), "Crypto must not be abstract.");
 
 using virgil::sdk::make_error;
-using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::VirgilByteArray;
 using virgil::sdk::VirgilByteArrayUtils;
