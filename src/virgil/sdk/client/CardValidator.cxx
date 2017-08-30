@@ -65,7 +65,7 @@ void CardValidator::addVerifier(std::string verifierId, VirgilByteArray publicKe
         verifiers_[std::move(verifierId)] = std::move(publicKeyData);
 }
 
-bool CardValidator::validateCard(const interfaces::CardInterface &card) const {
+bool CardValidator::validateCard(const interfaces::CardInterface &card) {
     if (card.cardVersion() == "3.0")
         return true;
 
@@ -100,7 +100,7 @@ bool CardValidator::validateCard(const interfaces::CardInterface &card) const {
 
 
 bool CardValidator::checkVerifier(const interfaces::CardInterface &card,
-                                  const std::pair<std::string, VirgilByteArray> &verifier) const {
+                                  const std::string &verifierId) const {
     return false;
 }
 

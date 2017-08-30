@@ -8,16 +8,17 @@
 #include <virgil/sdk/crypto/Crypto.h>
 #include <TestConst.h>
 #include <TestUtils.h>
-#include <virgil/sdk/client/ValidationRules.h>
+#include <virgil/sdk/client/IntegrityPolicy.h>
 #include <virgil/sdk/client/models/CardSigner.h>
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
+#include <thread>
 
 
 using virgil::sdk::client::CardManager;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
-using virgil::sdk::client::ValidationRules;
+using virgil::sdk::client::IntegrityPolicy;
 using virgil::sdk::client::models::CardSigner;
 using virgil::sdk::VirgilByteArray;
 using virgil::sdk::client::ExtendedValidator;
@@ -33,7 +34,7 @@ TEST_CASE("test_001_FreeTest", "[FreeTests]") {
             {consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64())}
     };
 
-    ValidationRules rules(
+    IntegrityPolicy rules(
             verifiers
     );
 

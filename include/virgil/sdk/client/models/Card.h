@@ -91,6 +91,12 @@ namespace client {
 
             /*!
              * @brief Getter.
+             * @return byteArray with fingerprint
+             */
+            const VirgilByteArray& fingerprint() const override { return fingerprint_; }
+
+            /*!
+             * @brief Getter.
              * @return std::string with card ID
              */
             const std::string& identifier() const override { return identifier_; }
@@ -144,13 +150,14 @@ namespace client {
             const std::unordered_map<std::string, VirgilByteArray>& signatures() const override { return signatures_; }
 
         private:
-            Card(responses::CardRaw cardRaw, VirgilByteArray snapshot, std::string identifier, std::string identity,
+            Card(responses::CardRaw cardRaw, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identifier, std::string identity,
                  std::string identityType, std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey,
                  std::unordered_map<std::string, std::string> data, CardScope scope,
                  std::string createdAt, std::string cardVersion,
                  std::unordered_map<std::string, VirgilByteArray> signatures);
 
             responses::CardRaw cardRaw_;
+            VirgilByteArray fingerprint_;
             VirgilByteArray snapshot_;
             std::string identifier_;
             std::string identity_;

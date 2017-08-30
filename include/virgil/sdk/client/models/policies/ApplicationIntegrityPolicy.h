@@ -38,9 +38,8 @@
 #define VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
 
 
-#include <virgil/sdk/client/interfaces/IntegrityPolicy.h>
+#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
-
 
 namespace virgil {
     namespace sdk {
@@ -50,22 +49,24 @@ namespace virgil {
                     /*!
                      * @brief implementation policy to validate application or custom signs
                      */
-                    class ApplicationIntegrityPolicy : public IntegrityPolicy {
+                    class ApplicationIntegrityPolicy : public IntegrityRuleInterface {
                     public:
+
+                        friend class ExtendedValidator;
                         /*!
                          * @brief constructor
                          * @param verifiers unordered map of verifiers to validate
                          * @param policy defines behavior of diagnise function
                          */
                         ApplicationIntegrityPolicy(const std::unordered_map<std::string, VirgilByteArray> &verifiers,
-                                                   const std::shared_ptr<IntegrityPolicy> &policy);
+                                                   const std::shared_ptr<IntegrityRuleInterface> &rule);
 
+                    private:
                         bool diagnose(const CardInterface &card,
                                       const CardValidatorInterface &validator,
                                       const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) override;
 
-                    private:
-                        std::shared_ptr<IntegrityPolicy> policy_;
+                        std::shared_ptr<IntegrityRuleInterface> rule_;
                         std::unordered_map<std::string, VirgilByteArray> verifiers_;
                     };
                 }

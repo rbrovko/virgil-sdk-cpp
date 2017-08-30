@@ -38,9 +38,9 @@
 #define VIRGIL_SDK_ALLVALIDPOLICY_H
 
 
-#include <virgil/sdk/client/interfaces/IntegrityPolicy.h>
+#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
 
-using virgil::sdk::client::interfaces::IntegrityPolicy;
+using virgil::sdk::client::interfaces::IntegrityRuleInterface;
 
 namespace virgil {
     namespace sdk {
@@ -50,7 +50,7 @@ namespace virgil {
                     /*!
                      * @brief implementation policy to validate all signs
                      */
-                    class AllValidPolicy : public IntegrityPolicy {
+                    class AllValidPolicy : public IntegrityRuleInterface {
                     public:
                         AllValidPolicy() = default;
 

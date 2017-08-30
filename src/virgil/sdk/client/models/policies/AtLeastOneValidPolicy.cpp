@@ -43,7 +43,7 @@ bool AtLeastOneValidPolicy::diagnose(const CardInterface &card,
                                      const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
 
     for (const auto& verifier : verifiers_)
-        if (validator.checkVerifier(card, verifier))
+        if (validator.checkVerifier(card, verifier.first))
             return true;
     return false;
 

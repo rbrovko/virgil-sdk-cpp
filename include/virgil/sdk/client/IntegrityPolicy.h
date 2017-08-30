@@ -34,41 +34,47 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_INTEGRITYPOLICY_H
-#define VIRGIL_SDK_INTEGRITYPOLICY_H
+#ifndef VIRGIL_SDK_VALIDATIONRULES_H
+#define VIRGIL_SDK_VALIDATIONRULES_H
+#include <list>
+#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
+#include <virgil/sdk/client/models/policies/AllValidPolicy.h>
 
-#include <virgil/sdk/client/interfaces/CardInterface.h>
-#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
-#include <CryptoInterface.h>
-
-using virgil::sdk::client::interfaces::CardInterface;
-using virgil::sdk::client::interfaces::CardValidatorInterface;
+using virgil::sdk::client::interfaces::IntegrityRuleInterface;
+using virgil::sdk::client::models::policies::AllValidPolicy;
 
 namespace virgil {
     namespace sdk {
         namespace client {
-            namespace interfaces {
+            /*!
+             * @brief defines rules for validation
+             */
+            class IntegrityPolicy {
+            public:
                 /*!
-                 * @brief base class for validation policy implamantations
+                 * @brief constructor
+                 * @param verifiers unordered_map of verifiers to validate with
+                 * @param behavior can change behavior of validator to validate at least one or all signs
+                 * @param ignoreSelfSignatures whether or not to ignore self sign during validating
+                 * @param ignoreVirgilSignatures whether or not to ignore service sign during validating
                  */
-                class IntegrityPolicy {
-                public:
-                    /*!
-                     * validate card in different way depends on policy implementation
-                     * @param card card implementation to validate
-                     * @param validator validator implementation to use methods from
-                     * @param verifiers parameter for certain policy implementations
-                     * @return bool whether or not card is valid
-                     */
-                   virtual bool diagnose(const CardInterface &card,
-                                         const CardValidatorInterface &validator,
-                                         const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) = 0;
+                IntegrityPolicy(const std::unordered_map<std::string, VirgilByteArray> &verifiers,
+                                const std::shared_ptr<IntegrityRuleInterface> &behavior = std::make_shared<AllValidPolicy>(),
+                                const bool ignoreSelfSignatures = false,
+                                const bool ignoreVirgilSignatures = false);
 
-                    virtual ~IntegrityPolicy() = default;
-                };
-            }
+                const std::list<std::shared_ptr<IntegrityRuleInterface>> getRules(
+                        CardValidatorInterface &validator) const;
+
+            private:
+                bool ignoreVirgilSignatures_;
+                bool ignoreSelfSignatures_;
+                std::unordered_map<std::string, VirgilByteArray> verifiers_;
+                std::shared_ptr<IntegrityRuleInterface> behavior_;
+            };
         }
     }
 }
 
-#endif //VIRGIL_SDK_INTEGRITYPOLICY_H
+
+#endif //VIRGIL_SDK_VALIDATIONRULES_H

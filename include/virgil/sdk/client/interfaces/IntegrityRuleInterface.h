@@ -34,37 +34,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_ATLEASTONEPOLICY_H
-#define VIRGIL_SDK_ATLEASTONEPOLICY_H
+#ifndef VIRGIL_SDK_INTEGRITYPOLICY_H
+#define VIRGIL_SDK_INTEGRITYPOLICY_H
 
+#include <virgil/sdk/client/interfaces/CardInterface.h>
+#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
+#include <CryptoInterface.h>
 
-#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+using virgil::sdk::client::interfaces::CardInterface;
+using virgil::sdk::client::interfaces::CardValidatorInterface;
 
 namespace virgil {
     namespace sdk {
         namespace client {
-            namespace models {
-                namespace policies {
+            namespace interfaces {
+                /*!
+                 * @brief base class for validation policy implamantations
+                 */
+                class IntegrityRuleInterface {
+                public:
                     /*!
-                     * @brief implementation policy to validate at least one sign
+                     * validate card in different way depends on policy implementation
+                     * @param card card implementation to validate
+                     * @param validator validator implementation to use methods from
+                     * @param verifiers parameter for certain policy implementations
+                     * @return bool whether or not card is valid
                      */
-                    class AtLeastOneValidPolicy : public IntegrityRuleInterface {
-                    public:
-                        AtLeastOneValidPolicy() = default;
+                   virtual bool diagnose(const CardInterface &card,
+                                         const CardValidatorInterface &validator,
+                                         const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) = 0;
 
-                        bool diagnose(const CardInterface &card,
-                                      const CardValidatorInterface &validator,
-                                      const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) override;
-
-                        friend ExtendedValidator;
-                    private:
-                        std::unordered_map<std::string, VirgilByteArray> verifiers_;
-                    };
-                }
+                    virtual ~IntegrityRuleInterface() = default;
+                };
             }
         }
     }
 }
 
-#endif //VIRGIL_SDK_ATLEASTONEPOLICY_H
+#endif //VIRGIL_SDK_INTEGRITYPOLICY_H

@@ -38,12 +38,14 @@
 #define VIRGIL_SDK_EXTENDEDVALIDATOR_H
 
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
-#include <virgil/sdk/client/interfaces/IntegrityPolicy.h>
+#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
 #include <list>
-#include <virgil/sdk/client/ValidationRules.h>
+#include <virgil/sdk/client/IntegrityPolicy.h>
+#include <PublicKeyInterface.h>
 
-using virgil::sdk::client::interfaces::IntegrityPolicy;
-using virgil::sdk::client::ValidationRules;
+using virgil::sdk::client::interfaces::IntegrityRuleInterface;
+using virgil::sdk::client::IntegrityPolicy;
+using virgil::cryptointerfaces::PublicKeyInterface;
 
 namespace virgil {
     namespace sdk {
@@ -59,15 +61,19 @@ namespace virgil {
                  * @param rules rules for validation
                  */
                 ExtendedValidator(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                  const ValidationRules &rules);
+                                  const IntegrityPolicy &policy);
 
-                bool validateCard(const interfaces::CardInterface &card) const override;
+                bool validateCard(const interfaces::CardInterface &card) override;
 
                 bool checkVerifier(const interfaces::CardInterface &card,
-                               const std::pair<std::string, VirgilByteArray> &verifier) const override;
+                               const std::string &verifierId) const override;
+
+                void registerVerifiers(const std::unordered_map<std::string, VirgilByteArray> &verifiers) override ;
 
             private:
-                std::list<std::shared_ptr<IntegrityPolicy>> policy_;
+
+                std::unordered_map<std::string, PublicKeyInterface*> registeredVerifiers_;
+                std::list<std::shared_ptr<IntegrityRuleInterface>> rules_;
                 std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> crypto_;
             };
         }

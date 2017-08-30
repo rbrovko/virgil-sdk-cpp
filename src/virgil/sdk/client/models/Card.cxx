@@ -59,14 +59,16 @@ Card Card::ImportRaw(const std::shared_ptr<cryptointerfaces::CryptoInterface> &c
 
     std::shared_ptr<PublicKeyInterface> publicKey(crypto->importPublicKey(model.publicKeyData()));
 
-    return Card(cardRaw, cardRaw.ContentSnapshot(), cardRaw.Identifier(), model.identity(), model.identityType(), publicKey,
+    auto fingerptint = crypto->calculateFingerprint(cardRaw.ContentSnapshot());
+
+    return Card(cardRaw, fingerptint, cardRaw.ContentSnapshot(), cardRaw.Identifier(), model.identity(), model.identityType(), publicKey,
                 model.data(), model.scope(), cardRaw.Meta().createdAt(), cardRaw.Meta().cardVersion(), cardRaw.Meta().signatures());
 }
 
-Card::Card(responses::CardRaw cardRaw, VirgilByteArray snapshot, std::string identifier, std::string identity, std::string identityType,
+Card::Card(responses::CardRaw cardRaw, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identifier, std::string identity, std::string identityType,
            std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey, std::unordered_map<std::string, std::string> data, CardScope scope,
            std::string createdAt, std::string cardVersion, std::unordered_map<std::string, VirgilByteArray> signatures)
-        : cardRaw_(cardRaw), snapshot_(std::move(snapshot)), identifier_(std::move(identifier)), identity_(std::move(identity)),
+        : cardRaw_(cardRaw), fingerprint_(fingerprint), snapshot_(std::move(snapshot)), identifier_(std::move(identifier)), identity_(std::move(identity)),
           identityType_(std::move(identityType)), publicKey_(std::move(publicKey)), data_(std::move(data)),
           scope_(scope), createdAt_(std::move(createdAt)),
           cardVersion_(std::move(cardVersion)), signatures_(signatures) {

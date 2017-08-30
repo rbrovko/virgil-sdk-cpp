@@ -39,11 +39,11 @@
 using virgil::sdk::client::models::policies::ApplicationIntegrityPolicy;
 
 ApplicationIntegrityPolicy::ApplicationIntegrityPolicy(const std::unordered_map<std::string, VirgilByteArray> &verifiers,
-                                                       const std::shared_ptr<IntegrityPolicy> &policy)
-: verifiers_(verifiers), policy_(policy) {}
+                                                       const std::shared_ptr<IntegrityRuleInterface> &rule)
+: verifiers_(verifiers), rule_(rule) {}
 
 bool ApplicationIntegrityPolicy::diagnose(const CardInterface &card,
                                           const CardValidatorInterface &validator,
                                           const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
-    return policy_->diagnose(card, validator, verifiers_);
+    return rule_->diagnose(card, validator, verifiers_);
 }

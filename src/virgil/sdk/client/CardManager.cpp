@@ -39,6 +39,7 @@
 #include <virgil/sdk/client/ExtendedValidator.h>
 #include <virgil/sdk/VirgilSdkError.h>
 #include <virgil/sdk/client/models/errors/VirgilError.h>
+#include <thread>
 
 using virgil::sdk::make_error;
 using virgil::sdk::client::Client;

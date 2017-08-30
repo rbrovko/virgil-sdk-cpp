@@ -71,6 +71,12 @@ namespace virgil {
 
                         /*!
                          * @brief Getter.
+                         * @return byteArray with fingerprint
+                         */
+                        virtual const VirgilByteArray& fingerprint() const = 0;
+
+                        /*!
+                         * @brief Getter.
                          * @return std::string with card ID
                          */
                         virtual const std::string &identifier() const = 0;

@@ -66,9 +66,12 @@ namespace client {
          */
         const std::unordered_map<std::string, VirgilByteArray>& verifiers() const { return verifiers_; };
 
-        bool validateCard(const interfaces::CardInterface &card) const override;
+        bool validateCard(const interfaces::CardInterface &card) override;
 
-        bool checkVerifier(const interfaces::CardInterface &card, const std::pair<std::string, VirgilByteArray> &verifier) const override;
+        bool checkVerifier(const interfaces::CardInterface &card,
+                           const std::string &verifierId) const override;
+
+        void registerVerifiers(const std::unordered_map<std::string, VirgilByteArray> &verifiers) override {};
 
     private:
         std::shared_ptr<cryptointerfaces::CryptoInterface> crypto_;

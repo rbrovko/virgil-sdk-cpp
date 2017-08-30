@@ -37,7 +37,7 @@
 #ifndef VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
 #define VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
 
-#include <virgil/sdk/client/interfaces/IntegrityPolicy.h>
+#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
@@ -48,15 +48,16 @@ namespace virgil {
                     /*!
                      * @brief implementation policy to validate virgil service sign
                      */
-                    class VirgilIntegrityPolicy : public IntegrityPolicy {
+                    class VirgilIntegrityPolicy : public IntegrityRuleInterface {
                     public:
-                        VirgilIntegrityPolicy();
+                        friend class ExtendedValidator;
 
+                        VirgilIntegrityPolicy() = default;
+
+                    private:
                         bool diagnose(const CardInterface &card,
                                       const CardValidatorInterface &validator,
                                       const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) override;
-
-                        friend ExtendedValidator;
                     };
                 }
             }

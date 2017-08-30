@@ -37,9 +37,9 @@
 #ifndef VIRGIL_SDK_CARDMANAGERPARAMS_H
 #define VIRGIL_SDK_CARDMANAGERPARAMS_H
 
-#include <virgil/sdk/client/ValidationRules.h>
+#include <virgil/sdk/client/IntegrityPolicy.h>
 
-using virgil::sdk::client::ValidationRules;
+using virgil::sdk::client::IntegrityPolicy;
 
 namespace virgil {
     namespace sdk {
@@ -56,7 +56,7 @@ namespace virgil {
                  * @param rules rules for validation
                  */
                 CardManagerParams(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                const std::string &apiToken, const ValidationRules &rules)
+                const std::string &apiToken, const IntegrityPolicy &rules)
                 : crypto_(crypto), apiToken_(apiToken), rules_(rules) {};
 
                 /*!
@@ -75,12 +75,12 @@ namespace virgil {
                  * @brief Getter.
                  * @return ValidationRules& with rules for validation
                  */
-                const ValidationRules& rules() const { return rules_; }
+                const IntegrityPolicy& rules() const { return rules_; }
 
             private:
                 std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> crypto_;
                 std::string apiToken_;
-                ValidationRules rules_;
+                IntegrityPolicy rules_;
             };
         }
     }

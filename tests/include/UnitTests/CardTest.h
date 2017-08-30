@@ -72,6 +72,12 @@ namespace virgil {
 
                 /*!
                  * @brief Getter.
+                 * @return byteArray with fingerprint
+                 */
+                const VirgilByteArray& fingerprint() const override { return fingerprint_; }
+
+                /*!
+                 * @brief Getter.
                  * @return std::string with card ID
                  */
                 const std::string &identifier() const override { return identifier_; }
@@ -127,6 +133,7 @@ namespace virgil {
 
             public:
                 byteArray snapshot_;
+                byteArray fingerprint_;
                 std::string identifier_;
                 std::string identity_;
                 std::string identityType_;

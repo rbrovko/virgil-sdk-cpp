@@ -37,7 +37,7 @@
 #ifndef VIRGIL_SDK_SELFINTEGRITYPOLICY_H
 #define VIRGIL_SDK_SELFINTEGRITYPOLICY_H
 
-#include <virgil/sdk/client/interfaces/IntegrityPolicy.h>
+#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
@@ -48,20 +48,19 @@ namespace virgil {
                     /*!
                      * @brief implementation policy to validate self sign of card
                      */
-                    class SelfIntegrityPolicy : public IntegrityPolicy {
+                    class SelfIntegrityPolicy : public IntegrityRuleInterface {
                     public:
+                        friend class ExtendedValidator;
                         /*!
                          * @brief constructor
                          * @param crypto crypto implementation to export public key for verifying
                          */
-                        SelfIntegrityPolicy(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto);
+                        SelfIntegrityPolicy() = default;
 
+                    private:
                         bool diagnose(const CardInterface &card,
                                       const CardValidatorInterface &validator,
                                       const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) override;
-
-                    private:
-                        std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> crypto_;
                     };
                 }
             }

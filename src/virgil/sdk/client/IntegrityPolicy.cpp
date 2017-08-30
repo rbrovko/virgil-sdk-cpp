@@ -34,51 +34,51 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/client/IntegrityPolicy.h>
 #include <virgil/sdk/client/models/policies/SelfIntegrityPolicy.h>
 #include <virgil/sdk/client/models/policies/VirgilIntegrityPolicy.h>
 #include <virgil/sdk/client/models/policies/ApplicationIntegrityPolicy.h>
-#include <virgil/sdk/client/models/policies/AllValidPolicy.h>
-#include <string>
-using virgil::sdk::client::ExtendedValidator;
+
 using virgil::sdk::client::models::policies::SelfIntegrityPolicy;
 using virgil::sdk::client::models::policies::VirgilIntegrityPolicy;
 using virgil::sdk::client::models::policies::ApplicationIntegrityPolicy;
-using virgil::sdk::client::models::policies::AllValidPolicy;
 
-ExtendedValidator::ExtendedValidator(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                     const IntegrityPolicy &policy)
-    : crypto_(crypto) {
+using virgil::sdk::client::IntegrityPolicy;
 
-    rules_ = std::move(policy.getRules(*this));
-}
+static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
+static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1RytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=";
 
-bool ExtendedValidator::validateCard(const interfaces::CardInterface &card) {
-    registeredVerifiers_[card.identifier()] = card.publicKey().get();
-    for (auto const& rule : rules_)
-        if (!rule->diagnose(card, *this))
-            return false;
-    return true;
-}
+IntegrityPolicy::IntegrityPolicy(const std::unordered_map<std::string, VirgilByteArray> &verifiers,
+                const std::shared_ptr<IntegrityRuleInterface> &behavior,
+                const bool ignoreSelfSignatures,
+                const bool ignoreVirgilSignatures)
+        : ignoreSelfSignatures_(ignoreSelfSignatures),
+          ignoreVirgilSignatures_(ignoreVirgilSignatures),
+          verifiers_(verifiers),
+          behavior_(behavior) {}
 
-void ExtendedValidator::registerVerifiers(const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
-    for (const auto& verifier : verifiers)
-        registeredVerifiers_[verifier.first] = crypto_->importPublicKey(verifier.second);
-}
+const std::list<std::shared_ptr<IntegrityRuleInterface>> IntegrityPolicy::getRules(
+        CardValidatorInterface &validator) const {
 
-bool ExtendedValidator::checkVerifier(const interfaces::CardInterface &card,
-                                      const std::string &verifierId) const {
-    try {
-        auto signature = card.signatures().at(verifierId);
+    std::list<std::shared_ptr<IntegrityRuleInterface>> rules;
 
-        auto isVerified = crypto_->verify(card.fingerprint(), signature, *(registeredVerifiers_.at(verifierId)));
+    if (!ignoreSelfSignatures_)
+        rules.push_back(std::make_shared<SelfIntegrityPolicy>());
 
-        if (!isVerified) {
-            return false;
-        }
+    if (!ignoreVirgilSignatures_) {
+        validator.registerVerifiers(
+                {{kServiceCardId, VirgilBase64::decode(kServicePublicKey)}}
+        );
+        rules.push_back(std::make_shared<VirgilIntegrityPolicy>());
     }
-    catch (...) {
-        return false;
+
+    if (verifiers_.size() > 0) {
+        validator.registerVerifiers(verifiers_);
+        rules.push_back(std::make_shared<ApplicationIntegrityPolicy>(
+                verifiers_,
+                behavior_
+        ));
     }
-    return true;
+
+    return rules;
 }
