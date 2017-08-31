@@ -104,6 +104,7 @@ TEST_CASE("test003_CardImportExport", "[models]") {
             utils.crypto(),
             {{consts.applicationId(), consts.applicationPublicKeyBase64()}}
     );
+    validator.initialize(utils.crypto());
 
     REQUIRE(utils.checkCardEquality(card, importedCard));
     REQUIRE(validator.validateCard(utils.crypto(), importedCard));

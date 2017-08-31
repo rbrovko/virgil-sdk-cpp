@@ -51,7 +51,9 @@ using virgil::sdk::client::models::Card;
 CardManager::CardManager(const CardManagerParams &cardManagerParams)
         : client_(Client(cardManagerParams.apiToken())),
           crypto_(cardManagerParams.crypto()),
-          validator_(cardManagerParams.validator()) {}
+          validator_(cardManagerParams.validator()) {
+    validator_->initialize(crypto_);
+}
 
 std::future<Card> CardManager::getCard(const std::string &cardId) const {
     auto future = std::async([=]{

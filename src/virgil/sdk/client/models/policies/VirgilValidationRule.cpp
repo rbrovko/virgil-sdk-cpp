@@ -34,35 +34,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
-#define VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
+#include <virgil/sdk/client/models/validation_rules/VirgilValidationRule.h>
 
-#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+using virgil::sdk::client::models::validation_rules::VirgilValidationRule;
 
-namespace virgil {
-    namespace sdk {
-        namespace client {
-            namespace models {
-                namespace policies {
-                    /*!
-                     * @brief implementation policy to validate virgil service sign
-                     */
-                    class VirgilIntegrityPolicy : public IntegrityRuleInterface {
-                    public:
-                        friend class ExtendedValidator;
+static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
 
-                        VirgilIntegrityPolicy() = default;
+VirgilValidationRule::VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier)
+: virgilVerifier_(virgilVerifier) {}
 
-                    private:
-                        bool diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card,
-                                      const CardValidatorInterface &validator) override;
-                    };
-                }
-            }
+bool VirgilValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                     const CardInterface &card) const {
+    try {
+        auto signature = card.signatures().at(virgilVerifier_.first);
+
+        auto isVerified = crypto->verify(card.fingerprint(), signature, *virgilVerifier_.second);
+
+        if (!isVerified) {
+            return false;
         }
     }
+    catch (...) {
+        return false;
+    }
+    return true;
 }
-
-#endif //VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H

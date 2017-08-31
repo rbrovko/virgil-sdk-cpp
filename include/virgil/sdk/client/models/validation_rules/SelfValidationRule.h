@@ -34,41 +34,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_INTEGRITYPOLICY_H
-#define VIRGIL_SDK_INTEGRITYPOLICY_H
+#ifndef VIRGIL_SDK_SELFINTEGRITYPOLICY_H
+#define VIRGIL_SDK_SELFINTEGRITYPOLICY_H
 
-#include <virgil/sdk/client/interfaces/CardInterface.h>
-#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
-#include <CryptoInterface.h>
-
-using virgil::sdk::client::interfaces::CardInterface;
-using virgil::sdk::client::interfaces::CardValidatorInterface;
+#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
+#include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
     namespace sdk {
         namespace client {
-            namespace interfaces {
-                /*!
-                 * @brief base class for validation policy implamantations
-                 */
-                class IntegrityRuleInterface {
-                public:
+            namespace models {
+                namespace validation_rules {
                     /*!
-                     * validate card in different way depends on policy implementation
-                     * @param card card implementation to validate
-                     * @param validator validator implementation to use methods from
-                     * @param verifiers parameter for certain policy implementations
-                     * @return bool whether or not card is valid
+                     * @brief implementation policy to validate self sign of card
                      */
-                   virtual bool diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                         const CardInterface &card,
-                                         const CardValidatorInterface &validator) = 0;
+                    class SelfValidationRule : public ValidationRuleInterface {
+                    public:
+                        friend class ExtendedValidator;
+                        /*!
+                         * @brief constructor
+                         * @param crypto crypto implementation to export public key for verifying
+                         */
+                        SelfValidationRule() = default;
 
-                    virtual ~IntegrityRuleInterface() = default;
-                };
+                    private:
+                        bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const CardInterface &card) const override;
+                    };
+                }
             }
         }
     }
 }
 
-#endif //VIRGIL_SDK_INTEGRITYPOLICY_H
+#endif //VIRGIL_SDK_SELFINTEGRITYPOLICY_H

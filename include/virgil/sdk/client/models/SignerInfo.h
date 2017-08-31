@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 Virgil Security Inc.
+ * Copyright (C) 2016 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,43 +34,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
-#define VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
+#ifndef VIRGIL_SDK_SIGNERINFO_H
+#define VIRGIL_SDK_SIGNERINFO_H
 
-
-#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-                namespace policies {
-                    /*!
-                     * @brief implementation policy to validate application or custom signs
-                     */
-                    class ApplicationIntegrityPolicy : public IntegrityRuleInterface {
-                    public:
 
-                        friend class ExtendedValidator;
-                        /*!
-                         * @brief constructor
-                         * @param verifiers unordered map of verifiers to validate
-                         * @param policy defines behavior of diagnise function
-                         */
-                        ApplicationIntegrityPolicy(const std::unordered_map<std::string, std::string> &whitelist);
+                class SignerInfo {
+                public:
+                    SignerInfo(const std::string &cardId, const std::string &publicKey)
+                    : cardId_(cardId), publicKey_(publicKey) {}
 
-                    private:
-                        bool diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card,
-                                      const CardValidatorInterface &validator) override;
+                    const std::string& cardId() const { return cardId_; }
 
-                        std::unordered_map<std::string, std::string> whitelist_;
-                    };
-                }
+                    const std::string& publicKey() const { return publicKey_; }
+
+                private:
+                    std::string cardId_;
+                    std::string publicKey_;
+                };
             }
         }
     }
 }
 
-#endif //VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
+#endif //VIRGIL_SDK_SIGNERINFO_H

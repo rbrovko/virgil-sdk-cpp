@@ -38,12 +38,14 @@
 #define VIRGIL_SDK_EXTENDEDVALIDATOR_H
 
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
-#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
+#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
 #include <list>
 #include <PublicKeyInterface.h>
+#include <virgil/sdk/client/models/SignerInfo.h>
 
-using virgil::sdk::client::interfaces::IntegrityRuleInterface;
+using virgil::sdk::client::interfaces::ValidationRuleInterface;
 using virgil::cryptointerfaces::PublicKeyInterface;
+using virgil::sdk::client::models::SignerInfo;
 
 namespace virgil {
     namespace sdk {
@@ -59,21 +61,20 @@ namespace virgil {
                  * @param rules rules for validation
                  */
                 ExtendedValidator(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                  const std::unordered_map<std::string, std::string> &whitelist,
+                                  const std::list<SignerInfo> &whitelist = {{}},
                                   const bool &ignoreSelfSignature = false,
                                   const bool &ignoreVirgilSignature = false);
 
-                bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                  const interfaces::CardInterface &card) override;
+                void initialize(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto) override;
 
-                bool checkVerifier(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                   const interfaces::CardInterface &card,
-                                   const std::string &verifierId) const override;
+                bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                  const interfaces::CardInterface &card) const override;
 
             private:
-
-                std::unordered_map<std::string, PublicKeyInterface*> registeredVerifiers_;
-                std::list<std::shared_ptr<IntegrityRuleInterface>> rules_;
+                bool ignoreSelfSignature_;
+                bool ignoreVirgilSignature_;
+                std::list<SignerInfo> whitelist_;
+                std::list<std::shared_ptr<ValidationRuleInterface>> rules_;
             };
         }
     }

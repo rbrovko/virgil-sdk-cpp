@@ -34,18 +34,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/models/policies/ApplicationIntegrityPolicy.h>
+#include <virgil/sdk/client/models/validation_rules/WhitelistValidationRule.h>
 
-using virgil::sdk::client::models::policies::ApplicationIntegrityPolicy;
+using virgil::sdk::client::models::validation_rules::WhitelistValidationRule;
 
-ApplicationIntegrityPolicy::ApplicationIntegrityPolicy(const std::unordered_map<std::string, std::string> &whitelist)
+WhitelistValidationRule::WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist)
 : whitelist_(whitelist) {}
 
-bool ApplicationIntegrityPolicy::diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                          const CardInterface &card,
-                                          const CardValidatorInterface &validator) {
-    for (const auto& verifier : whitelist_)
-        if (validator.checkVerifier(crypto, card, verifier.first))
-            return true;
+bool WhitelistValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                          const CardInterface &card) const {
+    for (const auto& verifier : whitelist_) {
+        try {
+            auto signature = card.signatures().at(verifier.first);
+
+            auto isVerified = crypto->verify(card.fingerprint(), signature, *verifier.second);
+
+            if (isVerified) {
+                return true;
+            }
+        }
+        catch (...) {
+            return false;
+        }
+    }
     return false;
 }

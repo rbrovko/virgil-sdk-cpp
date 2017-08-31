@@ -34,33 +34,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_SELFINTEGRITYPOLICY_H
-#define VIRGIL_SDK_SELFINTEGRITYPOLICY_H
+#ifndef VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
+#define VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
 
-#include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
+
+#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-                namespace policies {
+                namespace validation_rules {
                     /*!
-                     * @brief implementation policy to validate self sign of card
+                     * @brief implementation policy to validate application or custom signs
                      */
-                    class SelfIntegrityPolicy : public IntegrityRuleInterface {
+                    class WhitelistValidationRule : public ValidationRuleInterface {
                     public:
+
                         friend class ExtendedValidator;
                         /*!
                          * @brief constructor
-                         * @param crypto crypto implementation to export public key for verifying
+                         * @param verifiers unordered map of verifiers to validate
+                         * @param policy defines behavior of diagnise function
                          */
-                        SelfIntegrityPolicy() = default;
+                        WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist);
 
                     private:
-                        bool diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card,
-                                      const CardValidatorInterface &validator) override;
+                        bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const CardInterface &card) const override;
+
+                        std::unordered_map<std::string, PublicKeyInterface*> whitelist_;
                     };
                 }
             }
@@ -68,4 +72,4 @@ namespace virgil {
     }
 }
 
-#endif //VIRGIL_SDK_SELFINTEGRITYPOLICY_H
+#endif //VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,38 +34,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_CARDVALIDATORINTERFACE_H
-#define VIRGIL_SDK_CARDVALIDATORINTERFACE_H
+#ifndef VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
+#define VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
 
-#include <virgil/sdk/client/models/Card.h>
+#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
+#include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
-namespace sdk {
-namespace client {
-    namespace interfaces {
-        /*!
-         * @brief Interface designed for validation of Card instances.
-         */
-        class CardValidatorInterface {
-        public:
+    namespace sdk {
+        namespace client {
+            namespace models {
+                namespace validation_rules {
+                    /*!
+                     * @brief implementation policy to validate virgil service sign
+                     */
+                    class VirgilValidationRule : public ValidationRuleInterface {
+                    public:
+                        friend class ExtendedValidator;
 
-            virtual void initialize(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto) = 0;
-            /*!
-             * @brief Validates Card.
-             * @param instance Card to be validated
-             * @return true if Card passed validation, false otherwise
-             */
-            virtual bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card) const = 0;
+                        VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier);
 
-            /*!
-             * @brief Virtual destructor.
-             */
-            virtual ~CardValidatorInterface() = default;
-        };
+                    private:
+                        bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const CardInterface &card) const override;
+                        std::pair<std::string, PublicKeyInterface*> virgilVerifier_;
+                    };
+                }
+            }
+        }
     }
 }
-}
-}
 
-#endif //VIRGIL_SDK_CARDVALIDATORINTERFACE_H
+#endif //VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H

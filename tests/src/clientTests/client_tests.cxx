@@ -91,6 +91,7 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
             crypto,
             {{consts.applicationId(), consts.applicationPublicKeyBase64()}}
     );
+    validator.initialize(crypto);
     auto isValid = validator.validateCard(crypto, card);
 
     REQUIRE(isValid);

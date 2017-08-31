@@ -34,14 +34,40 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/models/policies/VirgilIntegrityPolicy.h>
+#ifndef VIRGIL_SDK_INTEGRITYPOLICY_H
+#define VIRGIL_SDK_INTEGRITYPOLICY_H
 
-using virgil::sdk::client::models::policies::VirgilIntegrityPolicy;
+#include <virgil/sdk/client/interfaces/CardInterface.h>
+#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
+#include <CryptoInterface.h>
 
-static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
+using virgil::sdk::client::interfaces::CardInterface;
+using virgil::sdk::client::interfaces::CardValidatorInterface;
 
-bool VirgilIntegrityPolicy::diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                     const CardInterface &card,
-                                     const CardValidatorInterface &validator) {
-    return validator.checkVerifier(crypto, card, kServiceCardId);
+namespace virgil {
+    namespace sdk {
+        namespace client {
+            namespace interfaces {
+                /*!
+                 * @brief base class for validation policy implamantations
+                 */
+                class ValidationRuleInterface {
+                public:
+                    /*!
+                     * validate card in different way depends on policy implementation
+                     * @param card card implementation to validate
+                     * @param validator validator implementation to use methods from
+                     * @param verifiers parameter for certain policy implementations
+                     * @return bool whether or not card is valid
+                     */
+                   virtual bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                         const CardInterface &card) const = 0;
+
+                    virtual ~ValidationRuleInterface() = default;
+                };
+            }
+        }
+    }
 }
+
+#endif //VIRGIL_SDK_INTEGRITYPOLICY_H

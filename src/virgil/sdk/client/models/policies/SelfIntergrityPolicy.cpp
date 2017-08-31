@@ -34,12 +34,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/models/policies/SelfIntegrityPolicy.h>
+#include <virgil/sdk/client/models/validation_rules/SelfValidationRule.h>
 
-using virgil::sdk::client::models::policies::SelfIntegrityPolicy;
+using virgil::sdk::client::models::validation_rules::SelfValidationRule;
 
-bool SelfIntegrityPolicy::diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                   const CardInterface &card,
-                                   const CardValidatorInterface &validator) {
-    return validator.checkVerifier(crypto, card, card.identifier());
+bool SelfValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card) const {
+    try {
+        auto signature = card.signatures().at(card.identifier());
+
+        auto isVerified = crypto->verify(card.fingerprint(), signature, *card.publicKey().get());
+
+        if (!isVerified) {
+            return false;
+        }
+    }
+    catch (...) {
+        return false;
+    }
+    return true;
 }
