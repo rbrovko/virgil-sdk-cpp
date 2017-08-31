@@ -38,12 +38,14 @@
 
 using virgil::sdk::client::models::policies::ApplicationIntegrityPolicy;
 
-ApplicationIntegrityPolicy::ApplicationIntegrityPolicy(const std::unordered_map<std::string, VirgilByteArray> &verifiers,
-                                                       const std::shared_ptr<IntegrityRuleInterface> &rule)
-: verifiers_(verifiers), rule_(rule) {}
+ApplicationIntegrityPolicy::ApplicationIntegrityPolicy(const std::unordered_map<std::string, std::string> &whitelist)
+: whitelist_(whitelist) {}
 
-bool ApplicationIntegrityPolicy::diagnose(const CardInterface &card,
-                                          const CardValidatorInterface &validator,
-                                          const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
-    return rule_->diagnose(card, validator, verifiers_);
+bool ApplicationIntegrityPolicy::diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                          const CardInterface &card,
+                                          const CardValidatorInterface &validator) {
+    for (const auto& verifier : whitelist_)
+        if (validator.checkVerifier(crypto, card, verifier.first))
+            return true;
+    return false;
 }

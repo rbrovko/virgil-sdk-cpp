@@ -58,16 +58,14 @@ namespace virgil {
                          * @param verifiers unordered map of verifiers to validate
                          * @param policy defines behavior of diagnise function
                          */
-                        ApplicationIntegrityPolicy(const std::unordered_map<std::string, VirgilByteArray> &verifiers,
-                                                   const std::shared_ptr<IntegrityRuleInterface> &rule);
+                        ApplicationIntegrityPolicy(const std::unordered_map<std::string, std::string> &whitelist);
 
                     private:
-                        bool diagnose(const CardInterface &card,
-                                      const CardValidatorInterface &validator,
-                                      const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) override;
+                        bool diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const CardInterface &card,
+                                      const CardValidatorInterface &validator) override;
 
-                        std::shared_ptr<IntegrityRuleInterface> rule_;
-                        std::unordered_map<std::string, VirgilByteArray> verifiers_;
+                        std::unordered_map<std::string, std::string> whitelist_;
                     };
                 }
             }

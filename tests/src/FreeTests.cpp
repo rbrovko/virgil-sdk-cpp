@@ -8,7 +8,6 @@
 #include <virgil/sdk/crypto/Crypto.h>
 #include <TestConst.h>
 #include <TestUtils.h>
-#include <virgil/sdk/client/IntegrityPolicy.h>
 #include <virgil/sdk/client/models/CardSigner.h>
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
@@ -18,13 +17,12 @@
 using virgil::sdk::client::CardManager;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
-using virgil::sdk::client::IntegrityPolicy;
 using virgil::sdk::client::models::CardSigner;
 using virgil::sdk::VirgilByteArray;
 using virgil::sdk::client::ExtendedValidator;
 using virgil::sdk::VirgilBase64;
 
-
+/*
 TEST_CASE("test_001_FreeTest", "[FreeTests]") {
     TestConst consts;
     auto crypto = std::make_shared<Crypto>();
@@ -34,14 +32,10 @@ TEST_CASE("test_001_FreeTest", "[FreeTests]") {
             {consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64())}
     };
 
-    IntegrityPolicy rules(
-            verifiers
-    );
-
     CardManagerParams cardManagerParams(
             crypto,
             consts.applicationToken(),
-            rules
+
     );
 
     CardManager manager(cardManagerParams);
@@ -57,3 +51,4 @@ TEST_CASE("test_001_FreeTest", "[FreeTests]") {
 
     revokeFuture.get();
 }
+*/

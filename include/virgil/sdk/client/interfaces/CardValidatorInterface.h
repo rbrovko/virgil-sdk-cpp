@@ -53,22 +53,18 @@ namespace client {
              * @param instance Card to be validated
              * @return true if Card passed validation, false otherwise
              */
-            virtual bool validateCard(const CardInterface &card) = 0;
+            virtual bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const CardInterface &card) = 0;
 
             /*!
              * @brief checks one verifier.
              * @param card Card to be validated
-             * @param verifier std::pair of verifier to validate with
+             * @param verifier id
              * @return true if Card passed validation, false otherwise
              */
-            virtual bool checkVerifier(const interfaces::CardInterface &card,
+            virtual bool checkVerifier(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                       const interfaces::CardInterface &card,
                                        const std::string &verifierId) const = 0;
-
-            /*!
-             * @brief importing verifier's keys using own crypto
-             * @param verifiers std::unordered_map with verifier's ids and keys data
-             */
-            virtual void registerVerifiers(const std::unordered_map<std::string, VirgilByteArray> &verifiers) = 0;
 
             /*!
              * @brief Virtual destructor.

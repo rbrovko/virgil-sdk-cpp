@@ -134,7 +134,7 @@ TEST_CASE("test_006_validateCard_ShouldBeTrue", "[CardValidator]") {
     card.data_ = {{}};
     card.signatures_ = {{kServiceCardId, VirgilBase64::decode(kServicePublicKey)},{validIdentifier, crypto->exportPublicKey(*publicKey.get())}};
 
-    auto isValid = validator->validateCard(card);
+    auto isValid = validator->validateCard(crypto, card);
 
     REQUIRE(isValid);
 }
@@ -156,7 +156,7 @@ TEST_CASE("test_007_validateCardWithoutSignatures_ShouldBeFalse", "[CardValidato
     card.data_ = {{}};
     card.signatures_ = {{}};
 
-    auto isValid = validator->validateCard(card);
+    auto isValid = validator->validateCard(crypto, card);
 
     REQUIRE(!isValid);
 }
@@ -178,7 +178,7 @@ TEST_CASE("test_008_validateCardWithWrongId_ShouldBeFalse", "[CardValidator]") {
     card.data_ = {{}};
     card.signatures_ = {{kServiceCardId, VirgilBase64::decode(kServicePublicKey)},{validIdentifier, crypto->exportPublicKey(*publicKey.get())}};
 
-    auto isValid = validator->validateCard(card);
+    auto isValid = validator->validateCard(crypto, card);
 
     REQUIRE(!isValid);
 }
@@ -198,7 +198,7 @@ TEST_CASE("test_009_validateCardWithWrongParams_ButVersion3.0_ShouldBeTrue", "[C
     card.data_ = {{}};
     card.signatures_ = {{}};
 
-    auto isValid = validator->validateCard(card);
+    auto isValid = validator->validateCard(crypto, card);
 
     REQUIRE(isValid);
 }

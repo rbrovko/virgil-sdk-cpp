@@ -38,13 +38,8 @@
 
 using virgil::sdk::client::models::policies::SelfIntegrityPolicy;
 
-bool SelfIntegrityPolicy::diagnose(const CardInterface &card,
-                                   const CardValidatorInterface &validator,
-                                   const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
-    /*
-    auto verifier = std::make_pair(
-            card.identifier(),
-            *card.publicKey().get()
-    );*/
-    return validator.checkVerifier(card, card.identifier());
+bool SelfIntegrityPolicy::diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card,
+                                   const CardValidatorInterface &validator) {
+    return validator.checkVerifier(crypto, card, card.identifier());
 }

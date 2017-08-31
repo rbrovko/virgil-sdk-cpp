@@ -55,9 +55,9 @@ namespace virgil {
                         VirgilIntegrityPolicy() = default;
 
                     private:
-                        bool diagnose(const CardInterface &card,
-                                      const CardValidatorInterface &validator,
-                                      const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) override;
+                        bool diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const CardInterface &card,
+                                      const CardValidatorInterface &validator) override;
                     };
                 }
             }

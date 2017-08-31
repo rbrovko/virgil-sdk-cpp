@@ -40,8 +40,8 @@ using virgil::sdk::client::models::policies::VirgilIntegrityPolicy;
 
 static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
 
-bool VirgilIntegrityPolicy::diagnose(const CardInterface &card,
-                                     const CardValidatorInterface &validator,
-                                     const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
-    return validator.checkVerifier(card, kServiceCardId);
+bool VirgilIntegrityPolicy::diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                     const CardInterface &card,
+                                     const CardValidatorInterface &validator) {
+    return validator.checkVerifier(crypto, card, kServiceCardId);
 }

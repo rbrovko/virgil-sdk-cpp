@@ -40,11 +40,9 @@
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
 #include <virgil/sdk/client/interfaces/IntegrityRuleInterface.h>
 #include <list>
-#include <virgil/sdk/client/IntegrityPolicy.h>
 #include <PublicKeyInterface.h>
 
 using virgil::sdk::client::interfaces::IntegrityRuleInterface;
-using virgil::sdk::client::IntegrityPolicy;
 using virgil::cryptointerfaces::PublicKeyInterface;
 
 namespace virgil {
@@ -61,20 +59,21 @@ namespace virgil {
                  * @param rules rules for validation
                  */
                 ExtendedValidator(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                  const IntegrityPolicy &policy);
+                                  const std::unordered_map<std::string, std::string> &whitelist,
+                                  const bool &ignoreSelfSignature = false,
+                                  const bool &ignoreVirgilSignature = false);
 
-                bool validateCard(const interfaces::CardInterface &card) override;
+                bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                  const interfaces::CardInterface &card) override;
 
-                bool checkVerifier(const interfaces::CardInterface &card,
-                               const std::string &verifierId) const override;
-
-                void registerVerifiers(const std::unordered_map<std::string, VirgilByteArray> &verifiers) override ;
+                bool checkVerifier(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const interfaces::CardInterface &card,
+                                   const std::string &verifierId) const override;
 
             private:
 
                 std::unordered_map<std::string, PublicKeyInterface*> registeredVerifiers_;
                 std::list<std::shared_ptr<IntegrityRuleInterface>> rules_;
-                std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> crypto_;
             };
         }
     }

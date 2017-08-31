@@ -38,40 +38,57 @@
 #include <virgil/sdk/client/models/policies/SelfIntegrityPolicy.h>
 #include <virgil/sdk/client/models/policies/VirgilIntegrityPolicy.h>
 #include <virgil/sdk/client/models/policies/ApplicationIntegrityPolicy.h>
-#include <virgil/sdk/client/models/policies/AllValidPolicy.h>
 #include <string>
 using virgil::sdk::client::ExtendedValidator;
 using virgil::sdk::client::models::policies::SelfIntegrityPolicy;
 using virgil::sdk::client::models::policies::VirgilIntegrityPolicy;
 using virgil::sdk::client::models::policies::ApplicationIntegrityPolicy;
-using virgil::sdk::client::models::policies::AllValidPolicy;
+
+static_assert(!std::is_abstract<virgil::sdk::client::ExtendedValidator>(), "ExtendedValidator must not be abstract.");
+
+static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
+static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1RytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=";
 
 ExtendedValidator::ExtendedValidator(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                     const IntegrityPolicy &policy)
-    : crypto_(crypto) {
+                                     const std::unordered_map<std::string, std::string> &whitelist,
+                                     const bool &ignoreSelfSignature,
+                                     const bool &ignoreVirgilSignature) {
+    if (!ignoreSelfSignature)
+        rules_.push_back(std::make_shared<SelfIntegrityPolicy>());
 
-    rules_ = std::move(policy.getRules(*this));
+    if (!ignoreVirgilSignature) {
+        rules_.push_back(std::make_shared<VirgilIntegrityPolicy>());
+        registeredVerifiers_[kServiceCardId] = crypto->importPublicKey(VirgilBase64::decode(kServicePublicKey));
+    }
+
+    if (whitelist.size() > 0){
+        rules_.push_back(std::make_shared<ApplicationIntegrityPolicy>(whitelist));
+
+        for (const auto& verifier : whitelist)
+            registeredVerifiers_[verifier.first] = crypto->importPublicKey(VirgilBase64::decode(verifier.second));
+    }
 }
 
-bool ExtendedValidator::validateCard(const interfaces::CardInterface &card) {
+bool ExtendedValidator::validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                     const interfaces::CardInterface &card) {
     registeredVerifiers_[card.identifier()] = card.publicKey().get();
+    bool result = true;
     for (auto const& rule : rules_)
-        if (!rule->diagnose(card, *this))
-            return false;
-    return true;
+        if (!rule->diagnose(crypto, card, *this)) {
+            result = false;
+            break;
+        }
+    registeredVerifiers_.erase(card.identifier());
+    return result;
 }
 
-void ExtendedValidator::registerVerifiers(const std::unordered_map<std::string, VirgilByteArray> &verifiers) {
-    for (const auto& verifier : verifiers)
-        registeredVerifiers_[verifier.first] = crypto_->importPublicKey(verifier.second);
-}
-
-bool ExtendedValidator::checkVerifier(const interfaces::CardInterface &card,
+bool ExtendedValidator::checkVerifier(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const interfaces::CardInterface &card,
                                       const std::string &verifierId) const {
     try {
         auto signature = card.signatures().at(verifierId);
 
-        auto isVerified = crypto_->verify(card.fingerprint(), signature, *(registeredVerifiers_.at(verifierId)));
+        auto isVerified = crypto->verify(card.fingerprint(), signature, *(registeredVerifiers_.at(verifierId)));
 
         if (!isVerified) {
             return false;

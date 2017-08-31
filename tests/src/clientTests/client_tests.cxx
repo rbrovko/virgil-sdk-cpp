@@ -51,7 +51,6 @@
 #include <virgil/sdk/client/RequestManager.h>
 
 #include <virgil/sdk/client/ExtendedValidator.h>
-#include <virgil/sdk/client/IntegrityPolicy.h>
 
 using virgil::sdk::client::Client;
 using virgil::sdk::client::ServiceConfig;
@@ -70,7 +69,6 @@ using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::sdk::client::RequestManager;
 
 using virgil::sdk::client::ExtendedValidator;
-using virgil::sdk::client::IntegrityPolicy;
 
 TEST_CASE("test001_CreateCardTest", "[client]") {
     TestConst consts;
@@ -89,13 +87,11 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
 
     auto card = Card::ImportRaw(crypto, cardRaw);
 
-    auto validator = std::make_unique<ExtendedValidator>(
+    auto validator = ExtendedValidator(
             crypto,
-            IntegrityPolicy(
-                    {{consts.applicationId(), VirgilBase64::decode(consts.applicationPublicKeyBase64())}}
-            )
+            {{consts.applicationId(), consts.applicationPublicKeyBase64()}}
     );
-    auto isValid = validator->validateCard(card);
+    auto isValid = validator.validateCard(crypto, card);
 
     REQUIRE(isValid);
     REQUIRE(utils.checkCardEquality(card, CreateCardRequest));

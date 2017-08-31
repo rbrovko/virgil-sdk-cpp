@@ -60,9 +60,9 @@ namespace virgil {
                      * @param verifiers parameter for certain policy implementations
                      * @return bool whether or not card is valid
                      */
-                   virtual bool diagnose(const CardInterface &card,
-                                         const CardValidatorInterface &validator,
-                                         const std::unordered_map<std::string, VirgilByteArray> &verifiers = {{}}) = 0;
+                   virtual bool diagnose(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                         const CardInterface &card,
+                                         const CardValidatorInterface &validator) = 0;
 
                     virtual ~IntegrityRuleInterface() = default;
                 };
