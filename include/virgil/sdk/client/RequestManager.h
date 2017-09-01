@@ -70,8 +70,9 @@ namespace virgil {
                  * @params privateKey private key implementation for self signing
                  * @return CreateCardRequest for creating card
                  */
+
                 const CreateCardRequest createCardRequest(const models::CardInfo &cardInfo,
-                                                          const cryptointerfaces::PrivateKeyInterface &privateKey) const;
+                                                          const std::shared_ptr<cryptointerfaces::PrivateKeyInterface> &privateKey = nullptr) const;
 
                 /*!
                  * @brief Creating signed RevokeCardRequest

@@ -39,7 +39,6 @@
 
 #include <UnitTests/KeysTest.h>
 #include <UnitTests/CryptoTest.h>
-#include <virgil/sdk/client/models/CardInfo.h>
 
 using virgil::sdk::client::models::CardInfo;
 using virgil::cryptointerfaces::PublicKeyInterface;
@@ -47,6 +46,7 @@ using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
 using virgil::sdk::test::CryptoTest;
 using virgil::sdk::test::KeyPairTest;
+using virgil::sdk::test::PrivateKeyTest;
 
 using virgil::sdk::client::RequestManager;
 
@@ -64,11 +64,11 @@ TEST_CASE("test001_CreateCardRequest", "[RequestManager]") {
 
     CardInfo cardInfo(
             "Alice",                                     //Identity
-            "test",                                      //IdentityType
-            keyPair.publicKey()                          //keyPair
+            keyPair.publicKey(),                         //keyPair
+            "test"                                       //IdentityType
     );
 
-    auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+    auto request = manager.createCardRequest(cardInfo, std::make_shared<PrivateKeyTest>(keyPair.privateKey()));
 
     manager.signRequest(request, {{appId, privateKey}});
 
@@ -100,13 +100,12 @@ TEST_CASE("test002_CreateCardRequest_withCustomData", "[RequestManager]") {
 
     CardInfo cardInfo(
             "Alice",                                     //Identity
-            "test",                                      //IdentityType
             keyPair.publicKey(),                         //keyPair
-            true,                                        //GenerateSignature
+            "test",                                      //IdentityType
             CustomData                                   //CustomFields
     );
 
-    auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+    auto request = manager.createCardRequest(cardInfo, std::make_shared<PrivateKeyTest>(keyPair.privateKey()));
 
     manager.signRequest(request, {{appId, privateKey}});
 
@@ -134,12 +133,11 @@ TEST_CASE("test003_CreateCardRequest_withoutSelfSign", "[RequestManager]") {
 
     CardInfo cardInfo(
             "Alice",                                     //Identity
-            "test",                                      //IdentityType
             keyPair.publicKey(),                         //keyPair
-            false                                        //GenerateSignature
+            "test"                                       //IdentityType
     );
 
-    auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+    auto request = manager.createCardRequest(cardInfo);
 
     manager.signRequest(request, {{appId, privateKey}});
 
@@ -185,13 +183,13 @@ TEST_CASE("test005_CreateCardRequest_ShouldThrowExeption", "[RequestManager]") {
 
     CardInfo cardInfo(
             "",                                          //Identity
-            "test",                                      //IdentityType
-            keyPair.publicKey()                          //keyPair
+            keyPair.publicKey(),                          //keyPair
+            "test"                                      //IdentityType
     );
 
     bool errorWasThrown = false;
     try {
-        auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+        auto request = manager.createCardRequest(cardInfo, std::make_shared<PrivateKeyTest>(keyPair.privateKey()));
     }
     catch(...) {
         errorWasThrown = true;

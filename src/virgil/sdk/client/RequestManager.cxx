@@ -53,10 +53,10 @@ RequestManager::RequestManager(const std::shared_ptr<cryptointerfaces::CryptoInt
         :crypto_(crypto){}
 
 const CreateCardRequest RequestManager::createCardRequest(const models::CardInfo &cardInfo,
-                                          const cryptointerfaces::PrivateKeyInterface &privateKey) const {
-    if (cardInfo.identity().empty()) {
-        throw make_error(VirgilSdkError::CreateRequestManagerFailed, "Identity property is mandatory");
-    }
+                                          const std::shared_ptr<cryptointerfaces::PrivateKeyInterface> &privateKey) const {
+    if (cardInfo.identity().empty())
+        throw make_error(VirgilSdkError::CreateRequestFailed, "Identity property is mandatory");
+
 
     auto PublicKey = crypto_->exportPublicKey(cardInfo.publicKey());
     auto request = CreateCardRequest::createRequest(
@@ -65,10 +65,10 @@ const CreateCardRequest RequestManager::createCardRequest(const models::CardInfo
             PublicKey
     );
 
-    auto signer = RequestSigner(crypto_);
-
-    if (cardInfo.generateSelfSignature())
-        signer.selfSign(request, privateKey);
+    if (privateKey != nullptr) {
+        auto signer = RequestSigner(crypto_);
+        signer.selfSign(request, *privateKey.get());
+    }
 
     return request;
 }
@@ -76,13 +76,16 @@ const CreateCardRequest RequestManager::createCardRequest(const models::CardInfo
 const RevokeCardRequest RequestManager::revokeCardRequest(const std::string &identifier,
                                                           const std::list<models::CardSigner> &signers) const {
 
-    if (identifier.empty()) {
-        throw make_error(VirgilSdkError::CreateRequestManagerFailed, "Id property is mandatory");
-    }
+    if (identifier.empty())
+        throw make_error(VirgilSdkError::CreateRequestFailed, "Id property is mandatory");
+
     auto request = RevokeCardRequest::createRequest(
             identifier,
             CardRevocationReason::unspecified
     );
+
+    if (signers.size() == 0)
+        throw make_error(VirgilSdkError::CreateRequestFailed, "Signers should contain at least 1 signer");
 
     auto signer = RequestSigner(crypto_);
 

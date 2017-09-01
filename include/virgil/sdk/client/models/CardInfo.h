@@ -52,15 +52,13 @@ namespace virgil {
                 public:
                     CardInfo(
                             const std::string &Identity,
-                            const std::string &IdentityType,
                             const PublicKeyInterface &publicKey,
-                            bool GenerateSelfSignature = true,
+                            const std::string &IdentityType = "unknown",
                             std::unordered_map<std::string, std::string> customFields
                             = std::unordered_map<std::string, std::string>())
                     : identity_(Identity),
                       identityType_(IdentityType),
                       publicKey_(publicKey),
-                      generateSelfSignature_(GenerateSelfSignature),
                       customFields_(customFields) {}
 
                     const std::string identity() const { return identity_; }
@@ -71,14 +69,11 @@ namespace virgil {
 
                     const std::unordered_map<std::string, std::string> customFields() const { return customFields_; }
 
-                    const bool generateSelfSignature() const { return generateSelfSignature_; }
-
                 private:
                     const std::string identity_;
                     const std::string identityType_;
                     const PublicKeyInterface &publicKey_;
                     std::unordered_map<std::string, std::string> customFields_;
-                    bool generateSelfSignature_;
                 };
 
             }

@@ -48,9 +48,10 @@
 #include <virgil/sdk/util/Memory.h>
 #include <virgil/sdk/client/RequestSigner.h>
 #include <virgil/sdk/client/RequestManager.h>
+#include <PrivateKeyInterface.h>
 
 #include <virgil/sdk/client/ExtendedValidator.h>
-#include <virgil/sdk/client/models/CardInfo.h>
+using virgil::sdk::crypto::keys::PrivateKey;
 
 using virgil::sdk::client::models::CardInfo;
 using virgil::sdk::client::Client;
@@ -65,7 +66,7 @@ using virgil::sdk::client::interfaces::CardValidatorInterface;
 
 using virgil::sdk::client::RequestSigner;
 using virgil::sdk::client::RequestManager;
-
+using virgil::cryptointerfaces::PrivateKeyInterface;
 using virgil::sdk::client::ExtendedValidator;
 
 TEST_CASE("test001_CreateCardTest", "[client]") {
@@ -228,13 +229,13 @@ TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[
 
     CardInfo cardInfo(
             "",                                          //Identity
-            consts.applicationIdentityType(),            //IdentityType
-            keyPair.publicKey()                          //keyPair
+            keyPair.publicKey(),                         //keyPair
+            consts.applicationIdentityType()             //IdentityType
     );
 
     bool errorWasThrown = false;
     try {
-        auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+        auto request = manager.createCardRequest(cardInfo, std::make_shared<PrivateKey>(keyPair.privateKey()));
     }
     catch(...) {
         errorWasThrown = true;

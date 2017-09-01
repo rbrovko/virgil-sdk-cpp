@@ -37,17 +37,13 @@
 
 #include <TestUtils.h>
 #include <helpers.h>
-#include <virgil/sdk/client/models/ClientCommon.h>
 #include <virgil/sdk/client/RequestSigner.h>
 #include <virgil/sdk/client/models/serialization/JsonDeserializer.h>
 
 #include <virgil/sdk/client/Client.h>
 #include <virgil/sdk/client/RequestManager.h>
-#include <virgil/sdk/client/models/responses/CardRaw.h>
-#include <virgil/sdk/client/models/CardSigner.h>
-#include <list>
-#include <virgil/sdk/client/models/CardInfo.h>
 
+using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::client::models::CardInfo;
 using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::client::models::CardRevocationReason;
@@ -63,12 +59,13 @@ using virgil::sdk::client::models::interfaces::SignableRequestInterface;
 using virgil::sdk::client::models::serialization::JsonSerializer;
 using virgil::sdk::client::models::responses::CardRaw;
 using virgil::sdk::client::models::CardSigner;
+using virgil::cryptointerfaces::PrivateKeyInterface;
 
 CreateCardRequest TestUtils::instantiateCreateCardRequest(
         const std::unordered_map<std::string, std::string> &data) const {
 
-    RequestManager manager(crypto_);                                     //creating RequestManager
-    auto keyPair = crypto_->generateKeyPair();                           //making KeyPair
+    RequestManager manager(crypto_);
+    auto keyPair = crypto_->generateKeyPair();
 
     auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
@@ -82,13 +79,12 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
 
     CardInfo cardInfo(
             identity,                                    //Identity
-            consts.applicationIdentityType(),            //IdentityType
             keyPair.publicKey(),                         //keyPair
-            true,                                        //GenerateSignature
+            consts.applicationIdentityType(),            //IdentityType
             data                                         //CustomFields
     );
 
-    auto createCardRequest = manager.createCardRequest(cardInfo, keyPair.privateKey());
+    auto createCardRequest = manager.createCardRequest(cardInfo, std::make_shared<PrivateKey>(keyPair.privateKey()));
 
     manager.signRequest(createCardRequest, requestSigners);
 
