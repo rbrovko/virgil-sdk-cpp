@@ -52,6 +52,9 @@ namespace virgil {
                     public:
                         friend class ExtendedValidator;
 
+                        /*!
+                         * @brief constructor
+                         */
                         VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier);
 
                     private:

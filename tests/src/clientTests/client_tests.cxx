@@ -44,7 +44,6 @@
 
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/client/Client.h>
-#include <virgil/sdk/client/CardValidator.h>
 
 #include <virgil/sdk/util/Memory.h>
 #include <virgil/sdk/client/RequestSigner.h>
@@ -59,7 +58,6 @@ using virgil::sdk::client::models::SearchCardsCriteria;
 using virgil::sdk::client::models::CardScope;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
-using virgil::sdk::client::CardValidator;
 using virgil::sdk::VirgilBase64;
 using virgil::sdk::client::interfaces::CardValidatorInterface;
 
@@ -121,7 +119,7 @@ TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
 }
 
 
-TEST_CASE("test003_SearchCards", "[client]") {
+TEST_CASE("test003_SearchCardsTest", "[client]") {
     TestConst consts;
     TestUtils utils(consts);
 
@@ -150,7 +148,7 @@ TEST_CASE("test003_SearchCards", "[client]") {
     REQUIRE(utils.checkCardEquality(card, foundCards));
 }
 
-TEST_CASE("test004_GetCard", "[client]") {
+TEST_CASE("test004_GetCardTest", "[client]") {
     TestConst consts;
     TestUtils utils(consts);
 

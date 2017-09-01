@@ -55,8 +55,7 @@ namespace virgil {
                         friend class ExtendedValidator;
                         /*!
                          * @brief constructor
-                         * @param verifiers unordered map of verifiers to validate
-                         * @param policy defines behavior of diagnise function
+                         * @param whitelist unordered map of verifiers to validate
                          */
                         WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist);
 

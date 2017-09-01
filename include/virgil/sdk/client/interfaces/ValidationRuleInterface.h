@@ -56,9 +56,8 @@ namespace virgil {
                 public:
                     /*!
                      * validate card in different way depends on policy implementation
+                     * @param crypto crypto implementation
                      * @param card card implementation to validate
-                     * @param validator validator implementation to use methods from
-                     * @param verifiers parameter for certain policy implementations
                      * @return bool whether or not card is valid
                      */
                    virtual void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,

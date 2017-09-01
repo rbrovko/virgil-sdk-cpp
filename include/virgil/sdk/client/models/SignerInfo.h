@@ -42,14 +42,29 @@ namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-
+                /*!
+                 * @brief class for signer information representation. Cards is validated using them.
+                 */
                 class SignerInfo {
                 public:
+                    /*!
+                     * @brief constructor
+                     * @param cardId std::string with card identifier
+                     * @param publicKey std::string with public key
+                     */
                     SignerInfo(const std::string &cardId, const std::string &publicKey)
                     : cardId_(cardId), publicKey_(publicKey) {}
 
+                    /*!
+                     * @brief Getter.
+                     * @return std::string with card id
+                     */
                     const std::string& cardId() const { return cardId_; }
 
+                    /*!
+                     * @brief Getter.
+                     * @return std::string with public Key
+                     */
                     const std::string& publicKey() const { return publicKey_; }
 
                 private:

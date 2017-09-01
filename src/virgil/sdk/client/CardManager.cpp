@@ -71,7 +71,6 @@ std::future<Card> CardManager::getCard(const std::string &cardId) const {
     return future;
 }
 
-
 std::future<Card> CardManager::createCard(const models::requests::CreateCardRequest &request) const {
     auto future = std::async([=]{
         auto cardRaw = client_.createCard(request);

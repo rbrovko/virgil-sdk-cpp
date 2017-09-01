@@ -53,7 +53,6 @@ namespace virgil {
                         friend class ExtendedValidator;
                         /*!
                          * @brief constructor
-                         * @param crypto crypto implementation to export public key for verifying
                          */
                         SelfValidationRule() = default;
 

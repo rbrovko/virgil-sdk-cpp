@@ -54,7 +54,8 @@ namespace virgil {
                  * @param rules rules for validation
                  */
                 CardManagerParams(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                const std::string &apiToken, const std::shared_ptr<interfaces::CardValidatorInterface> &validator)
+                                  const std::string &apiToken,
+                                  const std::shared_ptr<interfaces::CardValidatorInterface> &validator)
                 : crypto_(crypto), apiToken_(apiToken), validator_(validator) {};
 
                 /*!
