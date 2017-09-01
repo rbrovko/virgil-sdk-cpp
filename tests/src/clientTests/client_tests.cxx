@@ -88,11 +88,10 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
     auto card = Card::ImportRaw(crypto, cardRaw);
 
     auto validator = ExtendedValidator(
-            crypto,
             {{consts.applicationId(), consts.applicationPublicKeyBase64()}}
     );
     validator.initialize(crypto);
-    auto isValid = validator.validateCard(crypto, card);
+    auto isValid = validator.validateCard(crypto, card).isValid();
 
     REQUIRE(isValid);
     REQUIRE(utils.checkCardEquality(card, CreateCardRequest));

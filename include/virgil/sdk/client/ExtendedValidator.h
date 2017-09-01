@@ -60,15 +60,22 @@ namespace virgil {
                  * @param crypto Crypto instance
                  * @param rules rules for validation
                  */
-                ExtendedValidator(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                  const std::list<SignerInfo> &whitelist = {{}},
+                ExtendedValidator(const std::list<SignerInfo> &whitelist = {{}},
                                   const bool &ignoreSelfSignature = false,
                                   const bool &ignoreVirgilSignature = false);
 
                 void initialize(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto) override;
 
-                bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                ValidationResult validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
                                   const interfaces::CardInterface &card) const override;
+
+                const bool ignoreSelfSignature() const { return ignoreSelfSignature_; }
+
+                const bool ignoreVirgilSignature() const { return ignoreVirgilSignature_; }
+
+                const std::list<SignerInfo> whitelist() const { return whitelist_; }
+
+                const std::list<std::shared_ptr<ValidationRuleInterface>> rules() const { return rules_; }
 
             private:
                 bool ignoreSelfSignature_;

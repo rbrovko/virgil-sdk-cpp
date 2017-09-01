@@ -40,6 +40,7 @@
 #include <virgil/sdk/client/interfaces/CardInterface.h>
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
 #include <CryptoInterface.h>
+#include <virgil/sdk/client/ValidationResult.h>
 
 using virgil::sdk::client::interfaces::CardInterface;
 using virgil::sdk::client::interfaces::CardValidatorInterface;
@@ -60,8 +61,9 @@ namespace virgil {
                      * @param verifiers parameter for certain policy implementations
                      * @return bool whether or not card is valid
                      */
-                   virtual bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                         const CardInterface &card) const = 0;
+                   virtual void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                      const CardInterface &card,
+                                      ValidationResult &result) const = 0;
 
                     virtual ~ValidationRuleInterface() = default;
                 };

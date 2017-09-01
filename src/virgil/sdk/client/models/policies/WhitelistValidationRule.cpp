@@ -39,23 +39,32 @@
 using virgil::sdk::client::models::validation_rules::WhitelistValidationRule;
 
 WhitelistValidationRule::WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist)
-: whitelist_(whitelist) {}
+        : whitelist_(whitelist) {}
 
-bool WhitelistValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                          const CardInterface &card) const {
+void WhitelistValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                    const CardInterface &card,
+                                    ValidationResult &result) const {
     for (const auto& verifier : whitelist_) {
         try {
+            auto exist = card.signatures().find(verifier.first);
+
+            if (exist == card.signatures().end()) {
+                result.addError("card doesn't have one of whitelist signatures");
+                return;
+            }
+
             auto signature = card.signatures().at(verifier.first);
 
             auto isVerified = crypto->verify(card.fingerprint(), signature, *verifier.second);
 
-            if (isVerified) {
-                return true;
+            if (!isVerified) {
+                result.addError("one of whitelist signatures wasn't verified");
+                return;
             }
         }
         catch (...) {
-            return false;
+            result.addError("one of whitelist signatures verification failed");
         }
     }
-    return false;
 }
+

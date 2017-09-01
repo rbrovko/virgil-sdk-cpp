@@ -58,8 +58,9 @@ namespace virgil {
                         SelfValidationRule() = default;
 
                     private:
-                        bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card) const override;
+                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card,
+                                   ValidationResult &result) const override;
                     };
                 }
             }

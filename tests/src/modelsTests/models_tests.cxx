@@ -101,11 +101,10 @@ TEST_CASE("test003_CardImportExport", "[models]") {
     auto importedCard = Card::importFromString(utils.crypto(), cardStr);
 
     auto validator =  ExtendedValidator(
-            utils.crypto(),
             {{consts.applicationId(), consts.applicationPublicKeyBase64()}}
     );
     validator.initialize(utils.crypto());
 
     REQUIRE(utils.checkCardEquality(card, importedCard));
-    REQUIRE(validator.validateCard(utils.crypto(), importedCard));
+    REQUIRE(validator.validateCard(utils.crypto(), importedCard).isValid());
 }

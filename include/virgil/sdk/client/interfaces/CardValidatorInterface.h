@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_CARDVALIDATORINTERFACE_H
 
 #include <virgil/sdk/client/models/Card.h>
+#include <virgil/sdk/client/ValidationResult.h>
 
 namespace virgil {
 namespace sdk {
@@ -55,7 +56,7 @@ namespace client {
              * @param instance Card to be validated
              * @return true if Card passed validation, false otherwise
              */
-            virtual bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+            virtual ValidationResult validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
                                       const CardInterface &card) const = 0;
 
             /*!

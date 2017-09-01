@@ -55,8 +55,9 @@ namespace virgil {
                         VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier);
 
                     private:
-                        bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card) const override;
+                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card,
+                                   ValidationResult &result) const override;
                         std::pair<std::string, PublicKeyInterface*> virgilVerifier_;
                     };
                 }

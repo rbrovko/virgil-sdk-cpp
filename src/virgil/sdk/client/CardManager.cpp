@@ -60,8 +60,9 @@ std::future<Card> CardManager::getCard(const std::string &cardId) const {
         auto cardRaw = client_.getCard(cardId);
         auto card = Card::ImportRaw(crypto_, cardRaw.get());
 
-        if (!validator_->validateCard(crypto_, card)) {
-            throw make_error(VirgilSdkError::VerificationFailed, "VerificationFailed");
+        auto validationResult = validator_->validateCard(crypto_, card);
+        if (!validationResult.isValid()) {
+            throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
         }
 
         return card;
@@ -76,8 +77,9 @@ std::future<Card> CardManager::createCard(const models::requests::CreateCardRequ
         auto cardRaw = client_.createCard(request);
         auto card = Card::ImportRaw(crypto_, cardRaw.get());
 
-        if (!validator_->validateCard(crypto_, card)) {
-            throw make_error(VirgilSdkError::VerificationFailed, "VerificationFailed");
+        auto validationResult = validator_->validateCard(crypto_, card);
+        if (!validationResult.isValid()) {
+            throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
         }
 
         return card;
@@ -88,16 +90,21 @@ std::future<Card> CardManager::createCard(const models::requests::CreateCardRequ
 
 std::future<std::vector<Card>> CardManager::searchCards(const models::SearchCardsCriteria &criteria) const {
     auto future = std::async([=]{
-        auto cardsRaw = client_.searchCards(criteria);
+        auto futureCardsRaw = client_.searchCards(criteria);
+        auto cardsRaw = futureCardsRaw.get();
 
         std::vector<Card> cards;
 
-        for (const auto& cardRaw : cardsRaw.get())
+        for (const auto& cardRaw : cardsRaw)
             cards.push_back(Card::ImportRaw(crypto_, cardRaw));
 
-        for (const auto& card : cards)
-            if (!validator_->validateCard(crypto_, card))
-                throw make_error(VirgilSdkError::VerificationFailed, "VerificationFailed");
+
+        for (const auto& card : cards) {
+            auto validationResult = validator_->validateCard(crypto_, card);
+            if (!validationResult.isValid()) {
+                throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
+            }
+        }
 
         return cards;
     });

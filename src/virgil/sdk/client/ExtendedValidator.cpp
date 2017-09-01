@@ -39,18 +39,20 @@
 #include <virgil/sdk/client/models/validation_rules/VirgilValidationRule.h>
 #include <virgil/sdk/client/models/validation_rules/WhitelistValidationRule.h>
 #include <string>
+#include <virgil/sdk/client/ValidationResult.h>
+
 using virgil::sdk::client::ExtendedValidator;
 using virgil::sdk::client::models::validation_rules::SelfValidationRule;
 using virgil::sdk::client::models::validation_rules::VirgilValidationRule;
 using virgil::sdk::client::models::validation_rules::WhitelistValidationRule;
+using virgil::sdk::client::ValidationResult;
 
 static_assert(!std::is_abstract<virgil::sdk::client::ExtendedValidator>(), "ExtendedValidator must not be abstract.");
 
 static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
 static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1RytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=";
 
-ExtendedValidator::ExtendedValidator(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                     const std::list<SignerInfo> &whitelist,
+ExtendedValidator::ExtendedValidator(const std::list<SignerInfo> &whitelist,
                                      const bool &ignoreSelfSignature,
                                      const bool &ignoreVirgilSignature)
 : whitelist_(whitelist), ignoreSelfSignature_(ignoreSelfSignature), ignoreVirgilSignature_(ignoreVirgilSignature) {}
@@ -76,10 +78,15 @@ void ExtendedValidator::initialize(const std::shared_ptr<virgil::cryptointerface
     }
 }
 
-bool ExtendedValidator::validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+ValidationResult ExtendedValidator::validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
                                      const interfaces::CardInterface &card) const {
+    ValidationResult result;
+
+    if (card.cardVersion() == "3.0")
+        return result;
+
     for (auto const& rule : rules_)
-        if (!rule->check(crypto, card))
-            return false;
-    return true;
+        rule->check(crypto, card, result);
+
+    return result;
 }

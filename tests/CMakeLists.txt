@@ -47,7 +47,7 @@ file(GLOB_RECURSE UUT_SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx")
 file(GLOB_RECURSE RES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/src/resources/*")
 
 # Configure test target
-add_executable(${TEST_RUNNER} ${UUT_SRC_LIST} src/UnitTests/RequestManagerTests.cpp src/UnitTests/CardValidatorTests.cpp src/UnitTests/RequestSignerTests.cpp src/UnitTests/ServiceConfigTests.cpp src/UnitTests/ClientTests.cpp src/FreeTests.cpp)
+add_executable(${TEST_RUNNER} ${UUT_SRC_LIST} src/UnitTests/RequestManagerTests.cpp src/UnitTests/ExtendedValidatorTests.cpp src/UnitTests/RequestSignerTests.cpp src/UnitTests/ServiceConfigTests.cpp src/UnitTests/ClientTests.cpp src/FreeTests.cpp)
 target_link_libraries (${TEST_RUNNER} virgil_sdk)
 
 foreach(ITEM IN LISTS RES_LIST)

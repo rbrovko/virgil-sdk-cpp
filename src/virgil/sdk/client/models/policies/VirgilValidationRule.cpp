@@ -38,24 +38,29 @@
 
 using virgil::sdk::client::models::validation_rules::VirgilValidationRule;
 
-static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
-
 VirgilValidationRule::VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier)
 : virgilVerifier_(virgilVerifier) {}
 
-bool VirgilValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                     const CardInterface &card) const {
+void VirgilValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                 const CardInterface &card,
+                                 ValidationResult &result) const {
     try {
+        auto exist = card.signatures().find(virgilVerifier_.first);
+
+        if (exist == card.signatures().end()) {
+            result.addError("card doesn't have virgil signature");
+            return;
+        }
         auto signature = card.signatures().at(virgilVerifier_.first);
 
         auto isVerified = crypto->verify(card.fingerprint(), signature, *virgilVerifier_.second);
 
         if (!isVerified) {
-            return false;
+            result.addError("virgil signature wasn't verified");
+            return;
         }
     }
     catch (...) {
-        return false;
+        result.addError("virgil signature verification failed");
     }
-    return true;
 }

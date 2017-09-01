@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 Virgil Security Inc.
+ * Copyright (C) 2016 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,31 +34,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/models/validation_rules/SelfValidationRule.h>
+#ifndef VIRGIL_SDK_VALIDATIONRESULT_H
+#define VIRGIL_SDK_VALIDATIONRESULT_H
 
-using virgil::sdk::client::models::validation_rules::SelfValidationRule;
+#include <list>
+#include <string>
 
-void SelfValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                               const CardInterface &card,
-                               ValidationResult &result) const {
-    try {
-        auto exist = card.signatures().find(card.identifier());
+namespace virgil {
+    namespace sdk {
+        namespace client {
+            class ValidationResult {
+            public:
+                ValidationResult() = default;
 
-        if (exist == card.signatures().end()) {
-            result.addError("card doesn't have self signature");
-            return;
+                void addError(const std::string &message) { errors_.push_back(message); }
+
+                const bool isValid() const { auto isValid = (errors_.size()>0) ? false : true; return isValid; }
+
+                const std::list<std::string> errors() const { return errors_; }
+            private:
+                std::list<std::string> errors_;
+            };
         }
-
-        auto signature = card.signatures().at(card.identifier());
-
-        auto isVerified = crypto->verify(card.fingerprint(), signature, *card.publicKey().get());
-
-        if (!isVerified) {
-            result.addError("self signature wasn't verified");
-            return;
-        }
-    }
-    catch (...) {
-        result.addError("self signature verification failed");
     }
 }
+#endif //VIRGIL_SDK_VALIDATIONRESULT_H

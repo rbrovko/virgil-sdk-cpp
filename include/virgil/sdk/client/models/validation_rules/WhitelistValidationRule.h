@@ -61,8 +61,9 @@ namespace virgil {
                         WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist);
 
                     private:
-                        bool check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card) const override;
+                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card,
+                                   ValidationResult &result) const override;
 
                         std::unordered_map<std::string, PublicKeyInterface*> whitelist_;
                     };

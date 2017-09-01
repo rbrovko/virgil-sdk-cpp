@@ -45,7 +45,7 @@ namespace client {
     /*!
      * @brief Default implementation of CardValidatorInterface
      */
-    class CardValidator: public interfaces::CardValidatorInterface {
+    class CardValidator {
     public:
         /*!
          * @brief Constructor.
@@ -67,9 +67,8 @@ namespace client {
         const std::unordered_map<std::string, VirgilByteArray>& verifiers() const { return verifiers_; };
 
         bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                          const interfaces::CardInterface &card) const override;
+                          const interfaces::CardInterface &card) const;
 
-        void initialize(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto) override {};
     private:
         std::shared_ptr<cryptointerfaces::CryptoInterface> crypto_;
         std::unordered_map<std::string, VirgilByteArray> verifiers_;
