@@ -50,7 +50,9 @@
 #include <virgil/sdk/client/RequestManager.h>
 
 #include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/client/models/CardInfo.h>
 
+using virgil::sdk::client::models::CardInfo;
 using virgil::sdk::client::Client;
 using virgil::sdk::client::ServiceConfig;
 using virgil::sdk::client::models::requests::CreateCardRequest;
@@ -62,8 +64,6 @@ using virgil::sdk::VirgilBase64;
 using virgil::sdk::client::interfaces::CardValidatorInterface;
 
 using virgil::sdk::client::RequestSigner;
-using virgil::sdk::client::models::parameters::CreateCardParams;
-using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::sdk::client::RequestManager;
 
 using virgil::sdk::client::ExtendedValidator;
@@ -72,11 +72,11 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
     TestConst consts;
     TestUtils utils(consts);
 
-    auto crypto = std::make_shared<Crypto>();                           //making crypto
+    auto crypto = std::make_shared<Crypto>();
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
 
-    Client client(std::move(serviceConfig));                            //creating client
+    Client client(std::move(serviceConfig));
 
     auto CreateCardRequest = utils.instantiateCreateCardRequest();
 
@@ -180,11 +180,11 @@ TEST_CASE("test006_RevokeCardTest", "[client]") {
     TestConst consts;
     TestUtils utils((TestConst()));
 
-    auto crypto = std::make_shared<Crypto>();                           //making crypto
+    auto crypto = std::make_shared<Crypto>();
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
 
-    Client client(std::move(serviceConfig));                            //creating client
+    Client client(std::move(serviceConfig));
 
     auto CreateCardRequest = utils.instantiateCreateCardRequest();
 
@@ -218,25 +218,23 @@ TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[
     TestConst consts;
     TestUtils utils(consts);
 
-    auto crypto = std::make_shared<Crypto>();                           //making crypto
+    auto crypto = std::make_shared<Crypto>();
 
-    RequestManager manager(crypto);                                     //creating RequestManager
-    auto keyPair = crypto->generateKeyPair();                           //making KeyPair
+    RequestManager manager(crypto);
+    auto keyPair = crypto->generateKeyPair();
 
     auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
-    //making CardParams
-    CreateCardParams parameters(
+    CardInfo cardInfo(
             "",                                          //Identity
             consts.applicationIdentityType(),            //IdentityType
-            keyPair,                                     //keyPair
-            {{consts.applicationId(), appPrivateKey}}    //RequestSigners
+            keyPair.publicKey()                          //keyPair
     );
 
     bool errorWasThrown = false;
     try {
-        auto CreateCardRequest = manager.createCardRequest(parameters);
+        auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
     }
     catch(...) {
         errorWasThrown = true;

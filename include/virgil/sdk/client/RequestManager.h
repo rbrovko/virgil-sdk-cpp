@@ -38,11 +38,12 @@
 #define VIRGIL_SDK_REQUESTMANAGER_H
 
 #include <virgil/sdk/crypto/Crypto.h>
-#include <virgil/sdk/client/models/parameters/CreateCardParams.h>
-#include <virgil/sdk/client/models/parameters/RevokeCardParams.h>
 #include <virgil/sdk/client/models/Card.h>
 #include <virgil/sdk/client/models/requests/CreateCardRequest.h>
 #include <virgil/sdk/client/models/requests/RevokeCardRequest.h>
+#include <virgil/sdk/client/models/CardInfo.h>
+#include <virgil/sdk/client/models/CardSigner.h>
+#include <list>
 
 using virgil::cryptointerfaces::CryptoInterface;
 using virgil::sdk::client::models::requests::CreateCardRequest;
@@ -65,17 +66,29 @@ namespace virgil {
 
                 /*!
                  * @brief Creating signed CreateCardRequest
-                 * @param parameters all needed parameters for Creating Card
+                 * @param cardInfo information of card to create request
+                 * @params privateKey private key implementation for self signing
                  * @return CreateCardRequest for creating card
                  */
-                const CreateCardRequest createCardRequest(const models::parameters::CreateCardParams &parameters) const;
+                const CreateCardRequest createCardRequest(const models::CardInfo &cardInfo,
+                                                          const cryptointerfaces::PrivateKeyInterface &privateKey) const;
 
                 /*!
                  * @brief Creating signed RevokeCardRequest
-                 * @param parameters all needed parameters for Revoking Card
+                 * @param identifier std::string with card id
+                 * @param signers std::list with CardSigners for signing request
                  * @return RevokeCardRequest for revoking card
                  */
-                const RevokeCardRequest revokeCardRequest(const models::parameters::RevokeCardParams &parameters) const;
+                const RevokeCardRequest revokeCardRequest(const std::string &identifier,
+                                                          const std::list<models::CardSigner> &signers) const;
+
+                /*!
+                 * @brief signing CreateCardRequest with addition signs
+                 * @param request request to sign
+                 * @param signers std::list with CardSigners for signing request
+                 */
+                void signRequest(CreateCardRequest &request, const std::list<models::CardSigner> &signers) const;
+
             private:
                 const std::shared_ptr<CryptoInterface> crypto_;
             };

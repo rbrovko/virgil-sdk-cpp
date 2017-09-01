@@ -39,11 +39,10 @@
 
 #include <UnitTests/KeysTest.h>
 #include <UnitTests/CryptoTest.h>
+#include <virgil/sdk/client/models/CardInfo.h>
 
-using virgil::sdk::client::models::parameters::CreateCardParams;
-using virgil::sdk::client::models::parameters::RevokeCardParams;
+using virgil::sdk::client::models::CardInfo;
 using virgil::cryptointerfaces::PublicKeyInterface;
-
 using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
 using virgil::sdk::test::CryptoTest;
@@ -63,14 +62,15 @@ TEST_CASE("test001_CreateCardRequest", "[RequestManager]") {
 
     std::string appId = "Random appId";
 
-    CreateCardParams parameters(
+    CardInfo cardInfo(
             "Alice",                                     //Identity
             "test",                                      //IdentityType
-            keyPair,                                     //keyPair
-            {{appId, privateKey}}                        //RequestSigners
+            keyPair.publicKey()                          //keyPair
     );
 
-    auto request = manager.createCardRequest(parameters);
+    auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+
+    manager.signRequest(request, {{appId, privateKey}});
 
     auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"dGVzdA==\",\"scope\":\"application\"}";
 
@@ -98,24 +98,21 @@ TEST_CASE("test002_CreateCardRequest_withCustomData", "[RequestManager]") {
     CustomData["some_random_key1"] = "some_random_data1";
     CustomData["some_random_key2"] = "some_random_data2";
 
-    CreateCardParams parameters(
+    CardInfo cardInfo(
             "Alice",                                     //Identity
             "test",                                      //IdentityType
-            keyPair,                                     //keyPair
-            {{appId, privateKey}},                       //RequestSigners
+            keyPair.publicKey(),                         //keyPair
             true,                                        //GenerateSignature
             CustomData                                   //CustomFields
     );
 
-    auto request = manager.createCardRequest(parameters);
+    auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+
+    manager.signRequest(request, {{appId, privateKey}});
 
     auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"dGVzdA==\",\"scope\":\"application\"}";
 
     REQUIRE(VirgilByteArrayUtils::bytesToString(request.snapshot()) == snap);
-
-    //VirgilBase64::encode(request.snapshotModel().publicKeyData());
-
-    //std::cout << VirgilBase64::encode(request.snapshotModel().publicKeyData()) << std::endl;
 
     REQUIRE(request.signatures().size() == 2);
     auto m = request.signatures();
@@ -135,15 +132,16 @@ TEST_CASE("test003_CreateCardRequest_withoutSelfSign", "[RequestManager]") {
 
     std::string appId = "Random appId";
 
-    CreateCardParams parameters(
+    CardInfo cardInfo(
             "Alice",                                     //Identity
             "test",                                      //IdentityType
-            keyPair,                                     //keyPair
-            {{appId, privateKey}},                       //RequestSigners
+            keyPair.publicKey(),                         //keyPair
             false                                        //GenerateSignature
     );
 
-    auto request = manager.createCardRequest(parameters);
+    auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
+
+    manager.signRequest(request, {{appId, privateKey}});
 
     auto snap = "{\"identity\":\"Alice\",\"identity_type\":\"test\",\"public_key\":\"dGVzdA==\",\"scope\":\"application\"}";
 
@@ -164,12 +162,7 @@ TEST_CASE("test004_RevokeCardRequest", "[RequestManager]") {
 
     std::string appId = "Random appId";
 
-    RevokeCardParams parameters(
-            "CardId",
-            {{appId, privateKey}}
-    );
-
-    auto request = manager.revokeCardRequest(parameters);
+    auto request = manager.revokeCardRequest("CardId",  {{appId, privateKey}});
 
     auto snap = VirgilByteArrayUtils::stringToBytes("{\"card_id\":\"CardId\",\"revocation_reason\":\"unspecified\"}");
 
@@ -190,16 +183,15 @@ TEST_CASE("test005_CreateCardRequest_ShouldThrowExeption", "[RequestManager]") {
 
     std::string appId = "Random appId";
 
-    CreateCardParams parameters(
+    CardInfo cardInfo(
             "",                                          //Identity
             "test",                                      //IdentityType
-            keyPair,                                     //keyPair
-            {{appId, privateKey}}                        //RequestSigners
+            keyPair.publicKey()                          //keyPair
     );
 
     bool errorWasThrown = false;
     try {
-        auto request = manager.createCardRequest(parameters);
+        auto request = manager.createCardRequest(cardInfo, keyPair.privateKey());
     }
     catch(...) {
         errorWasThrown = true;

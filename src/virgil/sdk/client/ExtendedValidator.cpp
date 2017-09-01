@@ -55,7 +55,10 @@ static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS
 ExtendedValidator::ExtendedValidator(const std::list<SignerInfo> &whitelist,
                                      const bool &ignoreSelfSignature,
                                      const bool &ignoreVirgilSignature)
-: whitelist_(whitelist), ignoreSelfSignature_(ignoreSelfSignature), ignoreVirgilSignature_(ignoreVirgilSignature) {}
+: whitelist_(whitelist),
+  ignoreSelfSignature_(ignoreSelfSignature),
+  ignoreVirgilSignature_(ignoreVirgilSignature) {}
+
 
 void ExtendedValidator::initialize(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto) {
     rules_.clear();

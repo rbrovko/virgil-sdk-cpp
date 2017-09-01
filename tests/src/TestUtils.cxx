@@ -46,7 +46,9 @@
 #include <virgil/sdk/client/models/responses/CardRaw.h>
 #include <virgil/sdk/client/models/CardSigner.h>
 #include <list>
+#include <virgil/sdk/client/models/CardInfo.h>
 
+using virgil::sdk::client::models::CardInfo;
 using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::client::models::CardRevocationReason;
 using virgil::sdk::test::Utils;
@@ -57,8 +59,6 @@ using virgil::sdk::client::models::serialization::JsonDeserializer;
 
 using virgil::sdk::client::Client;
 using virgil::sdk::client::RequestManager;
-using virgil::sdk::client::models::parameters::CreateCardParams;
-using virgil::sdk::client::models::parameters::RevokeCardParams;
 using virgil::sdk::client::models::interfaces::SignableRequestInterface;
 using virgil::sdk::client::models::serialization::JsonSerializer;
 using virgil::sdk::client::models::responses::CardRaw;
@@ -75,25 +75,25 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
 
     auto identity = Utils::generateRandomStr(40);
 
-    std::list<CardSigner> RequestSigners;
-    RequestSigners.push_back(
+    std::list<CardSigner> requestSigners;
+    requestSigners.push_back(
             CardSigner(consts.applicationId(), appPrivateKey)
     );
 
-    //making CardParams
-    CreateCardParams parameters(
+    CardInfo cardInfo(
             identity,                                    //Identity
             consts.applicationIdentityType(),            //IdentityType
-            keyPair,                                     //keyPair
-            RequestSigners,                              //RequestSigners
+            keyPair.publicKey(),                         //keyPair
             true,                                        //GenerateSignature
             data                                         //CustomFields
     );
-    auto CreateCardRequest = manager.createCardRequest(parameters);
 
-    return CreateCardRequest;
+    auto createCardRequest = manager.createCardRequest(cardInfo, keyPair.privateKey());
+
+    manager.signRequest(createCardRequest, requestSigners);
+
+    return createCardRequest;
 }
-
 
 
 RevokeCardRequest TestUtils::instantiateRevokeCardRequest(const Card &card) const {
@@ -103,20 +103,17 @@ RevokeCardRequest TestUtils::instantiateRevokeCardRequest(const Card &card) cons
     auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
-    std::list<CardSigner> RequestSigners;
-    RequestSigners.push_back(
+    std::list<CardSigner> requestSigners;
+    requestSigners.push_back(
             CardSigner(consts.applicationId(), appPrivateKey)
     );
 
-    //Revoking
-    RevokeCardParams params(
+    auto revokeCardRequest = manager.revokeCardRequest(
             card.identifier(),                          //CardID
-            RequestSigners                              //RequestSigners
+            requestSigners                              //RequestSigners
     );
 
-    auto RevokeCardRequest = manager.revokeCardRequest(params);
-
-    return RevokeCardRequest;
+    return revokeCardRequest;
 }
 
 Card TestUtils::instantiateCard() const {
