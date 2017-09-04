@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,47 +34,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_CARDVALIDATOR_H
-#define VIRGIL_SDK_CARDVALIDATOR_H
+#include <virgil/sdk/client/models/validation/VirgilValidationRule.h>
 
-#include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
+using virgil::sdk::client::models::validation::VirgilValidationRule;
 
-namespace virgil {
-namespace sdk {
-namespace client {
-    /*!
-     * @brief Default implementation of CardValidatorInterface
-     */
-    class CardValidator {
-    public:
-        /*!
-         * @brief Constructor.
-         * @param crypto std::shared_ptr to some CryptoInterface implementation
-         */
-        CardValidator(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto);
+VirgilValidationRule::VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier)
+: virgilVerifier_(virgilVerifier) {}
 
-        /*!
-         * @brief Adds custom verifier to validator.
-         * @param verifierId std::string verifier ID
-         * @param publicKeyData exported Public Key of verifier
-         */
-        void addVerifier(std::string verifierId, VirgilByteArray publicKeyData);
+void VirgilValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                 const CardInterface &card,
+                                 ValidationResult &result) const {
+    try {
+        auto exist = card.signatures().find(virgilVerifier_.first);
 
-        /*!
-         * @brief Getter.
-         * @return std::unordered_map of all verifiers, except owner
-         */
-        const std::unordered_map<std::string, VirgilByteArray>& verifiers() const { return verifiers_; };
+        if (exist == card.signatures().end()) {
+            result.addError("card doesn't have virgil signature");
+            return;
+        }
+        auto signature = card.signatures().at(virgilVerifier_.first);
 
-        bool validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                          const interfaces::CardInterface &card) const;
+        auto isVerified = crypto->verify(card.fingerprint(), signature, *virgilVerifier_.second);
 
-    private:
-        std::shared_ptr<cryptointerfaces::CryptoInterface> crypto_;
-        std::unordered_map<std::string, VirgilByteArray> verifiers_;
-    };
+        if (!isVerified) {
+            result.addError("virgil signature wasn't verified");
+            return;
+        }
+    }
+    catch (...) {
+        result.addError("virgil signature verification failed");
+    }
 }
-}
-}
-
-#endif //VIRGIL_SDK_CARDVALIDATOR_H

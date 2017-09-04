@@ -41,11 +41,12 @@
 #include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
 #include <list>
 #include <PublicKeyInterface.h>
-#include <virgil/sdk/client/models/SignerInfo.h>
+#include <virgil/sdk/client/models/validation/SignerInfo.h>
 
 using virgil::sdk::client::interfaces::ValidationRuleInterface;
 using virgil::cryptointerfaces::PublicKeyInterface;
-using virgil::sdk::client::models::SignerInfo;
+using virgil::sdk::client::models::validation::SignerInfo;
+using virgil::sdk::client::models::validation::ValidationResult;
 
 namespace virgil {
     namespace sdk {
@@ -57,24 +58,53 @@ namespace virgil {
             public:
                 /*!
                  * @brief constructor
-                 * @param crypto Crypto instance
-                 * @param rules rules for validation
+                 * @param whitelist std::list with SignerInfo instances to validate with. By default is empty.
+                 * @param ignoreSelfSignature bool, which defines whether or not to ignore validating self signature.
+                 * By default is false.
+                 * @param ignoreVirgilSignature bool, which defines whether or not to ignore validating virgil signature.
+                 * By default is false.
                  */
                 ExtendedValidator(const std::list<SignerInfo> &whitelist = {{}},
                                   const bool &ignoreSelfSignature = false,
                                   const bool &ignoreVirgilSignature = false);
 
+                /*!
+                 * @brief clear and then fill list with appropriate rules using class parameters
+                 * @param crypto Crypto instance
+                 */
                 void initialize(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto) override;
 
+                /*!
+                 * @brief Validates Card.
+                 * @param crypto Crypto instance
+                 * @param instance Card to be validated
+                 * @return Validation Result instance with error messages
+                 */
                 ValidationResult validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
                                   const interfaces::CardInterface &card) const override;
 
+                /*!
+                 * @brief Getter.
+                 * @return bool with class flag whether or not to ignore validating self signature
+                 */
                 const bool ignoreSelfSignature() const { return ignoreSelfSignature_; }
 
+                /*!
+                 * @brief Getter.
+                 * @return bool with class flag whether or not to ignore validating virgil signature
+                 */
                 const bool ignoreVirgilSignature() const { return ignoreVirgilSignature_; }
 
+                /*!
+                 * @brief Getter.
+                 * @return std::list with SignerInfo instances using by validator
+                 */
                 const std::list<SignerInfo> whitelist() const { return whitelist_; }
 
+                /*!
+                 * @brief Getter.
+                 * @return std::list with ValidationRuleInterface implementations using by validator
+                 */
                 const std::list<std::shared_ptr<ValidationRuleInterface>> rules() const { return rules_; }
 
             private:

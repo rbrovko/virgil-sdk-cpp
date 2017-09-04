@@ -39,7 +39,7 @@
 
 #include <CryptoInterface.h>
 #include <virgil/sdk/client/Client.h>
-#include <virgil/sdk/client/CardManagerParams.h>
+#include <virgil/sdk/client/models/CardManagerParams.h>
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
 #include <virgil/sdk/client/models/Card.h>
 
@@ -91,6 +91,9 @@ namespace virgil {
                 std::future<void> revokeCard(const models::requests::RevokeCardRequest &request) const;
 
             private:
+
+                const ValidationResult validateCard(const models::Card &card) const;
+
                 std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> crypto_;
                 std::shared_ptr<interfaces::CardValidatorInterface> validator_;
                 Client client_;

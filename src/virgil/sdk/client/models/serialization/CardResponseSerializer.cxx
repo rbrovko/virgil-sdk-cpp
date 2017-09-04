@@ -43,13 +43,13 @@
 #include <virgil/sdk/client/models/serialization/JsonDeserializer.h>
 #include <virgil/sdk/client/models/serialization/CanonicalSerializer.h>
 
-#include <virgil/sdk/client/models/responses/CardRaw.h>
-#include <virgil/sdk/client/models/responses/CardRawMeta.h>
+#include <virgil/sdk/client/models/responses/RawCard.h>
+#include <virgil/sdk/client/models/responses/RawCardMeta.h>
 
 using json = nlohmann::json;
 
-using virgil::sdk::client::models::responses::CardRaw;
-using virgil::sdk::client::models::responses::CardRawMeta;
+using virgil::sdk::client::models::responses::RawCard;
+using virgil::sdk::client::models::responses::RawCardMeta;
 
 using virgil::sdk::util::JsonKey;
 using virgil::sdk::util::JsonUtils;
@@ -64,10 +64,10 @@ namespace models {
          * @brief JSONSerializer<CardRaw> specialization.
          */
         template<>
-        class JsonDeserializer<CardRaw> {
+        class JsonDeserializer<RawCard> {
         public:
             template<int FAKE = 0>
-            static CardRaw fromJson(const json &j) {
+            static RawCard fromJson(const json &j) {
                 try {
                     std::string snapshotStr = j[JsonKey::ContentSnapshot];
 
@@ -83,10 +83,10 @@ namespace models {
 
                     std::string cardVersion = meta[JsonKey::CardVersion];
 
-                    auto cardRaw = CardRaw(
+                    auto cardRaw = RawCard(
                             snapshot,
                             identifier,
-                            CardRawMeta(
+                            RawCardMeta(
                                     signatures,
                                     createdAt,
                                     cardVersion
@@ -106,20 +106,20 @@ namespace models {
 
 
         template<>
-        class JsonSerializer<CardRaw> {
+        class JsonSerializer<RawCard> {
         public:
             template<int INDENT = -1>
-            static std::string toJson(const CardRaw &cardRaw) {
+            static std::string toJson(const RawCard &cardRaw) {
                 try {
                     json j = {
-                            {JsonKey::ContentSnapshot, VirgilBase64::encode(cardRaw.ContentSnapshot())}
+                            {JsonKey::ContentSnapshot, VirgilBase64::encode(cardRaw.contentSnapshot())}
                     };
 
-                    j[JsonKey::Id] = cardRaw.Identifier();
+                    j[JsonKey::Id] = cardRaw.identifier();
                     j[JsonKey::Meta][JsonKey::Signs] = JsonUtils::unorderedBinaryMapToJson(
-                            cardRaw.Meta().signatures());
-                    j[JsonKey::Meta][JsonKey::CreatedAt] = cardRaw.Meta().createdAt();
-                    j[JsonKey::Meta][JsonKey::CardVersion] = cardRaw.Meta().cardVersion();
+                            cardRaw.meta().signatures());
+                    j[JsonKey::Meta][JsonKey::CreatedAt] = cardRaw.meta().createdAt();
+                    j[JsonKey::Meta][JsonKey::CardVersion] = cardRaw.meta().cardVersion();
 
                     return j.dump(INDENT);
                 } catch (std::exception &exception) {
@@ -140,8 +140,8 @@ namespace models {
 /**
  * Explicit methods instantiation
  */
-template CardRaw
-virgil::sdk::client::models::serialization::JsonDeserializer<CardRaw>::fromJson(const json&);
+template RawCard
+virgil::sdk::client::models::serialization::JsonDeserializer<RawCard>::fromJson(const json&);
 
 template std::string
-virgil::sdk::client::models::serialization::JsonSerializer<CardRaw>::toJson(const CardRaw&);
+virgil::sdk::client::models::serialization::JsonSerializer<RawCard>::toJson(const RawCard&);

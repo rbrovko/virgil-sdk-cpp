@@ -34,34 +34,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
-#define VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
+#ifndef VIRGIL_SDK_CARDRAW_H
+#define VIRGIL_SDK_CARDRAW_H
 
-#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/client/models/responses/RawCardMeta.h>
 
 namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-                namespace validation_rules {
+                namespace responses {
                     /*!
-                     * @brief implementation policy to validate virgil service sign
+                     * @brief This class represents response for card requests from the Virgil Service.
                      */
-                    class VirgilValidationRule : public ValidationRuleInterface {
+                    class RawCard {
                     public:
-                        friend class ExtendedValidator;
+                        /*!
+                         * @brief Required within std::future
+                         */
+                        RawCard() = default;
 
                         /*!
-                         * @brief constructor
+                         * @brief Getter.
+                         * @return snapshot
                          */
-                        VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier);
+                        const VirgilByteArray& contentSnapshot() const { return snapshot_; };
+
+                        /*!
+                         * @brief Getter.
+                         * @return std::string with card response identifier
+                         */
+                        const std::string& identifier() const { return identifier_; };
+
+                        /*!
+                         * @brief Getter.
+                         * @return CardRawMeta with card Meta
+                         */
+                        const RawCardMeta& meta() const { return meta_; };
+
+                        // This is private API
+                        //! @cond Doxygen_Suppress
+                        RawCard(VirgilByteArray snapshot,
+                                std::string identifier,
+                                RawCardMeta meta);
+                        //! @endcond
 
                     private:
-                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                   const CardInterface &card,
-                                   ValidationResult &result) const override;
-                        std::pair<std::string, PublicKeyInterface*> virgilVerifier_;
+                        VirgilByteArray snapshot_;
+                        std::string identifier_;
+                        RawCardMeta meta_;
                     };
                 }
             }
@@ -69,4 +90,4 @@ namespace virgil {
     }
 }
 
-#endif //VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
+#endif //VIRGIL_SDK_CARDRAW_H

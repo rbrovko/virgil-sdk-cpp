@@ -47,7 +47,7 @@
 #include <virgil/sdk/client/models/interfaces/Importable.h>
 #include <virgil/sdk/client/interfaces/CardInterface.h>
 
-#include <virgil/sdk/client/models/responses/CardRaw.h>
+#include <virgil/sdk/client/models/responses/RawCard.h>
 #include <virgil/sdk/crypto/Crypto.h>
 
 namespace virgil {
@@ -76,7 +76,7 @@ namespace client {
              * @return instantiated Card instance
              */
             static Card ImportRaw(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto,
-                                  const responses::CardRaw &cardRaw);
+                                  const responses::RawCard &cardRaw);
 
             std::string exportAsString() const override;
 
@@ -150,13 +150,13 @@ namespace client {
             const std::unordered_map<std::string, VirgilByteArray>& signatures() const override { return signatures_; }
 
         private:
-            Card(responses::CardRaw cardRaw, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identifier, std::string identity,
+            Card(responses::RawCard rawCard, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identifier, std::string identity,
                  std::string identityType, std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey,
                  std::unordered_map<std::string, std::string> data, CardScope scope,
                  std::string createdAt, std::string cardVersion,
                  std::unordered_map<std::string, VirgilByteArray> signatures);
 
-            responses::CardRaw cardRaw_;
+            responses::RawCard cardRaw_;
             VirgilByteArray fingerprint_;
             VirgilByteArray snapshot_;
             std::string identifier_;

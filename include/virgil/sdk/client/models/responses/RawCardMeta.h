@@ -34,37 +34,58 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
-#define VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
+#ifndef VIRGIL_SDK_CARDRAWMETA_H
+#define VIRGIL_SDK_CARDRAWMETA_H
 
+#include <unordered_map>
 
-#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/Common.h>
 
 namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-                namespace validation_rules {
+                namespace responses {
                     /*!
-                     * @brief implementation policy to validate application or custom signs
+                     * @brief This class represents response for card requests from the Virgil Service.
                      */
-                    class WhitelistValidationRule : public ValidationRuleInterface {
+                    class RawCardMeta {
                     public:
-
-                        friend class ExtendedValidator;
                         /*!
-                         * @brief constructor
-                         * @param whitelist unordered map of verifiers to validate
+                         * @brief Required within std::future
                          */
-                        WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist);
+                        RawCardMeta() = default;
+                        /*!
+                         * @brief Getter.
+                         * @return std::unordered_map with signatures
+                         */
+                        const std::unordered_map<std::string, VirgilByteArray>& signatures() const { return signatures_; };
+
+                        /*!
+                         * @brief Getter.
+                         * @return std::string with date of card creation (format is yyyy-MM-dd'T'HH:mm:ssZ)
+                         */
+                        const std::string& createdAt() const { return createdAt_; };
+
+                        /*!
+                         * @brief Getter.
+                         * @return
+                         */
+                        const std::string& cardVersion() const { return cardVersion_; };
+
+
+                        // This is private API
+                        //! @cond Doxygen_Suppress
+                        RawCardMeta(
+                                std::unordered_map<std::string, VirgilByteArray> signatures,
+                                std::string createdAt,
+                                std::string cardVersion);
+                        //! @endcond
 
                     private:
-                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                   const CardInterface &card,
-                                   ValidationResult &result) const override;
-
-                        std::unordered_map<std::string, PublicKeyInterface*> whitelist_;
+                        std::unordered_map<std::string, VirgilByteArray> signatures_;
+                        std::string createdAt_;
+                        std::string cardVersion_;
                     };
                 }
             }
@@ -72,4 +93,4 @@ namespace virgil {
     }
 }
 
-#endif //VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
+#endif //VIRGIL_SDK_CARDRAWMETA_H

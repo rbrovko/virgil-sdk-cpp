@@ -47,27 +47,52 @@ namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-
+                /*!
+                 * @brief card information representation
+                 */
                 class CardInfo {
                 public:
+                    /*!
+                     * @brief constructor
+                     * @param identity std::string with card identity
+                     * @param publicKey implementation of PublicKeyInterface
+                     * @param identityType std::string with identity type
+                     * @param customFields unordered map with custom strings
+                     */
                     CardInfo(
-                            const std::string &Identity,
+                            const std::string &identity,
                             const PublicKeyInterface &publicKey,
-                            const std::string &IdentityType = "unknown",
+                            const std::string &identityType = "unknown",
                             std::unordered_map<std::string, std::string> customFields
                             = std::unordered_map<std::string, std::string>())
-                    : identity_(Identity),
-                      identityType_(IdentityType),
+                    : identity_(identity),
+                      identityType_(identityType),
                       publicKey_(publicKey),
                       customFields_(customFields) {}
 
-                    const std::string identity() const { return identity_; }
+                    /*!
+                    * @brief Getter.
+                    * @return std::string with card identity
+                    */
+                    const std::string& identity() const { return identity_; }
 
-                    const std::string identityType() const { return identityType_; }
+                    /*!
+                    * @brief Getter.
+                    * @return std::string with card identity type
+                    */
+                    const std::string& identityType() const { return identityType_; }
 
+                    /*!
+                    * @brief Getter.
+                    * @return reference to stored Public Key
+                    */
                     const PublicKeyInterface& publicKey() const { return publicKey_; }
 
-                    const std::unordered_map<std::string, std::string> customFields() const { return customFields_; }
+                    /*!
+                    * @brief Getter.
+                    * @return std::unordered_map with card string custom fields
+                    */
+                    const std::unordered_map<std::string, std::string>& customFields() const { return customFields_; }
 
                 private:
                     const std::string identity_;

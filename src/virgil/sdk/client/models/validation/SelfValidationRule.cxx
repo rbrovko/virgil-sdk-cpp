@@ -34,37 +34,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_SELFINTEGRITYPOLICY_H
-#define VIRGIL_SDK_SELFINTEGRITYPOLICY_H
+#include <virgil/sdk/client/models/validation/SelfValidationRule.h>
 
-#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+using virgil::sdk::client::models::validation::SelfValidationRule;
 
-namespace virgil {
-    namespace sdk {
-        namespace client {
-            namespace models {
-                namespace validation_rules {
-                    /*!
-                     * @brief implementation policy to validate self sign of card
-                     */
-                    class SelfValidationRule : public ValidationRuleInterface {
-                    public:
-                        friend class ExtendedValidator;
-                        /*!
-                         * @brief constructor
-                         */
-                        SelfValidationRule() = default;
+void SelfValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                               const CardInterface &card,
+                               ValidationResult &result) const {
+    try {
+        auto exist = card.signatures().find(card.identifier());
 
-                    private:
-                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                   const CardInterface &card,
-                                   ValidationResult &result) const override;
-                    };
-                }
-            }
+        if (exist == card.signatures().end()) {
+            result.addError("card doesn't have self signature");
+            return;
+        }
+
+        auto signature = card.signatures().at(card.identifier());
+
+        auto isVerified = crypto->verify(card.fingerprint(), signature, *card.publicKey().get());
+
+        if (!isVerified) {
+            result.addError("self signature wasn't verified");
+            return;
         }
     }
+    catch (...) {
+        result.addError("self signature verification failed");
+    }
 }
-
-#endif //VIRGIL_SDK_SELFINTEGRITYPOLICY_H

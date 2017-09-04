@@ -34,31 +34,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/models/validation_rules/SelfValidationRule.h>
+#ifndef VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
+#define VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
 
-using virgil::sdk::client::models::validation_rules::SelfValidationRule;
 
-void SelfValidationRule::check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                               const CardInterface &card,
-                               ValidationResult &result) const {
-    try {
-        auto exist = card.signatures().find(card.identifier());
+#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
+#include <virgil/sdk/client/ExtendedValidator.h>
 
-        if (exist == card.signatures().end()) {
-            result.addError("card doesn't have self signature");
-            return;
+namespace virgil {
+    namespace sdk {
+        namespace client {
+            namespace models {
+                namespace validation {
+                    /*!
+                     * @brief implementation policy to validate application or custom signs
+                     */
+                    class WhitelistValidationRule : public ValidationRuleInterface {
+                    public:
+
+                        friend class ExtendedValidator;
+                        /*!
+                         * @brief constructor
+                         * @param whitelist unordered map of verifiers to validate
+                         */
+                        WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist);
+
+                    private:
+                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card,
+                                   ValidationResult &result) const override;
+
+                        std::unordered_map<std::string, PublicKeyInterface*> whitelist_;
+                    };
+                }
+            }
         }
-
-        auto signature = card.signatures().at(card.identifier());
-
-        auto isVerified = crypto->verify(card.fingerprint(), signature, *card.publicKey().get());
-
-        if (!isVerified) {
-            result.addError("self signature wasn't verified");
-            return;
-        }
-    }
-    catch (...) {
-        result.addError("self signature verification failed");
     }
 }
+
+#endif //VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H

@@ -45,7 +45,7 @@
 #include <virgil/sdk/client/models/interfaces/Exportable.h>
 #include <virgil/sdk/client/models/interfaces/Importable.h>
 
-#include <virgil/sdk/client/models/responses/CardRaw.h>
+#include <virgil/sdk/client/models/responses/RawCard.h>
 #include <virgil/sdk/crypto/Crypto.h>
 
 namespace virgil {

@@ -35,17 +35,17 @@
  */
 
 #include <virgil/sdk/client/ExtendedValidator.h>
-#include <virgil/sdk/client/models/validation_rules/SelfValidationRule.h>
-#include <virgil/sdk/client/models/validation_rules/VirgilValidationRule.h>
-#include <virgil/sdk/client/models/validation_rules/WhitelistValidationRule.h>
+#include <virgil/sdk/client/models/validation/SelfValidationRule.h>
+#include <virgil/sdk/client/models/validation/VirgilValidationRule.h>
+#include <virgil/sdk/client/models/validation/WhitelistValidationRule.h>
 #include <string>
-#include <virgil/sdk/client/ValidationResult.h>
+#include <virgil/sdk/client/models/validation/ValidationResult.h>
 
 using virgil::sdk::client::ExtendedValidator;
-using virgil::sdk::client::models::validation_rules::SelfValidationRule;
-using virgil::sdk::client::models::validation_rules::VirgilValidationRule;
-using virgil::sdk::client::models::validation_rules::WhitelistValidationRule;
-using virgil::sdk::client::ValidationResult;
+using virgil::sdk::client::models::validation::SelfValidationRule;
+using virgil::sdk::client::models::validation::VirgilValidationRule;
+using virgil::sdk::client::models::validation::WhitelistValidationRule;
+using virgil::sdk::client::models::validation::ValidationResult;
 
 static_assert(!std::is_abstract<virgil::sdk::client::ExtendedValidator>(), "ExtendedValidator must not be abstract.");
 

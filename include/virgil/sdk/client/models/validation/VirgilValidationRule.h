@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,28 +34,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_VALIDATIONRESULT_H
-#define VIRGIL_SDK_VALIDATIONRESULT_H
+#ifndef VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
+#define VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H
 
-#include <list>
-#include <string>
+#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
+#include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
     namespace sdk {
         namespace client {
-            class ValidationResult {
-            public:
-                ValidationResult() = default;
+            namespace models {
+                namespace validation {
+                    /*!
+                     * @brief implementation policy to validate virgil service sign
+                     */
+                    class VirgilValidationRule : public ValidationRuleInterface {
+                    public:
+                        friend class ExtendedValidator;
 
-                void addError(const std::string &message) { errors_.push_back(message); }
+                        /*!
+                         * @brief constructor
+                         */
+                        VirgilValidationRule(const std::pair<std::string, PublicKeyInterface*> &virgilVerifier);
 
-                const bool isValid() const { auto isValid = (errors_.size()>0) ? false : true; return isValid; }
-
-                const std::list<std::string> errors() const { return errors_; }
-            private:
-                std::list<std::string> errors_;
-            };
+                    private:
+                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card,
+                                   ValidationResult &result) const override;
+                        std::pair<std::string, PublicKeyInterface*> virgilVerifier_;
+                    };
+                }
+            }
         }
     }
 }
-#endif //VIRGIL_SDK_VALIDATIONRESULT_H
+
+#endif //VIRGIL_SDK_VIRGILINTEGRITYPOLICY_H

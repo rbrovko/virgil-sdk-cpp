@@ -46,7 +46,7 @@
 #include <virgil/sdk/client/models/interfaces/Importable.h>
 #include <virgil/sdk/client/interfaces/CardInterface.h>
 
-#include <virgil/sdk/client/models/responses/CardRaw.h>
+#include <virgil/sdk/client/models/responses/RawCard.h>
 #include <virgil/sdk/crypto/Crypto.h>
 #include <vector>
 #include <virgil/sdk/client/models/ClientCommon.h>

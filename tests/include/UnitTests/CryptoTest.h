@@ -75,22 +75,10 @@ namespace virgil {
                     return VirgilByteArrayUtils::stringToBytes("fingerprint");
                 }
 
-                PublicKeyInterface *
-                importPublicKey(const byteArray &data) const override { return new PublicKeyTest(); }
-
-
-                //NOT USED YET
-                byteArray exportPrivateKey(const PrivateKeyInterface &privateKey,
-                                           const std::string &password = "") const override {
-                    return VirgilByteArrayUtils::stringToBytes("smth");
+                PublicKeyInterface* importPublicKey(const byteArray &data) const override {
+                    return new PublicKeyTest();
                 }
 
-
-                bool verify(std::istream &istream, const byteArray &signature,
-                            const PublicKeyInterface &signerPublicKey) const override { return false; }
-
-                byteArray generateSignature(std::istream &istream, const
-                PrivateKeyInterface &privateKey) const override { return VirgilByteArrayUtils::stringToBytes("signature"); }
 
             };
         }

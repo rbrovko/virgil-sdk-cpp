@@ -42,6 +42,9 @@
 
 #include <virgil/sdk/client/Client.h>
 #include <virgil/sdk/client/RequestManager.h>
+#include <virgil/sdk/crypto/keys/PublicKey.h>
+
+using virgil::sdk::crypto::keys::PublicKey;
 
 using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::client::models::CardInfo;
@@ -57,7 +60,7 @@ using virgil::sdk::client::Client;
 using virgil::sdk::client::RequestManager;
 using virgil::sdk::client::models::interfaces::SignableRequestInterface;
 using virgil::sdk::client::models::serialization::JsonSerializer;
-using virgil::sdk::client::models::responses::CardRaw;
+using virgil::sdk::client::models::responses::RawCard;
 using virgil::sdk::client::models::CardSigner;
 using virgil::cryptointerfaces::PrivateKeyInterface;
 
@@ -72,11 +75,6 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
 
     auto identity = Utils::generateRandomStr(40);
 
-    std::list<CardSigner> requestSigners;
-    requestSigners.push_back(
-            CardSigner(consts.applicationId(), appPrivateKey)
-    );
-
     CardInfo cardInfo(
             identity,                                    //Identity
             keyPair.publicKey(),                         //keyPair
@@ -85,6 +83,11 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
     );
 
     auto createCardRequest = manager.createCardRequest(cardInfo, std::make_shared<PrivateKey>(keyPair.privateKey()));
+
+    std::list<CardSigner> requestSigners;
+    requestSigners.push_back(
+            CardSigner(consts.applicationId(), appPrivateKey)
+    );
 
     manager.signRequest(createCardRequest, requestSigners);
 

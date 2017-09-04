@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 Virgil Security Inc.
+ * Copyright (C) 2016 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,9 +34,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/models/CardSigner.h>
+#ifndef VIRGIL_SDK_SIGNERINFO_H
+#define VIRGIL_SDK_SIGNERINFO_H
 
-using virgil::sdk::client::models::CardSigner;
 
-CardSigner::CardSigner(std::string cardId, cryptointerfaces::PrivateKeyInterface &privateKey)
-: cardId_(cardId), privateKey_(privateKey) {}
+namespace virgil {
+    namespace sdk {
+        namespace client {
+            namespace models {
+                namespace validation {
+                    /*!
+                     * @brief class for signer information representation. Cards is validated using them.
+                     */
+                    class SignerInfo {
+                    public:
+                        /*!
+                         * @brief constructor
+                         * @param cardId std::string with card identifier
+                         * @param publicKey std::string with public key
+                         */
+                        SignerInfo(const std::string &cardId, const std::string &publicKey)
+                                : cardId_(cardId), publicKey_(publicKey) {}
+
+                        /*!
+                         * @brief Getter.
+                         * @return std::string with card id
+                         */
+                        const std::string &cardId() const { return cardId_; }
+
+                        /*!
+                         * @brief Getter.
+                         * @return std::string with public Key
+                         */
+                        const std::string &publicKey() const { return publicKey_; }
+
+                    private:
+                        std::string cardId_;
+                        std::string publicKey_;
+                    };
+                }
+            }
+        }
+    }
+}
+
+#endif //VIRGIL_SDK_SIGNERINFO_H

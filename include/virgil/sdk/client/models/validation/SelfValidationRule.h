@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016 Virgil Security Inc.
+ * Copyright (C) 2017 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,46 +34,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_SIGNERINFO_H
-#define VIRGIL_SDK_SIGNERINFO_H
+#ifndef VIRGIL_SDK_SELFINTEGRITYPOLICY_H
+#define VIRGIL_SDK_SELFINTEGRITYPOLICY_H
 
+#include <virgil/sdk/client/interfaces/ValidationRuleInterface.h>
+#include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-                /*!
-                 * @brief class for signer information representation. Cards is validated using them.
-                 */
-                class SignerInfo {
-                public:
+                namespace validation {
                     /*!
-                     * @brief constructor
-                     * @param cardId std::string with card identifier
-                     * @param publicKey std::string with public key
+                     * @brief implementation policy to validate self sign of card
                      */
-                    SignerInfo(const std::string &cardId, const std::string &publicKey)
-                    : cardId_(cardId), publicKey_(publicKey) {}
+                    class SelfValidationRule : public ValidationRuleInterface {
+                    public:
+                        friend class ExtendedValidator;
+                        /*!
+                         * @brief constructor
+                         */
+                        SelfValidationRule() = default;
 
-                    /*!
-                     * @brief Getter.
-                     * @return std::string with card id
-                     */
-                    const std::string& cardId() const { return cardId_; }
-
-                    /*!
-                     * @brief Getter.
-                     * @return std::string with public Key
-                     */
-                    const std::string& publicKey() const { return publicKey_; }
-
-                private:
-                    std::string cardId_;
-                    std::string publicKey_;
-                };
+                    private:
+                        void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                   const CardInterface &card,
+                                   ValidationResult &result) const override;
+                    };
+                }
             }
         }
     }
 }
 
-#endif //VIRGIL_SDK_SIGNERINFO_H
+#endif //VIRGIL_SDK_SELFINTEGRITYPOLICY_H

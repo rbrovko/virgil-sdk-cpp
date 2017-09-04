@@ -53,19 +53,19 @@ using virgil::sdk::client::models::serialization::CanonicalSerializer;
 using virgil::cryptointerfaces::PublicKeyInterface;
 
 
-Card Card::ImportRaw(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto, const responses::CardRaw &cardRaw) {
+Card Card::ImportRaw(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto, const responses::RawCard &cardRaw) {
     auto model =
-            CanonicalSerializer<snapshotmodels::CreateCardSnapshotModel>::fromCanonicalForm(cardRaw.ContentSnapshot());
+            CanonicalSerializer<snapshotmodels::CreateCardSnapshotModel>::fromCanonicalForm(cardRaw.contentSnapshot());
 
     std::shared_ptr<PublicKeyInterface> publicKey(crypto->importPublicKey(model.publicKeyData()));
 
-    auto fingerptint = crypto->calculateFingerprint(cardRaw.ContentSnapshot());
+    auto fingerptint = crypto->calculateFingerprint(cardRaw.contentSnapshot());
 
-    return Card(cardRaw, fingerptint, cardRaw.ContentSnapshot(), cardRaw.Identifier(), model.identity(), model.identityType(), publicKey,
-                model.data(), model.scope(), cardRaw.Meta().createdAt(), cardRaw.Meta().cardVersion(), cardRaw.Meta().signatures());
+    return Card(cardRaw, fingerptint, cardRaw.contentSnapshot(), cardRaw.identifier(), model.identity(), model.identityType(), publicKey,
+                model.data(), model.scope(), cardRaw.meta().createdAt(), cardRaw.meta().cardVersion(), cardRaw.meta().signatures());
 }
 
-Card::Card(responses::CardRaw cardRaw, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identifier, std::string identity, std::string identityType,
+Card::Card(responses::RawCard cardRaw, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identifier, std::string identity, std::string identityType,
            std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey, std::unordered_map<std::string, std::string> data, CardScope scope,
            std::string createdAt, std::string cardVersion, std::unordered_map<std::string, VirgilByteArray> signatures)
         : cardRaw_(cardRaw), fingerprint_(fingerprint), snapshot_(std::move(snapshot)), identifier_(std::move(identifier)), identity_(std::move(identity)),
@@ -75,13 +75,13 @@ Card::Card(responses::CardRaw cardRaw, VirgilByteArray fingerprint, VirgilByteAr
 }
 
 std::string Card::exportAsString() const {
-    auto json = JsonSerializer<responses::CardRaw>::toJson(cardRaw_);
+    auto json = JsonSerializer<responses::RawCard>::toJson(cardRaw_);
     return VirgilBase64::encode(VirgilByteArrayUtils::stringToBytes(json));
 }
 
 Card Card::importFromString(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto, const std::string &data) {
     auto jsonStr = VirgilByteArrayUtils::bytesToString(VirgilBase64::decode(data));
-    auto cardRaw = JsonDeserializer<responses::CardRaw>::fromJsonString(jsonStr);
+    auto cardRaw = JsonDeserializer<responses::RawCard>::fromJsonString(jsonStr);
 
     return Card::ImportRaw(crypto, cardRaw);
 }

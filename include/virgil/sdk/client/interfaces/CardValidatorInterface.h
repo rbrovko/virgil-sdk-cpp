@@ -38,7 +38,7 @@
 #define VIRGIL_SDK_CARDVALIDATORINTERFACE_H
 
 #include <virgil/sdk/client/models/Card.h>
-#include <virgil/sdk/client/ValidationResult.h>
+#include <virgil/sdk/client/models/validation/ValidationResult.h>
 
 namespace virgil {
 namespace sdk {
@@ -50,14 +50,21 @@ namespace client {
         class CardValidatorInterface {
         public:
 
+            /*!
+             * @brief clear and then fill list with appropriate rules using class parameters
+             * @param crypto Crypto instance
+             */
             virtual void initialize(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto) = 0;
+
             /*!
              * @brief Validates Card.
+             * @param crypto Crypto instance
              * @param instance Card to be validated
-             * @return true if Card passed validation, false otherwise
+             * @return Validation Result instance with error messages
              */
-            virtual ValidationResult validateCard(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
-                                      const CardInterface &card) const = 0;
+            virtual models::validation::ValidationResult validateCard(
+                    const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                    const CardInterface &card) const = 0;
 
             /*!
              * @brief Virtual destructor.

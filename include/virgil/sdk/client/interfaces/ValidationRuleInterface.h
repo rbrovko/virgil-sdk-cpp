@@ -40,7 +40,7 @@
 #include <virgil/sdk/client/interfaces/CardInterface.h>
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
 #include <CryptoInterface.h>
-#include <virgil/sdk/client/ValidationResult.h>
+#include <virgil/sdk/client/models/validation/ValidationResult.h>
 
 using virgil::sdk::client::interfaces::CardInterface;
 using virgil::sdk::client::interfaces::CardValidatorInterface;
@@ -62,7 +62,7 @@ namespace virgil {
                      */
                    virtual void check(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
                                       const CardInterface &card,
-                                      ValidationResult &result) const = 0;
+                                      models::validation::ValidationResult &result) const = 0;
 
                     virtual ~ValidationRuleInterface() = default;
                 };

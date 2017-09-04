@@ -38,6 +38,7 @@
 #define VIRGIL_SDK_CARDMANAGERPARAMS_H
 
 #include <virgil/sdk/client/interfaces/CardValidatorInterface.h>
+#include <virgil/sdk/client/ExtendedValidator.h>
 
 namespace virgil {
     namespace sdk {
@@ -55,7 +56,7 @@ namespace virgil {
                  */
                 CardManagerParams(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
                                   const std::string &apiToken,
-                                  const std::shared_ptr<interfaces::CardValidatorInterface> &validator)
+                                  const std::shared_ptr<interfaces::CardValidatorInterface> &validator = nullptr)
                 : crypto_(crypto), apiToken_(apiToken), validator_(validator) {};
 
                 /*!

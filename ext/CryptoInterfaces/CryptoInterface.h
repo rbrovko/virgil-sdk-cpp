@@ -58,15 +58,6 @@ namespace virgil {
          */
         virtual PublicKeyInterface* importPublicKey(const byteArray &data) const = 0;
 
-        /*!
-         * @brief Exports Private Key to raw representation.
-         * @param privateKey PrivateKey instance
-         * @param password std::string password for Private Key export (required for further import)
-         * @return raw representation of Private Key
-         */
-         virtual byteArray exportPrivateKey(const PrivateKeyInterface &privateKey,
-                                                   const std::string &password = "") const = 0;
-
          /*!
           * @brief Exports Public Key to raw representation.
           * @param publicKey PublicKey instance
@@ -84,15 +75,6 @@ namespace virgil {
            virtual bool verify(const byteArray &data, const byteArray &signature,
                                     const PublicKeyInterface &signerPublicKey) const = 0;
 
-           /*!
-            * @brief Verifies stream for genuineness.
-            * @param istream std::istream with data to be verified
-            * @param signature Signatue
-            * @param signerPublicKey PublicKey instance with signer's Public Keys
-            * @return true if data was successfully verified, false otherwise
-            */
-           virtual bool verify(std::istream &istream, const byteArray &signature,
-                                    const cryptointerfaces::PublicKeyInterface &signerPublicKey) const = 0;
 
             /*!
              * @brief Generates signature for data.
@@ -102,15 +84,6 @@ namespace virgil {
              */
             virtual byteArray generateSignature(const byteArray &data,
                                                     const cryptointerfaces::PrivateKeyInterface &privateKey) const = 0;
-
-            /*!
-             * @brief Generates signature for stream.
-             * @param istream std::istream with data from which signature will be generated
-             * @param privateKey signer's Private Key
-             * @return Signature for stream
-             */
-            virtual byteArray generateSignature(std::istream &istream, const
-                                            cryptointerfaces::PrivateKeyInterface &privateKey) const = 0;
 
             /*!
              * @brief Calculates Fingerprint for data.

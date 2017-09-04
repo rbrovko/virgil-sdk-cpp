@@ -47,6 +47,7 @@ using virgil::sdk::client::CardManager;
 using virgil::cryptointerfaces::CryptoInterface;
 using virgil::sdk::client::ExtendedValidator;
 using virgil::sdk::client::models::Card;
+using virgil::sdk::client::models::validation::ValidationResult;
 
 CardManager::CardManager(const CardManagerParams &cardManagerParams)
         : client_(Client(cardManagerParams.apiToken())),
@@ -60,7 +61,7 @@ std::future<Card> CardManager::getCard(const std::string &cardId) const {
         auto cardRaw = client_.getCard(cardId);
         auto card = Card::ImportRaw(crypto_, cardRaw.get());
 
-        auto validationResult = validator_->validateCard(crypto_, card);
+        auto validationResult = validateCard(card);
         if (!validationResult.isValid()) {
             throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
         }
@@ -76,7 +77,7 @@ std::future<Card> CardManager::createCard(const models::requests::CreateCardRequ
         auto cardRaw = client_.createCard(request);
         auto card = Card::ImportRaw(crypto_, cardRaw.get());
 
-        auto validationResult = validator_->validateCard(crypto_, card);
+        auto validationResult = validateCard(card);
         if (!validationResult.isValid()) {
             throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
         }
@@ -99,7 +100,7 @@ std::future<std::vector<Card>> CardManager::searchCards(const models::SearchCard
 
 
         for (const auto& card : cards) {
-            auto validationResult = validator_->validateCard(crypto_, card);
+            auto validationResult = validateCard(card);
             if (!validationResult.isValid()) {
                 throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
             }
@@ -120,4 +121,10 @@ std::future<void> CardManager::revokeCard(const models::requests::RevokeCardRequ
     });
 
     return future;
+}
+
+const ValidationResult CardManager::validateCard(const Card &card) const {
+    if (validator_ != nullptr)
+        return validator_->validateCard(crypto_, card);
+    return ValidationResult();
 }

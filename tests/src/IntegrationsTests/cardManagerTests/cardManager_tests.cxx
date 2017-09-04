@@ -46,7 +46,7 @@
 #include <virgil/sdk/client/CardManager.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
 
-using virgil::sdk::client::models::SignerInfo;
+using virgil::sdk::client::models::validation::SignerInfo;
 using virgil::sdk::client::Client;
 using virgil::sdk::client::CardManager;
 using virgil::sdk::client::models::SearchCardsCriteria;

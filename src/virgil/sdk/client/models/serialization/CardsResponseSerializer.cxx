@@ -39,13 +39,13 @@
 #include <nlohman/json.hpp>
 
 #include <virgil/sdk/client/models/serialization/JsonDeserializer.h>
-#include <virgil/sdk/client/models/responses/CardRaw.h>
+#include <virgil/sdk/client/models/responses/RawCard.h>
 #include <virgil/sdk/util/JsonKey.h>
 #include <virgil/sdk/util/JsonUtils.h>
 
 using json = nlohmann::json;
 
-using virgil::sdk::client::models::responses::CardRaw;
+using virgil::sdk::client::models::responses::RawCard;
 //using virgil::sdk::client::models::responses::CardsResponse;
 using virgil::sdk::util::JsonKey;
 using virgil::sdk::util::JsonUtils;
@@ -59,14 +59,14 @@ namespace models {
          * @brief JSONSerializer<CardsResponse> specialization.
          */
         template<>
-        class JsonDeserializer<std::vector<CardRaw>> {
+        class JsonDeserializer<std::vector<RawCard>> {
         public:
             template<int FAKE = 0>
-            static std::vector<CardRaw> fromJson(const json &j) {
+            static std::vector<RawCard> fromJson(const json &j) {
                 try {
-                    std::vector<CardRaw> response;
+                    std::vector<RawCard> response;
                     for (const auto& jElement : j) {
-                        response.push_back(JsonDeserializer<CardRaw>::fromJson(jElement));
+                        response.push_back(JsonDeserializer<RawCard>::fromJson(jElement));
                     }
 
                     return response;
@@ -87,5 +87,5 @@ namespace models {
 /**
  * Explicit methods instantiation
  */
-template std::vector<CardRaw>
-virgil::sdk::client::models::serialization::JsonDeserializer<std::vector<CardRaw>>::fromJson(const json&);
+template std::vector<RawCard>
+virgil::sdk::client::models::serialization::JsonDeserializer<std::vector<RawCard>>::fromJson(const json&);

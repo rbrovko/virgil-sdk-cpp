@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 Virgil Security Inc.
+ * Copyright (C) 2016 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,61 +34,51 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_CARDRAW_H
-#define VIRGIL_SDK_CARDRAW_H
+#ifndef VIRGIL_SDK_VALIDATIONRESULT_H
+#define VIRGIL_SDK_VALIDATIONRESULT_H
 
-#include <virgil/sdk/client/models/responses/CardRawMeta.h>
+#include <list>
+#include <string>
 
 namespace virgil {
     namespace sdk {
         namespace client {
             namespace models {
-                namespace responses {
+                namespace validation {
                     /*!
-                     * @brief This class represents response for card requests from the Virgil Service.
+                     * @brief class for representation result of validating
                      */
-                    class CardRaw {
+                    class ValidationResult {
                     public:
+                        ValidationResult() = default;
+
                         /*!
-                         * @brief Required within std::future
+                         * @brief adding error message to validation result
+                         * @param message error message to add
                          */
-                        CardRaw() = default;
+                        void addError(const std::string &message) { errors_.push_back(message); }
+
+                        /*!
+                         * @brief getting a status of validation result: valid or not
+                         * @return true if there are not errors
+                         */
+                        const bool isValid() const {
+                            auto isValid = (errors_.size() > 0) ? false : true;
+                            return isValid;
+                        }
 
                         /*!
                          * @brief Getter.
-                         * @return snapshot
+                         * @return std::list of strings with error messages
                          */
-                        const VirgilByteArray& ContentSnapshot() const { return snapshot_; };
-
-                        /*!
-                         * @brief Getter.
-                         * @return std::string with card response identifier
-                         */
-                        const std::string& Identifier() const { return identifier_; };
-
-                        /*!
-                         * @brief Getter.
-                         * @return CardRawMeta with card Meta
-                         */
-                        const CardRawMeta& Meta() const { return meta_; };
-
-                        // This is private API
-                        //! @cond Doxygen_Suppress
-                        CardRaw(
-                                VirgilByteArray snapshot,
-                                std::string identifier,
-                                CardRawMeta meta);
-                        //! @endcond
+                        const std::list<std::string> errors() const { return errors_; }
 
                     private:
-                        VirgilByteArray snapshot_;
-                        std::string identifier_;
-                        CardRawMeta meta_;
+                        std::list<std::string> errors_;
                     };
                 }
             }
         }
     }
 }
-
-#endif //VIRGIL_SDK_CARDRAW_H
+#endif //VIRGIL_SDK_VALIDATIONRESULT_H

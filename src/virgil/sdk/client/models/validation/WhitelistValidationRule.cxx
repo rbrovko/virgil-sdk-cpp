@@ -34,9 +34,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/client/models/validation_rules/WhitelistValidationRule.h>
+#include <virgil/sdk/client/models/validation/WhitelistValidationRule.h>
 
-using virgil::sdk::client::models::validation_rules::WhitelistValidationRule;
+using virgil::sdk::client::models::validation::WhitelistValidationRule;
 
 WhitelistValidationRule::WhitelistValidationRule(const std::unordered_map<std::string, PublicKeyInterface*> &whitelist)
         : whitelist_(whitelist) {}

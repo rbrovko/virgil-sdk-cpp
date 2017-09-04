@@ -18,9 +18,9 @@ In this guide you will find code for every task you need to implement in order t
 * [User and App Credentials](#user-and-app-credentials)
 * [Creating a Virgil Card](#creating-a-virgil-card)
 * [Search for Virgil Cards](#search-for-virgil-cards)
-* [Validating Virgil Cards](#validating-virgil-cards)
 * [Get a Virgil Card](#get-a-virgil-card)
 * [Revoking a Virgil Card](#revoking-a-virgil-card)
+* [Validating Virgil Cards](#validating-virgil-cards)
 * [Operations with Crypto Keys](#operations-with-crypto-keys)
 * [Generate Keys](#generate-keys)
 * [Import and Export Keys](#import-and-export-keys)
@@ -53,11 +53,11 @@ When you register an application on the Virgil developer's [dashboard](https://d
 * **accessToken** is a unique string value that provides an authenticated secure access to the Virgil services and is passed with each API call. The *accessToken* also allows the API to associate your app’s requests with your Virgil developer’s account. 
 
 ## Connecting to Virgil
-Before you can use any Virgil services features in your app, you must first initialize ```Client``` class. You use the ```Client``` object to get access to Create, Revoke, Get and Search for *Virgil Cards* (Public keys). 
+Before you can use any Virgil services features in your app, you must first initialize `Client` class. You use the `Client` object to get access to Create, Revoke, Get and Search for *Virgil Cards* (Public keys). You can also use `CardManager` class instead. It extends 'Client' functionality and helps building cards from responses and validating them.
 
 ### Initializing an API Client
 
-To create an instance of `Client` class, just call its constructor with your application's *accessToken* which you generated on developer's deshboard.
+To create an instance of `Client` class, just call its constructor with your application's *accessToken* which you generated on developer's dashboard.
 
 ```cpp
 Client client(<#Virgil App token#>);
@@ -70,10 +70,23 @@ The `Crypto` class provides cryptographic operations in applications, such as ha
 auto crypto = std::make_shared<Crypto>();
 ```
 ### Initializing Request Manager
-The `RequestManager` class helps generating requests for creating or revoking cards. To make an instance of `RequestNamager` just call its constructor with *crypto*.
+The `RequestManager` class helps generating signed requests for creating or revoking cards. To make an instance of `RequestManager` just call its constructor with *crypto*.
 
 ```cpp
-RequestManager manager(crypto);
+RequestManager requestManager(crypto);
+```
+
+### Initializing CardManager
+If you want to get already validated and built from responses cards you might initialize `CardManager` instead of `Client`.
+
+```cpp
+CardManagerParams parameters(
+    crypto,
+    <#Virgil App token#>,
+    validator                    //will not validate, if not mentioned
+);
+
+CardManager cardManager(parameters);
 ```
 
 ## Creating a Virgil Card
@@ -96,32 +109,33 @@ Generate a new Public/Private keypair using *Crypto* class.
 auto aliceKeys = crypto->generateKeyPair();
 ```
 
-Create a list of Card signers with their Ids and PrivateKeys - to sign request with them.
+Prapare card information to make `Card`.
+```cpp
+CardInfo cardInfo(
+       "Alice",                      //Identity
+       keyPair.publicKey(),          //keyPair
+       "username",                   //IdentityType - "unknown" if not mentioned
+       data                          //CustomFields - not required
+);
+```
+
+Making request using `RequestManager` and parameters. It will be already self signed, if second parameter - private key mentioned.
+```cpp
+auto request = requestManager.createCardRequest(cardInfo, std::make_shared<PrivateKey>(keyPair.privateKey()));
+```
+
+Create a list of Card signers with their Ids and PrivateKeys and sign request with them.
 
 ```cpp
 std::list<CardSigner RequestSigners;
 RequestSigners.push_back(
         CardSigner(appId, appPrivateKey)
 );
-```
-Prapare Card parameters to make Card.
-```cpp
-CreateCardParams parameters(
-      "Alice",                      //Identity
-      "username",                   //IdentityType
-      keyPair,                      //keyPair
-      RequestSigners,               //RequestSigners
-      true,                         //Signing request with owner - true by default
-      data                          //CustomFields - not required
-);
+
+requestManager.signRequest(createCardRequest, requestSigners);
 ```
 
-Making request using Request Manager and parameters. It will be already signed by signers you put into `parameters`.
-```cpp
-auto request = manager.CreateCardRequest(parameters);
-```
-
-Publish a Virgil Card
+Publish a Virgil Card using `Client`
 ```cpp
 auto future = client.createCard(request);
 
@@ -134,37 +148,30 @@ You get `cardRaw`,which is a representation of card, given by services. To get a
 auto card = Card::importRaw(crypto, cardRaw);
 ```
 
+If you want to publish validated and get already built card you can use `CardManager` instance.
+```cpp
+auto future = cardManager.createCard(request);
+
+auto card = future.get();
+```
+
+
 ## Search for Virgil Cards
 Performs the `Virgil Card`s search by criteria:
 - the *Identities* request parameter is mandatory;
 - the *IdentityType* is optional and specifies the *IdentityType* of a `Virgil Card`s to be found;
-- the *Scope* optional request parameter specifies the scope to perform search on. Either 'global' or 'application';
 
 ```cpp
-auto criteria = SearchCardsCriteria::createCriteria(CardScope::application, "username", {"alice", "bob"});
+auto criteria = SearchCardsCriteria::createCriteria("username", {"alice", "bob"});
 
-auto future = client.searchCards(criteria);
+auto future = cardManager.searchCards(criteria);
 
 auto cards = future.get();
 ```
 
-## Validating Virgil Cards
-This sample uses *built-in* ```CardValidator``` to validate Virgil Service cards.
-
-```cpp
-auto validator = std::make_unique<CardValidator>(crypto);
-
-// Your can also add another Public Key for verification.
-// validator->addVerifier(<#Verifier card id#>, <#Verifier public key data#>);
-
-auto isValid = validator->validateCard(card);
-```
-
 ## Get a Virgil Card
 ```cpp
-auto future = client.getCard(<#Your cardId#>);
-
-auto cardRaw = future.get();
+auto future = cardManager.getCard(<#Your cardId#>);
 
 auto card = Card::importRaw(crypto, cardRaw);
 ```
@@ -174,25 +181,54 @@ auto card = Card::importRaw(crypto, cardRaw);
 You can make Virgil Card unavailable for further use if its private key was compromised or for any other reason.
 
 ```cpp
-RequestManager manager(crypto);
 
-std::list<CardSigner> RequestSigners;
-RequestSigners.push_back(
-        CardSigner(consts.applicationId(), appPrivateKey)
+std::list<CardSigner> requestSigners;
+requestSigners.push_back(
+        CardSigner(appId, appPrivateKey)
 );
 
-RevokeCardParams parameters(
-      <#Your cardId#>, 
-      RequestSigners
+auto request = requestManager.RevokeCardRequest(
+        <#Your cardId#>,
+        RequestSigners
 );
 
-auto request = manager.RevokeCardRequest(parameters);
-
-auto future = client.revokeCard(request);
+auto future = cardManager.revokeCard(request);
 
 future.get();
 
 ```
+
+## Validating Virgil Cards
+This sample uses *built-in* ```ExtendedValidator``` to validate Virgil Service cards.
+
+```cpp
+auto validator = std::make_shared<ExtendedValidator>();
+validator.initialize();
+
+auto result = validator->validateCard(card);
+```
+
+When you get a validation result you can check if it is valid or get std::list of strings with error messages.
+```cpp
+auto isValid = result.isValid();
+
+auto errors = result.errors();
+```
+
+By default `ExtendedValidator` checks *Virgil* and *Self* signatures. But you can specify it in constructor and even add other signer information to validate with.
+```cpp
+std::list<SignerInfo> whitelist;
+whitelist.push_back(SignerInfo(appId, appPublicKey));
+
+auto validator = std::make_shared<ExtendedValidator>(
+    whitelist,
+    true,           //ignore self signature
+    true            //ignore Virgil signature
+);
+validator.initialize();
+```
+
+## Client operations with validating and importing
 
 ## Operations with Crypto Keys
 
@@ -219,7 +255,7 @@ To import Public/Private keys, simply call one of the Import methods.
 
 ```cpp
 auto alicePrivateKey = crypto->importPrivateKey(alicePrivateKeyData, "password");
-auto alicePublicKeyPointer  = crypto->importPublicKey(alicePublicKeyData);
+auto alicePublicKeyPointer = std::shared_ptr<PublicKey>(crypto_->importPublicKey(privateAppKeyData));
 ```
 
 

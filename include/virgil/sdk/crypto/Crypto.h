@@ -51,21 +51,13 @@ namespace sdk {
         public:
             /// Implementation of CryptoInterface member functions
 
-            VirgilByteArray exportPrivateKey(const cryptointerfaces::PrivateKeyInterface &privateKey,
-                                             const std::string &password = "") const override;
-
             VirgilByteArray exportPublicKey(const cryptointerfaces::PublicKeyInterface &publicKey) const override;
-
-            bool verify(std::istream &istream, const VirgilByteArray &signature,
-                        const cryptointerfaces::PublicKeyInterface &signerPublicKey) const override;\
 
             bool verify(const VirgilByteArray &data, const VirgilByteArray &signature,
                         const cryptointerfaces::PublicKeyInterface &signerPublicKey) const override;
 
             VirgilByteArray generateSignature(const VirgilByteArray &data,
                                               const cryptointerfaces::PrivateKeyInterface &privateKey) const override;
-
-            VirgilByteArray generateSignature(std::istream &istream, const cryptointerfaces::PrivateKeyInterface &privateKey) const override;
 
             byteArray calculateFingerprint(const VirgilByteArray &data) const override;
 
@@ -154,6 +146,33 @@ namespace sdk {
             VirgilByteArray decryptThenVerify(const VirgilByteArray &data, const keys::PrivateKey &privateKey,
                                               const keys::PublicKey &signerPublicKey) const;
 
+            /*!
+            * @brief Verifies stream for genuineness.
+            * @param istream std::istream with data to be verified
+            * @param signature Signatue
+            * @param signerPublicKey PublicKey instance with signer's Public Keys
+            * @return true if data was successfully verified, false otherwise
+            */
+            bool verify(std::istream &istream, const VirgilByteArray &signature,
+                        const cryptointerfaces::PublicKeyInterface &signerPublicKey) const;
+
+            /*!
+            * @brief Generates signature for stream.
+            * @param istream std::istream with data from which signature will be generated
+            * @param privateKey signer's Private Key
+            * @return Signature for stream
+            */
+            VirgilByteArray generateSignature(std::istream &istream,
+                                              const cryptointerfaces::PrivateKeyInterface &privateKey) const;
+
+            /*!
+             * @brief Exports Private Key to raw representation.
+             * @param privateKey PrivateKey instance
+             * @param password std::string password for Private Key export (required for further import)
+             * @return raw representation of Private Key
+             */
+            VirgilByteArray exportPrivateKey(const cryptointerfaces::PrivateKeyInterface &privateKey,
+                                             const std::string &password = "") const;
 
             /// Additional functionality
 
