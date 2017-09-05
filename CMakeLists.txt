@@ -49,7 +49,7 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Configurable variables
 ## Features
-set (ENABLE_TESTING ON CACHE BOOL "Enable unit tests")
+set (ENABLE_TESTING OFF CACHE BOOL "Enable unit tests")
 set (ENABLE_EXAMPLES OFF CACHE BOOL "Enable build of Examples")
 set (INSTALL_EXAMPLES OFF CACHE BOOL "Enable Examples installation")
 

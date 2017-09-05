@@ -76,6 +76,8 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
     auto crypto = std::make_shared<Crypto>();
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
+    serviceConfig.cardsServiceURL(consts.cardsServiceURL());
+    serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
     Client client(std::move(serviceConfig));
 
@@ -101,6 +103,8 @@ TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
     TestUtils utils(consts);
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
+    serviceConfig.cardsServiceURL(consts.cardsServiceURL());
+    serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
     Client client(std::move(serviceConfig));
 
@@ -125,6 +129,8 @@ TEST_CASE("test003_SearchCardsTest", "[client]") {
     TestUtils utils(consts);
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
+    serviceConfig.cardsServiceURL(consts.cardsServiceURL());
+    serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
     Client client(std::move(serviceConfig));
 
@@ -154,6 +160,8 @@ TEST_CASE("test004_GetCardTest", "[client]") {
     TestUtils utils(consts);
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
+    serviceConfig.cardsServiceURL(consts.cardsServiceURL());
+    serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
     Client client(std::move(serviceConfig));
 
@@ -184,6 +192,8 @@ TEST_CASE("test006_RevokeCardTest", "[client]") {
     auto crypto = std::make_shared<Crypto>();
 
     auto serviceConfig = ServiceConfig::createConfig(consts.applicationToken());
+    serviceConfig.cardsServiceURL(consts.cardsServiceURL());
+    serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
     Client client(std::move(serviceConfig));
 
@@ -242,8 +252,4 @@ TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[
     }
 
     REQUIRE(errorWasThrown);
-}
-
-TEST_CASE("test008_Free_Test", "[client]") {
-
 }

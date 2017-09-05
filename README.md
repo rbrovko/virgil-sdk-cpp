@@ -228,8 +228,6 @@ auto validator = std::make_shared<ExtendedValidator>(
 validator.initialize();
 ```
 
-## Client operations with validating and importing
-
 ## Operations with Crypto Keys
 
 ### Generate Keys

@@ -48,20 +48,26 @@ using virgil::cryptointerfaces::CryptoInterface;
 using virgil::sdk::client::ExtendedValidator;
 using virgil::sdk::client::models::Card;
 using virgil::sdk::client::models::validation::ValidationResult;
+using virgil::sdk::client::ServiceConfig;
 
 CardManager::CardManager(const CardManagerParams &cardManagerParams)
-        : client_(Client(cardManagerParams.apiToken())),
-          crypto_(cardManagerParams.crypto()),
+        : crypto_(cardManagerParams.crypto()),
           validator_(cardManagerParams.validator()) {
+    auto serviceConfig = ServiceConfig::createConfig(cardManagerParams.apiToken());
+    if (!cardManagerParams.serviceURL().empty()) {
+        serviceConfig.cardsServiceURL(cardManagerParams.serviceURL());
+        serviceConfig.cardsServiceROURL(cardManagerParams.serviceROURL());
+    }
+    client_ = std::make_shared<Client>(serviceConfig);
     validator_->initialize(crypto_);
 }
 
 std::future<Card> CardManager::getCard(const std::string &cardId) const {
     auto future = std::async([=]{
-        auto cardRaw = client_.getCard(cardId);
+        auto cardRaw = client_->getCard(cardId);
         auto card = Card::ImportRaw(crypto_, cardRaw.get());
 
-        auto validationResult = validateCard(card);
+        auto validationResult = validator_->validateCard(crypto_, card);
         if (!validationResult.isValid()) {
             throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
         }
@@ -74,10 +80,10 @@ std::future<Card> CardManager::getCard(const std::string &cardId) const {
 
 std::future<Card> CardManager::createCard(const models::requests::CreateCardRequest &request) const {
     auto future = std::async([=]{
-        auto cardRaw = client_.createCard(request);
+        auto cardRaw = client_->createCard(request);
         auto card = Card::ImportRaw(crypto_, cardRaw.get());
 
-        auto validationResult = validateCard(card);
+        auto validationResult = validator_->validateCard(crypto_, card);
         if (!validationResult.isValid()) {
             throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
         }
@@ -90,7 +96,7 @@ std::future<Card> CardManager::createCard(const models::requests::CreateCardRequ
 
 std::future<std::vector<Card>> CardManager::searchCards(const models::SearchCardsCriteria &criteria) const {
     auto future = std::async([=]{
-        auto futureCardsRaw = client_.searchCards(criteria);
+        auto futureCardsRaw = client_->searchCards(criteria);
         auto cardsRaw = futureCardsRaw.get();
 
         std::vector<Card> cards;
@@ -100,7 +106,7 @@ std::future<std::vector<Card>> CardManager::searchCards(const models::SearchCard
 
 
         for (const auto& card : cards) {
-            auto validationResult = validateCard(card);
+            auto validationResult = validator_->validateCard(crypto_, card);
             if (!validationResult.isValid()) {
                 throw make_error(VirgilSdkError::VerificationFailed, validationResult.errors().front());
             }
@@ -114,17 +120,11 @@ std::future<std::vector<Card>> CardManager::searchCards(const models::SearchCard
 
 std::future<void> CardManager::revokeCard(const models::requests::RevokeCardRequest &request) const {
     auto future = std::async([=]{
-        auto cardRaw = client_.revokeCard(request);
+        auto cardRaw = client_->revokeCard(request);
         cardRaw.get();
 
         return;
     });
 
     return future;
-}
-
-const ValidationResult CardManager::validateCard(const Card &card) const {
-    if (validator_ != nullptr)
-        return validator_->validateCard(crypto_, card);
-    return ValidationResult();
 }

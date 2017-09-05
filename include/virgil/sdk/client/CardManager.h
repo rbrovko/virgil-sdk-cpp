@@ -92,11 +92,9 @@ namespace virgil {
 
             private:
 
-                const ValidationResult validateCard(const models::Card &card) const;
-
                 std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> crypto_;
                 std::shared_ptr<interfaces::CardValidatorInterface> validator_;
-                Client client_;
+                std::shared_ptr<Client> client_;
             };
         }
     }

@@ -46,6 +46,7 @@
 #include <virgil/sdk/client/CardManager.h>
 #include <virgil/sdk/client/ExtendedValidator.h>
 
+using virgil::sdk::client::ServiceConfig;
 using virgil::sdk::client::models::validation::SignerInfo;
 using virgil::sdk::client::Client;
 using virgil::sdk::client::CardManager;
@@ -72,7 +73,9 @@ TEST_CASE("test001_CreateCard", "[CardManager]") {
     CardManagerParams managerParams(
             crypto,
             consts.applicationToken(),
-            validator
+            validator,
+            consts.cardsServiceURL(),
+            consts.cardsServiceROURL()
     );
 
     CardManager manager(managerParams);
@@ -101,7 +104,9 @@ TEST_CASE("test002_RevokeCard", "[CardManager]") {
     CardManagerParams managerParams(
             crypto,
             consts.applicationToken(),
-            validator
+            validator,
+            consts.cardsServiceURL(),
+            consts.cardsServiceROURL()
     );
 
     CardManager manager(managerParams);
@@ -146,7 +151,9 @@ TEST_CASE("test003_SearchCards", "[CardManager]") {
     CardManagerParams managerParams(
             crypto,
             consts.applicationToken(),
-            validator
+            validator,
+            consts.cardsServiceURL(),
+            consts.cardsServiceROURL()
     );
 
     CardManager manager(managerParams);
@@ -183,7 +190,9 @@ TEST_CASE("test005_GetCard", "[CardManager]") {
     CardManagerParams managerParams(
             crypto,
             consts.applicationToken(),
-            validator
+            validator,
+            consts.cardsServiceURL(),
+            consts.cardsServiceROURL()
     );
 
     CardManager manager(managerParams);

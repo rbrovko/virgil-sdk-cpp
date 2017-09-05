@@ -56,8 +56,12 @@ namespace virgil {
                  */
                 CardManagerParams(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
                                   const std::string &apiToken,
-                                  const std::shared_ptr<interfaces::CardValidatorInterface> &validator = nullptr)
-                : crypto_(crypto), apiToken_(apiToken), validator_(validator) {};
+                                  const std::shared_ptr<interfaces::CardValidatorInterface> &validator
+                                  = std::make_shared<ExtendedValidator>(std::list<SignerInfo>(), true, true),
+                                  const std::string &serviceURL = "",
+                                  const std::string &serviceROURL = "")
+                : crypto_(crypto), apiToken_(apiToken), validator_(validator),
+                  serviceURL_(serviceURL), serviceROURL_(serviceROURL) {};
 
                 /*!
                  * @brief Getter.
@@ -75,12 +79,26 @@ namespace virgil {
                  * @brief Getter.
                  * @return ValidationRules& with rules for validation
                  */
-                const std::shared_ptr<interfaces::CardValidatorInterface> & validator() const { return validator_; }
+                const std::shared_ptr<interfaces::CardValidatorInterface>& validator() const { return validator_; }
+
+                /*!
+                 * @brief Getter.
+                 * @return std::string with serviceURL
+                 */
+                const std::string& serviceURL() const { return serviceURL_; }
+
+                /*!
+                 * @brief Getter.
+                 * @return std::string with serviceROURL
+                 */
+                const std::string& serviceROURL() const { return serviceROURL_; }
 
             private:
                 std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> crypto_;
                 std::string apiToken_;
                 std::shared_ptr<interfaces::CardValidatorInterface> validator_;
+                std::string serviceURL_;
+                std::string serviceROURL_;
             };
         }
     }

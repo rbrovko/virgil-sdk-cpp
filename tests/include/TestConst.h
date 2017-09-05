@@ -43,14 +43,28 @@
 namespace virgil {
 namespace sdk {
 namespace test {
+
     class TestConst {
     public:
-        std::string applicationToken() const;
-        std::string applicationPublicKeyBase64() const;
-        std::string applicationPrivateKeyBase64() const;
-        std::string applicationPrivateKeyPassword() const;
-        std::string applicationIdentityType() const;
-        std::string applicationId() const;
+        TestConst(const std::string &fileName = "consts.json", bool enableStg = false);
+
+        const std::string& cardsServiceURL() const;
+        const std::string& cardsServiceROURL() const;
+        const std::string& applicationToken() const;
+        const std::string& applicationPublicKeyBase64() const;
+        const std::string& applicationPrivateKeyBase64() const;
+        const std::string& applicationPrivateKeyPassword() const;
+        const std::string& applicationIdentityType() const;
+        const std::string& applicationId() const;
+
+        std::string cardsServiceURL_;
+        std::string cardsServiceROURL_;
+        std::string applicationToken_;
+        std::string applicationPublicKeyBase64_;
+        std::string applicationPrivateKeyBase64_;
+        std::string applicationPrivateKeyPassword_;
+        std::string applicationIdentityType_;
+        std::string applicationId_;
     };
 }
 }

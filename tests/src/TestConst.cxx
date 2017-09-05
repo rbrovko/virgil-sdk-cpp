@@ -34,16 +34,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <catch.hpp>
 
 #include <TestConst.h>
+#include <fstream>
+#include <nlohman/json.hpp>
 
 using virgil::sdk::test::TestConst;
+using json = nlohmann::json;
 
-std::string TestConst::applicationToken() const {
-    return "AT.89cce2fac2fc9260cafb6d5dd2c6f12e7b992c1f85798ca5b3048f9b559d9a2f";
+TestConst::TestConst(const std::string &fileName, bool enableStg) {
+    std::ifstream input(fileName);
+
+    std::string str((std::istreambuf_iterator<char>(input)),
+                    std::istreambuf_iterator<char>());
+
+    if (str.empty())
+        std::cout << "asdasdasd" << std::endl;
+
+    auto j = json::parse(str);
+
+    json dict = enableStg ? j["staging"] : j["prod"];
+
+    cardsServiceURL_               = dict["cardsServiceURL"];
+    cardsServiceROURL_             = dict["cardsServiceROURL"];
+    applicationToken_              = dict["applicationToken"];
+    applicationPublicKeyBase64_    = dict["applicationPublicKeyBase64"];
+    applicationPrivateKeyBase64_   = dict["applicationPrivateKeyBase64"];
+    applicationPrivateKeyPassword_ = dict["applicationPrivateKeyPassword"];
+    applicationIdentityType_       = dict["applicationIdentityType"];
+    applicationId_                 = dict["applicationId"];
+
+    input.close();
 }
 
-std::string TestConst::applicationPublicKeyBase64() const {
+const std::string& TestConst::cardsServiceURL() const { return cardsServiceURL_; }
+
+const std::string& TestConst::cardsServiceROURL() const { return cardsServiceROURL_; }
+
+const std::string& TestConst::applicationToken() const { return applicationToken_; }
+
+const std::string& TestConst::applicationPrivateKeyBase64() const { return applicationPrivateKeyBase64_; }
+
+const std::string& TestConst::applicationPrivateKeyPassword() const { return applicationPrivateKeyPassword_; }
+
+const std::string& TestConst::applicationIdentityType() const { return applicationIdentityType_; }
+
+const std::string& TestConst::applicationId() const { return applicationId_; }
+
+const std::string& TestConst::applicationPublicKeyBase64() const {
     /*  Getting Public appkey from private one
      crypto::Crypto crypto_;
 
@@ -53,21 +92,5 @@ std::string TestConst::applicationPublicKeyBase64() const {
      auto appPublicKey = crypto_.extractPublicKeyFromPrivateKey(appPrivateKey);
      return VirgilBase64::encode(crypto_.exportPublicKey(appPublicKey));
      */
-    return "MCowBQYDK2VwAyEAAf7npot3FHPrp1j7AarKFVP6ABFbatF3IfOum1magqU=";
-}
-
-std::string TestConst::applicationPrivateKeyBase64() const {
-    return "MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBB/r4nA7LSZdSRdKiQCnknkAgINljAKBggqhkiG9w0CCjAdBglghkgBZQMEASoEEGizST9TJBV1O43/z+VSw80EQPWRUCGGFQ97yK9Cn0uDA8pRsJ3BN16nyke1LS2maFY/xnn/e//nhJDpnAQPHJPDNKusygYex5Ta5Ky+2TgoD1U=";
-}
-
-std::string TestConst::applicationPrivateKeyPassword() const {
-    return "test";
-}
-
-std::string TestConst::applicationIdentityType() const {
-    return "test";
-}
-
-std::string TestConst::applicationId() const {
-    return "e683aa8ad95095d8baa86760892722189a534c76617ad1cddd041829fd055390";
+    return applicationPublicKeyBase64_;
 }
