@@ -35,9 +35,9 @@
  */
 
 #include <catch.hpp>
-#include <virgil/sdk/client/ServiceConfig.h>
+#include <virgil/sdk/web/ServiceConfig.h>
 
-using virgil::sdk::client::ServiceConfig;
+using virgil::sdk::web::ServiceConfig;
 
 TEST_CASE("test_001_CreateConfig", "[ServiceConfig]") {
     auto token = "token";

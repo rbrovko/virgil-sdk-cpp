@@ -43,6 +43,7 @@
 #include <nlohman/json.hpp>
 
 #include <virgil/sdk/Common.h>
+#include <virgil/sdk/web/RawCardSignatureInfo.h>
 
 namespace virgil {
 namespace sdk {
@@ -60,7 +61,12 @@ namespace sdk {
             static std::unordered_map<std::string, VirgilByteArray> jsonToUnorderedBinaryMap(
                     const nlohmann::json &jsonObj);
 
+            static std::unordered_map<std::string, web::RawCardSignatureInfo> jsonToUnorderedBinaryMapOfSigns(
+                    const nlohmann::json &jsonObj);
+
             static nlohmann::json unorderedMapToJson(const std::unordered_map<std::string, std::string> &map);
+
+            static nlohmann::json unorderedMapofSignsToJson(const std::unordered_map<std::string, web::RawCardSignatureInfo> &map);
 
             static nlohmann::json unorderedBinaryMapToJson(const std::unordered_map<std::string, VirgilByteArray> &map);
             //! @endcond

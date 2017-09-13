@@ -33,14 +33,14 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+/*
 #include <catch.hpp>
-#include <virgil/sdk/client/RequestManager.h>
+#include <virgil/sdk/web/RequestManager.h>
 
-#include <UnitTests/KeysTest.h>
-#include <UnitTests/CryptoTest.h>
+#include <Mocks/KeysTest.h>
+#include <Mocks/CryptoTest.h>
 
-using virgil::sdk::client::models::CardInfo;
+using virgil::sdk::web::models::CardInfo;
 using virgil::cryptointerfaces::PublicKeyInterface;
 using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
@@ -48,7 +48,8 @@ using virgil::sdk::test::CryptoTest;
 using virgil::sdk::test::KeyPairTest;
 using virgil::sdk::test::PrivateKeyTest;
 
-using virgil::sdk::client::RequestManager;
+using virgil::sdk::web::RequestManager;
+using virgil::sdk::web::models::SignType;
 
 
 TEST_CASE("test001_CreateCardRequest", "[RequestManager]") {
@@ -77,9 +78,11 @@ TEST_CASE("test001_CreateCardRequest", "[RequestManager]") {
     REQUIRE(VirgilByteArrayUtils::bytesToString(request.snapshot()) == snap);
     REQUIRE(request.signatures().size() == 2);
     auto m = request.signatures();
-    REQUIRE(m[appId] == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[appId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[appId].signType() == SignType::application);
     auto Cardid = VirgilByteArrayUtils::bytesToHex(crypto->calculateFingerprint(request.snapshot()));
-    REQUIRE(m[Cardid] == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[Cardid].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[Cardid].signType() == SignType::self);
 }
 
 
@@ -115,9 +118,9 @@ TEST_CASE("test002_CreateCardRequest_withCustomData", "[RequestManager]") {
 
     REQUIRE(request.signatures().size() == 2);
     auto m = request.signatures();
-    REQUIRE(m[appId] == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[appId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
     auto Cardid = VirgilByteArrayUtils::bytesToHex(crypto->calculateFingerprint(request.snapshot()));
-    REQUIRE(m[Cardid] == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[Cardid].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
 }
 
 TEST_CASE("test003_CreateCardRequest_withoutSelfSign", "[RequestManager]") {
@@ -146,7 +149,7 @@ TEST_CASE("test003_CreateCardRequest_withoutSelfSign", "[RequestManager]") {
     REQUIRE(VirgilByteArrayUtils::bytesToString(request.snapshot()) == snap);
     REQUIRE(request.signatures().size() == 1);
     auto m = request.signatures();
-    REQUIRE(m[appId] == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[appId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
 }
 
 TEST_CASE("test004_RevokeCardRequest", "[RequestManager]") {
@@ -167,7 +170,7 @@ TEST_CASE("test004_RevokeCardRequest", "[RequestManager]") {
     REQUIRE(request.snapshot() == snap);
     REQUIRE(request.signatures().size() == 1);
     auto m = request.signatures();
-    REQUIRE(m[appId] == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(m[appId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
 }
 
 TEST_CASE("test005_CreateCardRequest_ShouldThrowExeption", "[RequestManager]") {
@@ -197,3 +200,4 @@ TEST_CASE("test005_CreateCardRequest_ShouldThrowExeption", "[RequestManager]") {
 
     REQUIRE(errorWasThrown);
 }
+*/

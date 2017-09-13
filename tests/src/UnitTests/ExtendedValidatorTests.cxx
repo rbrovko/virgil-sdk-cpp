@@ -35,19 +35,17 @@
  */
 
 #include <catch.hpp>
-#include <UnitTests/CryptoTest.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+#include <Mocks/CryptoTest.h>
+#include <virgil/sdk/validation/ExtendedValidator.h>
 #include <TestConst.h>
-#include <virgil/sdk/crypto/Crypto.h>
 
-#include <UnitTests/CardTest.h>
+#include <Mocks/CardTest.h>
 
-#include <virgil/sdk/client/models/CardIdGenerator.h>
-
+#include <virgil/sdk/CardIdGenerator.h>
 using virgil::sdk::crypto::Crypto;
 
-using virgil::sdk::client::models::CardIdGenerator;
-using virgil::sdk::client::ExtendedValidator;
+using virgil::sdk::CardIdGenerator;
+using virgil::sdk::validation::ExtendedValidator;
 using virgil::sdk::test::TestConst;
 
 static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";

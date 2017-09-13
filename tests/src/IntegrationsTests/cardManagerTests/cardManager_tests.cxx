@@ -41,22 +41,85 @@
 #include <TestConst.h>
 #include <TestUtils.h>
 #include <virgil/sdk/Common.h>
-#include <virgil/sdk/client/Client.h>
 #include <virgil/sdk/util/Memory.h>
-#include <virgil/sdk/client/CardManager.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/CardManager.h>
+#include <virgil/sdk/validation/ExtendedValidator.h>
+#include <virgil/sdk/CardIdGenerator.h>
+#include <helpers.h>
+#include <virgil/sdk/CSRParams.h>
 
-using virgil::sdk::client::ServiceConfig;
-using virgil::sdk::client::models::validation::SignerInfo;
-using virgil::sdk::client::Client;
-using virgil::sdk::client::CardManager;
-using virgil::sdk::client::models::SearchCardsCriteria;
-using virgil::sdk::client::models::CardScope;
+using virgil::sdk::CSRParams;
+using virgil::sdk::web::ServiceConfig;
+using virgil::sdk::validation::SignerInfo;
+using virgil::sdk::web::CardsClient;
+using virgil::sdk::CardManager;
+using virgil::sdk::web::SearchCardsCriteria;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
+using virgil::sdk::CardSigner;
+using virgil::sdk::test::Utils;
+using virgil::sdk::VirgilBase64;
+using virgil::sdk::crypto::keys::PrivateKey;
+using virgil::sdk::CardIdGenerator;
+using virgil::sdk::web::SignType;
 
-using virgil::sdk::client::ExtendedValidator;
+using virgil::sdk::validation::ExtendedValidator;
 
+
+TEST_CASE("test000_Create_and_Sign_CSR", "[CardManager]") {
+    TestConst consts;
+    TestUtils utils(consts);
+
+    auto crypto = std::make_shared<Crypto>();
+    auto keyPair = crypto->generateKeyPair();
+
+    CardManagerParams managerParams(
+            crypto,
+            consts.applicationToken()
+    );
+    CardManager manager(managerParams);
+
+    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
+    auto appPrivateKey = crypto->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
+    auto identity = Utils::generateRandomStr(40);
+
+    CSRParams csrParams(
+            identity,
+            keyPair.publicKey(),
+            std::make_shared<PrivateKey>(keyPair.privateKey())
+    );
+
+    auto csr = manager.generateCSR(csrParams);
+
+    std::unordered_map<std::string, std::string> extraData;
+    extraData["some_random_key1"] = "some_random_data1";
+    extraData["some_random_key2"] = "some_random_data2";
+
+    std::list<CardSigner> requestSigners;
+    requestSigners.push_back(
+            CardSigner(
+                    consts.applicationId(),
+                    appPrivateKey,
+                    extraData
+            )
+    );
+
+    //csr.sign(crypto, cardSigner);
+    //csr.sign(crypto, keyPair.privateKey());
+
+    manager.signCSR(csr, requestSigners);
+
+
+    auto fingerprint = crypto->calculateFingerprint(csr.snapshot());
+    auto cardId = CardIdGenerator::generate(fingerprint);
+
+    auto signatures = csr.signatures();
+    REQUIRE(signatures.size() == 2);
+    REQUIRE(signatures[cardId].signType() == SignType::self);
+    REQUIRE(signatures[consts.applicationId()].signType() == SignType::application);
+}
+
+/*
 TEST_CASE("test001_CreateCard", "[CardManager]") {
     TestConst consts;
     TestUtils utils(consts);
@@ -80,60 +143,31 @@ TEST_CASE("test001_CreateCard", "[CardManager]") {
 
     CardManager manager(managerParams);
 
-    auto CreateCardRequest = utils.instantiateCreateCardRequest();
+    auto keyPair = crypto->generateKeyPair();
 
-    auto future = manager.createCard(CreateCardRequest);
-    auto card = future.get();
+    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
+    auto appPrivateKey = crypto->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
-    REQUIRE(utils.checkCardEquality(card, CreateCardRequest));
-}
-
-TEST_CASE("test002_RevokeCard", "[CardManager]") {
-    TestConst consts;
-    TestUtils utils(consts);
-
-    auto crypto = std::make_shared<Crypto>();
-
-    std::list<SignerInfo> whitelist;
-    whitelist.push_back(SignerInfo(consts.applicationId(), consts.applicationPublicKeyBase64()));
-
-    auto validator = std::make_shared<ExtendedValidator>(
-            whitelist
+    std::list<CardSigner> requestSigners;
+    requestSigners.push_back(
+            CardSigner(consts.applicationId(), appPrivateKey)
     );
 
-    CardManagerParams managerParams(
-            crypto,
-            consts.applicationToken(),
-            validator,
-            consts.cardsServiceURL(),
-            consts.cardsServiceROURL()
+    auto identity = Utils::generateRandomStr(40);
+
+    auto csr = manager.generateCSR(
+            identity,
+            keyPair.publicKey(),
+            std::make_shared<PrivateKey>(keyPair.privateKey())
     );
 
-    CardManager manager(managerParams);
+    manager.signCSR(csr, requestSigners);
 
-    auto CreateCardRequest = utils.instantiateCreateCardRequest();
-
-    auto future = manager.createCard(CreateCardRequest);
+    auto future = manager.createCard(csr);
     auto card = future.get();
 
-    auto RevokeCardRequest = utils.instantiateRevokeCardRequest(card);
-
-    auto future_1 = manager.revokeCard(RevokeCardRequest);
-    future_1.get();
-
-    auto future_2 = manager.getCard(card.identifier());
-
-    bool errorWasThrown = false;
-    try {
-        future_2.get();
-    }
-    catch (...) {
-        errorWasThrown = true;
-    }
-
-    REQUIRE(errorWasThrown);
+    REQUIRE(utils.checkCardEquality(card, csr));
 }
-
 
 TEST_CASE("test003_SearchCards", "[CardManager]") {
     TestConst consts;
@@ -158,15 +192,15 @@ TEST_CASE("test003_SearchCards", "[CardManager]") {
 
     CardManager manager(managerParams);
 
-    auto CreateCardRequest = utils.instantiateCreateCardRequest();
+    auto csr = utils.instantiateCreateCardRequest();
 
-    auto future = manager.createCard(CreateCardRequest);
+    auto future = manager.createCard(csr);
     auto card = future.get();
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
     auto future_ = manager.searchCards(
-            SearchCardsCriteria::createCriteria({ card.identity() }, CardScope::application, card.identityType()));
+            SearchCardsCriteria::createCriteria({ card.identity() }));
 
     auto foundCards = future_.get();
 
@@ -204,8 +238,8 @@ TEST_CASE("test005_GetCard", "[CardManager]") {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
-    auto future_ = manager.getCard(card.identifier());
+    auto future_ = manager.getCard(CardIdGenerator::generate(card.fingerprint()));
     auto foundCard = future_.get();
 
     REQUIRE(utils.checkCardEquality(card, foundCard));
-}
+}*/

@@ -51,20 +51,20 @@ TestConst::TestConst(const std::string &fileName, bool enableStg) {
 
     if (str.empty())
         std::cout << "asdasdasd" << std::endl;
+    else {
+        auto j = json::parse(str);
 
-    auto j = json::parse(str);
+        json dict = enableStg ? j["staging"] : j["prod"];
 
-    json dict = enableStg ? j["staging"] : j["prod"];
-
-    cardsServiceURL_               = dict["cardsServiceURL"];
-    cardsServiceROURL_             = dict["cardsServiceROURL"];
-    applicationToken_              = dict["applicationToken"];
-    applicationPublicKeyBase64_    = dict["applicationPublicKeyBase64"];
-    applicationPrivateKeyBase64_   = dict["applicationPrivateKeyBase64"];
-    applicationPrivateKeyPassword_ = dict["applicationPrivateKeyPassword"];
-    applicationIdentityType_       = dict["applicationIdentityType"];
-    applicationId_                 = dict["applicationId"];
-
+        cardsServiceURL_               = dict["cardsServiceURL"];
+        cardsServiceROURL_             = dict["cardsServiceROURL"];
+        applicationToken_              = dict["applicationToken"];
+        applicationPublicKeyBase64_    = dict["applicationPublicKeyBase64"];
+        applicationPrivateKeyBase64_   = dict["applicationPrivateKeyBase64"];
+        applicationPrivateKeyPassword_ = dict["applicationPrivateKeyPassword"];
+        applicationIdentityType_       = dict["applicationIdentityType"];
+        applicationId_                 = dict["applicationId"];
+    }
     input.close();
 }
 

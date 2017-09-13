@@ -41,20 +41,18 @@
 #include <TestConst.h>
 #include <TestUtils.h>
 
-#include <virgil/sdk/client/Client.h>
+#include <virgil/sdk/web/CardsClient.h>
 #include <virgil/sdk/Common.h>
-#include <virgil/sdk/client/models/ClientCommon.h>
+#include <virgil/sdk/web/ClientCommon.h>
 
 #include <virgil/sdk/util/Memory.h>
-#include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/validation/ExtendedValidator.h>
 
-using virgil::sdk::client::models::requests::CreateCardRequest;
-using virgil::sdk::client::models::requests::RevokeCardRequest;
-using virgil::sdk::client::models::CardRevocationReason;
+using virgil::sdk::CSR;
 using virgil::sdk::VirgilBase64;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
-using virgil::sdk::client::ExtendedValidator;
+using virgil::sdk::validation::ExtendedValidator;
 
 TEST_CASE("test001_CardImportExport", "[models]") {
     TestUtils utils((TestConst()));
@@ -67,27 +65,11 @@ TEST_CASE("test001_CardImportExport", "[models]") {
 
     auto request = createCardRequest.exportAsString();
 
-    auto importedRequest = CreateCardRequest::importFromString(request);
+    auto importedRequest = CSR::importFromString(request);
 
     REQUIRE(utils.checkCreateCardRequestEquality(createCardRequest, importedRequest));
 }
-
-TEST_CASE("test002_RevokeCardImportExport", "[models]") {
-    TestUtils utils((TestConst()));
-
-    std::unordered_map<std::string, std::string> data;
-    data["some_random_key1"] = "some_random_data1";
-    data["some_random_key2"] = "some_random_data2";
-
-    auto revokeCardRequest = RevokeCardRequest::createRequest("testId", CardRevocationReason::unspecified);
-
-    auto request = revokeCardRequest.exportAsString();
-
-    auto importedRequest = RevokeCardRequest::importFromString(request);
-
-    REQUIRE(utils.checkRevokeCardRequestEquality(revokeCardRequest, importedRequest));
-}
-
+/*
 TEST_CASE("test003_CardImportExport", "[models]") {
     TestConst consts;
     TestUtils utils((TestConst()));
@@ -105,4 +87,4 @@ TEST_CASE("test003_CardImportExport", "[models]") {
 
     REQUIRE(utils.checkCardEquality(card, importedCard));
     REQUIRE(validator.validateCard(utils.crypto(), importedCard).isValid());
-}
+}*/

@@ -34,40 +34,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+#include <list>
 #include <TestUtils.h>
 #include <helpers.h>
-#include <virgil/sdk/client/RequestSigner.h>
-#include <virgil/sdk/client/models/serialization/JsonDeserializer.h>
+#include <virgil/sdk/serialization/JsonDeserializer.h>
 
-#include <virgil/sdk/client/Client.h>
-#include <virgil/sdk/client/RequestManager.h>
+#include <virgil/sdk/web/CardsClient.h>
 #include <virgil/sdk/crypto/keys/PublicKey.h>
+#include <virgil/sdk/CardSigner.h>
 
+using virgil::sdk::CSRParams;
+using virgil::sdk::CardManagerParams;
 using virgil::sdk::crypto::keys::PublicKey;
 
 using virgil::sdk::crypto::keys::PrivateKey;
-using virgil::sdk::client::models::CardInfo;
 using virgil::sdk::VirgilByteArrayUtils;
-using virgil::sdk::client::models::CardRevocationReason;
 using virgil::sdk::test::Utils;
 using virgil::sdk::test::TestUtils;
 using virgil::sdk::VirgilBase64;
-using virgil::sdk::client::RequestSigner;
-using virgil::sdk::client::models::serialization::JsonDeserializer;
+using virgil::sdk::serialization::JsonDeserializer;
+using virgil::sdk::CardIdGenerator;
 
-using virgil::sdk::client::Client;
-using virgil::sdk::client::RequestManager;
-using virgil::sdk::client::models::interfaces::SignableRequestInterface;
-using virgil::sdk::client::models::serialization::JsonSerializer;
-using virgil::sdk::client::models::responses::RawCard;
-using virgil::sdk::client::models::CardSigner;
+using virgil::sdk::web::CardsClient;
+using virgil::sdk::interfaces::SignableRequestInterface;
+using virgil::sdk::serialization::JsonSerializer;
+using virgil::sdk::web::RawCard;
+using virgil::sdk::CardSigner;
 using virgil::cryptointerfaces::PrivateKeyInterface;
 
-CreateCardRequest TestUtils::instantiateCreateCardRequest(
+CSR TestUtils::instantiateCreateCardRequest(
         const std::unordered_map<std::string, std::string> &data) const {
 
-    RequestManager manager(crypto_);
+    CardManagerParams managerParams(
+            crypto_,
+            consts.applicationToken()
+    );
+
+    CardManager manager(managerParams);
+
     auto keyPair = crypto_->generateKeyPair();
 
     auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
@@ -75,99 +79,60 @@ CreateCardRequest TestUtils::instantiateCreateCardRequest(
 
     auto identity = Utils::generateRandomStr(40);
 
-    CardInfo cardInfo(
-            identity,                                    //Identity
-            keyPair.publicKey(),                         //keyPair
-            consts.applicationIdentityType(),            //IdentityType
-            data                                         //CustomFields
+    CSRParams csrParams(
+            identity,
+            keyPair.publicKey(),
+            std::make_shared<PrivateKey>(keyPair.privateKey())
     );
 
-    auto createCardRequest = manager.createCardRequest(cardInfo, std::make_shared<PrivateKey>(keyPair.privateKey()));
+    auto csr = manager.generateCSR(csrParams);
 
     std::list<CardSigner> requestSigners;
     requestSigners.push_back(
             CardSigner(consts.applicationId(), appPrivateKey)
     );
 
-    manager.signRequest(createCardRequest, requestSigners);
+    manager.signCSR(csr, requestSigners);
 
-    return createCardRequest;
+    return csr;
 }
 
-
-RevokeCardRequest TestUtils::instantiateRevokeCardRequest(const Card &card) const {
-
-    RequestManager manager(crypto_);                                     //creating RequestManager
-
-    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
-    auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
-
-    std::list<CardSigner> requestSigners;
-    requestSigners.push_back(
-            CardSigner(consts.applicationId(), appPrivateKey)
-    );
-
-    auto revokeCardRequest = manager.revokeCardRequest(
-            card.identifier(),                          //CardID
-            requestSigners                              //RequestSigners
-    );
-
-    return revokeCardRequest;
-}
 
 Card TestUtils::instantiateCard() const {
-    Client client(consts.applicationToken());
+    CardsClient client(consts.applicationToken());
 
     auto createCardRequest = instantiateCreateCardRequest();
 
     auto future = client.createCard(createCardRequest);
     auto cardRaw = future.get();
 
-    auto card = Card::ImportRaw(crypto_, cardRaw);
+    auto card = Card::parse(crypto_, cardRaw);
 
     return card;
 }
 
-bool TestUtils::checkCardEquality(const Card &card, const CreateCardRequest &request) {
-    auto equals = card.identityType() == request.snapshotModel().identityType()
-        && card.identity() == request.snapshotModel().identity()
-        && card.data() == request.snapshotModel().data()
+bool TestUtils::checkCardEquality(const Card &card, const CSR &request) {
+    auto equals = card.identity() == request.snapshotModel().identity();
         //&& card.publicKey() == request.snapshotModel().publicKeyData()
-        && card.scope() == request.snapshotModel().scope();
 
     return equals;
 }
 
 bool TestUtils::checkCardEquality(const Card &card1, const Card &card2) {
-    auto equals = card1.identityType() == card2.identityType()
-                  && card1.identity() == card2.identity()
-                  && card1.identifier() == card2.identifier()
+    auto equals = card1.identity() == card2.identity()
+                  && CardIdGenerator::generate(card1.fingerprint()) == CardIdGenerator::generate(card2.fingerprint())
                   && card1.createdAt() == card2.createdAt()
                   && card1.cardVersion() == card2.cardVersion()
-                  && card1.data() == card2.data()
-                  && card1.publicKey()->key() == card2.publicKey()->key()
-                  && card1.scope() == card2.scope();
+                  && card1.publicKey()->key() == card2.publicKey()->key();
 
     return equals;
 }
 
-bool TestUtils::checkCreateCardRequestEquality(const CreateCardRequest &request1, const CreateCardRequest &request2) {
+bool TestUtils::checkCreateCardRequestEquality(const CSR &request1, const CSR &request2) {
     auto equals = request1.snapshot() == request2.snapshot()
-                  && request1.signatures() == request2.signatures()
-                  && request1.snapshotModel().data() == request2.snapshotModel().data()
+                  //&& request1.signatures() == request2.signatures()
                   && request1.snapshotModel().identity() == request2.snapshotModel().identity()
-                  && request1.snapshotModel().identityType() == request2.snapshotModel().identityType()
-                  && request1.snapshotModel().publicKeyData() == request2.snapshotModel().publicKeyData()
-                  && request1.snapshotModel().scope() == request2.snapshotModel().scope();
-
-    return equals;
-}
-
-bool TestUtils::checkRevokeCardRequestEquality(const RevokeCardRequest &request1, const RevokeCardRequest &request2) {
-    auto equals = request1.snapshot() == request2.snapshot()
-                  && request1.signatures() == request2.signatures()
-                  && request1.snapshotModel().cardId() == request2.snapshotModel().cardId()
-                  && request1.snapshotModel().revocationReason() == request2.snapshotModel().revocationReason();
+                  && request1.snapshotModel().publicKeyData() == request2.snapshotModel().publicKeyData();
 
     return equals;
 }

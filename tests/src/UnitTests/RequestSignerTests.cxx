@@ -33,17 +33,17 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+/*
 #include <catch.hpp>
-#include <UnitTests/SignableTest.h>
+#include <Mocks/SignableTest.h>
+#include <Mocks/CryptoTest.h>
+#include <virgil/sdk/web/models/CardSigner.h>
 
-#include <virgil/sdk/client/RequestSigner.h>
-#include <UnitTests/CryptoTest.h>
-
-using virgil::sdk::client::RequestSigner;
+using virgil::sdk::web::models::SignType;
 using virgil::sdk::test::CryptoTest;
 using virgil::sdk::test::SignableTest;
 using virgil::sdk::test::KeyPairTest;
+using virgil::sdk::web::models::CardSigner;
 
 TEST_CASE("test_001_AutoritySign", "[RequestSigner]") {
     auto crypto = std::make_shared<CryptoTest>();
@@ -53,15 +53,20 @@ TEST_CASE("test_001_AutoritySign", "[RequestSigner]") {
     SignableTest request;
     auto appId = "appId";
 
+    CardSigner cardSigner(
+        appId,
+        keyPair.privateKey()
+    );
+
     signer.authoritySign(
             request,
-            appId,
-            keyPair.privateKey()
+            cardSigner
     );
 
     auto signatures = request.signatures();
     REQUIRE(signatures.size() == 1);
-    REQUIRE(signatures[appId] == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(signatures[appId].signType() == SignType::application);
+    REQUIRE(signatures[appId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
 }
 
 TEST_CASE("test_002_SelfSign", "[RequestSigner]") {
@@ -80,5 +85,6 @@ TEST_CASE("test_002_SelfSign", "[RequestSigner]") {
 
     auto signatures = request.signatures();
     REQUIRE(signatures.size() == 1);
-    REQUIRE(signatures[cardId] == VirgilByteArrayUtils::stringToBytes("signature"));
-}
+    REQUIRE(signatures[cardId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
+    REQUIRE(signatures[cardId].signType() == SignType::self);
+}*/

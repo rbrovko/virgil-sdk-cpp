@@ -46,7 +46,7 @@ namespace test {
 
     class TestConst {
     public:
-        TestConst(const std::string &fileName = "consts.json", bool enableStg = false);
+        TestConst(const std::string &fileName = "consts.json", bool enableStg = true);
 
         const std::string& cardsServiceURL() const;
         const std::string& cardsServiceROURL() const;

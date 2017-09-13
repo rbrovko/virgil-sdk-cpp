@@ -42,16 +42,16 @@
 
 #include <virgil/sdk/Common.h>
 #include <virgil/sdk/crypto/Crypto.h>
-#include <virgil/sdk/client/models/requests/CreateCardRequest.h>
-#include <virgil/sdk/client/models/CardIdGenerator.h>
+#include <virgil/sdk/CSR.h>
+#include <virgil/sdk/CardIdGenerator.h>
 
 using virgil::sdk::VirgilBase64;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::crypto::keys::PrivateKey;
-using virgil::sdk::client::models::requests::CreateCardRequest;
+using virgil::sdk::CSR;
 using virgil::cryptointerfaces::PublicKeyInterface;
-using virgil::sdk::client::models::CardIdGenerator;
+using virgil::sdk::CardIdGenerator;
 
 using json = nlohmann::json;
 
@@ -60,7 +60,6 @@ TEST_CASE("test001_CheckNumberOfTestsInJSON", "[compatibility]") {
 
     std::string str((std::istreambuf_iterator<char>(input)),
                     std::istreambuf_iterator<char>());
-
     auto j = json::parse(str);
 
     REQUIRE(j.size() == 6);
@@ -227,7 +226,6 @@ TEST_CASE("test006_GenerateSignature_ShouldBeEqual", "[compatibility]") {
 
 TEST_CASE("test007_ExportSignableData_ShouldBeEqual", "[compatibility]") {
     auto crypto = std::make_shared<Crypto>(Crypto());
-
     std::ifstream input("sdk_compatibility_data.json");
 
     std::string str((std::istreambuf_iterator<char>(input)),
@@ -239,7 +237,7 @@ TEST_CASE("test007_ExportSignableData_ShouldBeEqual", "[compatibility]") {
 
     std::string exportedRequest = dict["exported_request"];
 
-    auto request = CreateCardRequest::importFromString(exportedRequest);
+    auto request = CSR::importFromString(exportedRequest);
 
     auto fingerprint = crypto->calculateFingerprint(request.snapshot());
 
@@ -249,6 +247,6 @@ TEST_CASE("test007_ExportSignableData_ShouldBeEqual", "[compatibility]") {
 
     auto signature = request.signatures().at(CardId);
 
-    auto verified = crypto->verify(fingerprint, signature, *creatorPublicKey);
+    auto verified = crypto->verify(fingerprint, signature.sign(), *creatorPublicKey);
     REQUIRE(verified);
 }

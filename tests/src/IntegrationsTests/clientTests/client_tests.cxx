@@ -33,7 +33,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+/*
 #include <catch.hpp>
 
 #include <thread>
@@ -43,33 +43,34 @@
 #include <TestUtils.h>
 
 #include <virgil/sdk/Common.h>
-#include <virgil/sdk/client/Client.h>
+#include <virgil/sdk/web/Client.h>
 
 #include <virgil/sdk/util/Memory.h>
-#include <virgil/sdk/client/RequestSigner.h>
-#include <virgil/sdk/client/RequestManager.h>
+#include <virgil/sdk/web/RequestSigner.h>
+#include <virgil/sdk/web/RequestManager.h>
 #include <PrivateKeyInterface.h>
 
-#include <virgil/sdk/client/ExtendedValidator.h>
+#include <virgil/sdk/web/ExtendedValidator.h>
 using virgil::sdk::crypto::keys::PrivateKey;
 
-using virgil::sdk::client::models::CardInfo;
-using virgil::sdk::client::Client;
-using virgil::sdk::client::ServiceConfig;
-using virgil::sdk::client::models::requests::CreateCardRequest;
-using virgil::sdk::client::models::SearchCardsCriteria;
-using virgil::sdk::client::models::CardScope;
+using virgil::sdk::web::models::CardInfo;
+using virgil::sdk::web::Client;
+using virgil::sdk::web::ServiceConfig;
+using virgil::sdk::web::models::requests::CSR;
+using virgil::sdk::web::models::SearchCardsCriteria;
+using virgil::sdk::web::models::CardScope;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
 using virgil::sdk::VirgilBase64;
-using virgil::sdk::client::interfaces::CardValidatorInterface;
+using virgil::sdk::web::interfaces::CardValidatorInterface;
 
-using virgil::sdk::client::RequestSigner;
-using virgil::sdk::client::RequestManager;
+using virgil::sdk::web::RequestSigner;
+using virgil::sdk::web::RequestManager;
 using virgil::cryptointerfaces::PrivateKeyInterface;
-using virgil::sdk::client::ExtendedValidator;
+using virgil::sdk::web::ExtendedValidator;
+using virgil::sdk::web::models::CardIdGenerator;
 
-TEST_CASE("test001_CreateCardTest", "[client]") {
+TEST_CASE("test001_CreateCardTest", "[web]") {
     TestConst consts;
     TestUtils utils(consts);
 
@@ -79,11 +80,11 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
     serviceConfig.cardsServiceURL(consts.cardsServiceURL());
     serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
-    Client client(std::move(serviceConfig));
+    Client web(std::move(serviceConfig));
 
     auto CreateCardRequest = utils.instantiateCreateCardRequest();
 
-    auto future = client.createCard(CreateCardRequest);
+    auto future = web.createCard(CreateCardRequest);
     auto cardRaw = future.get();
 
     auto card = Card::ImportRaw(crypto, cardRaw);
@@ -98,7 +99,7 @@ TEST_CASE("test001_CreateCardTest", "[client]") {
     REQUIRE(utils.checkCardEquality(card, CreateCardRequest));
 }
 
-TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
+TEST_CASE("test002_CreateCardWithCustomData", "[web]") {
     TestConst consts;
     TestUtils utils(consts);
 
@@ -106,7 +107,7 @@ TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
     serviceConfig.cardsServiceURL(consts.cardsServiceURL());
     serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
-    Client client(std::move(serviceConfig));
+    Client web(std::move(serviceConfig));
 
     std::unordered_map<std::string, std::string> CustomData;
     CustomData["some_random_key1"] = "some_random_data1";
@@ -114,7 +115,7 @@ TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
 
     auto createCardRequest = utils.instantiateCreateCardRequest(CustomData);
 
-    auto future = client.createCard(createCardRequest);
+    auto future = web.createCard(createCardRequest);
 
     auto cardRaw = future.get();
 
@@ -124,7 +125,7 @@ TEST_CASE("test002_CreateCardWithCustomData", "[client]") {
 }
 
 
-TEST_CASE("test003_SearchCardsTest", "[client]") {
+TEST_CASE("test003_SearchCardsTest", "[web]") {
     TestConst consts;
     TestUtils utils(consts);
 
@@ -132,11 +133,11 @@ TEST_CASE("test003_SearchCardsTest", "[client]") {
     serviceConfig.cardsServiceURL(consts.cardsServiceURL());
     serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
-    Client client(std::move(serviceConfig));
+    Client web(std::move(serviceConfig));
 
     auto createCardRequest = utils.instantiateCreateCardRequest();
 
-    auto future = client.createCard(createCardRequest);
+    auto future = web.createCard(createCardRequest);
 
     auto cardRaw = future.get();
 
@@ -144,7 +145,7 @@ TEST_CASE("test003_SearchCardsTest", "[client]") {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
-    auto future2 = client.searchCards(
+    auto future2 = web.searchCards(
             SearchCardsCriteria::createCriteria({ card.identity() }, CardScope::application, card.identityType()));
 
     auto list = future2.get();
@@ -155,7 +156,7 @@ TEST_CASE("test003_SearchCardsTest", "[client]") {
     REQUIRE(utils.checkCardEquality(card, foundCards));
 }
 
-TEST_CASE("test004_GetCardTest", "[client]") {
+TEST_CASE("test004_GetCardTest", "[web]") {
     TestConst consts;
     TestUtils utils(consts);
 
@@ -163,11 +164,11 @@ TEST_CASE("test004_GetCardTest", "[client]") {
     serviceConfig.cardsServiceURL(consts.cardsServiceURL());
     serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
-    Client client(std::move(serviceConfig));
+    Client web(std::move(serviceConfig));
 
     auto createCardRequest = utils.instantiateCreateCardRequest();
 
-    auto future = client.createCard(createCardRequest);
+    auto future = web.createCard(createCardRequest);
 
     auto cardRaw = future.get();
 
@@ -175,7 +176,7 @@ TEST_CASE("test004_GetCardTest", "[client]") {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 
-    auto future2 = client.getCard(card.identifier());
+    auto future2 = web.getCard(CardIdGenerator::generate(card.fingerprint()));
 
     auto foundCardRaw = future2.get();
 
@@ -185,7 +186,7 @@ TEST_CASE("test004_GetCardTest", "[client]") {
 }
 
 
-TEST_CASE("test006_RevokeCardTest", "[client]") {
+TEST_CASE("test006_RevokeCardTest", "[web]") {
     TestConst consts;
     TestUtils utils((TestConst()));
 
@@ -195,23 +196,22 @@ TEST_CASE("test006_RevokeCardTest", "[client]") {
     serviceConfig.cardsServiceURL(consts.cardsServiceURL());
     serviceConfig.cardsServiceROURL(consts.cardsServiceROURL());
 
-    Client client(std::move(serviceConfig));
+    Client web(std::move(serviceConfig));
 
     auto CreateCardRequest = utils.instantiateCreateCardRequest();
 
-    auto future = client.createCard(CreateCardRequest);
+    auto future = web.createCard(CreateCardRequest);
     auto cardRaw = future.get();
 
     auto card = Card::ImportRaw(utils.crypto(), cardRaw);
 
-
     //Revoking
     auto RevokeCardRequest = utils.instantiateRevokeCardRequest(card);
 
-    auto future_1 = client.revokeCard(RevokeCardRequest);
+    auto future_1 = web.revokeCard(RevokeCardRequest);
     future_1.get();
 
-    auto future_2 = client.getCard(card.identifier());
+    auto future_2 = web.getCard(CardIdGenerator::generate(card.fingerprint()));
 
     bool errorWasThrown = false;
     try {
@@ -224,7 +224,7 @@ TEST_CASE("test006_RevokeCardTest", "[client]") {
     REQUIRE(errorWasThrown);
 }
 
-TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[client]") {
+TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[web]") {
 
     TestConst consts;
     TestUtils utils(consts);
@@ -252,4 +252,4 @@ TEST_CASE("test007_CreateCardRequest_Should_ThrowExeption_IfIdentityIsEmpty", "[
     }
 
     REQUIRE(errorWasThrown);
-}
+}*/
