@@ -35,28 +35,30 @@
  */
 
 #include <catch.hpp>
-#include <Mocks/CryptoTest.h>
+#include <iostream>
+
 #include <virgil/sdk/validation/ExtendedValidator.h>
+
 #include <TestConst.h>
-
+#include <Mocks/CryptoTest.h>
 #include <Mocks/CardTest.h>
+#include <virgil/sdk/util/ByteArrayUtils.h>
 
-#include <virgil/sdk/CardIdGenerator.h>
+using virgil::sdk::util::ByteArrayUtils;
+
+using virgil::sdk::validation::ExtendedValidator;
+using virgil::sdk::CardSignatureInfo;
 using virgil::sdk::crypto::Crypto;
 
-using virgil::sdk::CardIdGenerator;
-using virgil::sdk::validation::ExtendedValidator;
 using virgil::sdk::test::TestConst;
 
-static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
-static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1RytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=";
-
-using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
-using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 using virgil::sdk::test::CryptoTest;
 using virgil::sdk::test::KeyPairTest;
 using virgil::sdk::test::PublicKeyTest;
 using virgil::sdk::test::CardTest;
+
+static const std::string kServiceCardId = "3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853";
+static const std::string kServicePublicKey = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1RytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=";
 
 TEST_CASE("test_001_CreateValidator_With_Default_Parameters", "[ExtendedValidator]") {
     auto validator = std::make_shared<ExtendedValidator>();
@@ -118,8 +120,8 @@ TEST_CASE("test_005_Card_ShouldBe_Valid", "[CardValidator]") {
     CardTest card;
 
     card.signatures_ =
-            {{kServiceCardId, VirgilByteArrayUtils::stringToBytes(kServicePublicKey)},
-             {consts.applicationId(), VirgilByteArrayUtils::stringToBytes(consts.applicationPublicKeyBase64())}};
+            {{kServiceCardId, ByteArrayUtils::stringToBytes(kServicePublicKey)},
+             {consts.applicationId(), ByteArrayUtils::stringToBytes(consts.applicationPublicKeyBase64())}};
 
     auto result = validator.validateCard(crypto, card);
 
@@ -128,7 +130,7 @@ TEST_CASE("test_005_Card_ShouldBe_Valid", "[CardValidator]") {
 }
 
 
-TEST_CASE("test_006_Card_ShouldNotBe_Valid", "[CardValidator]") {
+TEST_CASE("test_006_Card_ShouldNotBe_Valid_without_Signature", "[CardValidator]") {
     TestConst consts;
     auto crypto = std::make_shared<CryptoTest>();
     auto validator = ExtendedValidator(
@@ -188,5 +190,4 @@ TEST_CASE("test_008_UnValidCard_ButVersion3.0_ShouldValidate", "[CardValidator]"
     REQUIRE(result.errors().size() == 0);
     REQUIRE(result.isValid());
 }
-
 

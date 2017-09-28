@@ -45,9 +45,9 @@
 #include <virgil/sdk/CSR.h>
 #include <virgil/sdk/CardIdGenerator.h>
 
-using virgil::sdk::VirgilBase64;
+using virgil::sdk::Base64;
 using virgil::sdk::crypto::Crypto;
-using virgil::sdk::VirgilByteArrayUtils;
+using virgil::sdk::crypto::VirgilByteArrayUtils;
 using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::CSR;
 using virgil::cryptointerfaces::PublicKeyInterface;
@@ -78,15 +78,15 @@ TEST_CASE("test002_DecryptFromSingleRecipient_ShouldDecrypt", "[compatibility]")
     json dict = j["encrypt_single_recipient"];
 
     std::string privateKeyStr = dict["private_key"];
-    auto privateKey = crypto.importPrivateKey(VirgilBase64::decode(privateKeyStr));
+    auto privateKey = crypto.importPrivateKey(Base64::decode(privateKeyStr));
 
     std::string originalDataStr = dict["original_data"];
 
     std::string cipherDataStr = dict["cipher_data"];
-    auto cipherData = VirgilBase64::decode(cipherDataStr);
+    auto cipherData = Base64::decode(cipherDataStr);
 
     auto decryptedData = crypto.decrypt(cipherData, privateKey);
-    auto decryptedDataStr = VirgilBase64::encode(decryptedData);
+    auto decryptedDataStr = Base64::encode(decryptedData);
 
     REQUIRE(decryptedDataStr == originalDataStr);
 }
@@ -108,7 +108,7 @@ TEST_CASE("test003_DecryptFromMultipleRecipients_ShouldDecypt", "[compatibility]
     std::vector<json> privateKeysJson = dict["private_keys"];
 
     for (const std::string &privateKeyStr : privateKeysJson) {
-        auto privateKeyData = VirgilBase64::decode(privateKeyStr);
+        auto privateKeyData = Base64::decode(privateKeyStr);
 
         auto privateKey = crypto.importPrivateKey(privateKeyData);
 
@@ -120,11 +120,11 @@ TEST_CASE("test003_DecryptFromMultipleRecipients_ShouldDecypt", "[compatibility]
     std::string originalDataStr = dict["original_data"];
 
     std::string cipherDataStr = dict["cipher_data"];
-    auto cipherData = VirgilBase64::decode(cipherDataStr);
+    auto cipherData = Base64::decode(cipherDataStr);
 
     for (auto& privateKey : privateKeys) {
         auto decryptedData = crypto.decrypt(cipherData, privateKey);
-        auto decryptedDataStr = VirgilBase64::encode(decryptedData);
+        auto decryptedDataStr = Base64::encode(decryptedData);
 
         REQUIRE(decryptedDataStr == originalDataStr);
     }
@@ -143,16 +143,16 @@ TEST_CASE("test004_DecryptThenVerifySingleRecipient_ShouldDecryptAndVerify", "[c
     json dict = j["sign_then_encrypt_single_recipient"];
 
     std::string privateKeyStr = dict["private_key"];
-    auto privateKey = crypto.importPrivateKey(VirgilBase64::decode(privateKeyStr));
+    auto privateKey = crypto.importPrivateKey(Base64::decode(privateKeyStr));
     auto publicKey = crypto.extractPublicKeyFromPrivateKey(privateKey);
 
     std::string originalDataStr = dict["original_data"];
 
     std::string cipherDataStr = dict["cipher_data"];
-    auto cipherData = VirgilBase64::decode(cipherDataStr);
+    auto cipherData = Base64::decode(cipherDataStr);
 
     auto decryptedData = crypto.decryptThenVerify(cipherData, privateKey, publicKey);
-    auto decryptedDataStr = VirgilBase64::encode(decryptedData);
+    auto decryptedDataStr = Base64::encode(decryptedData);
 
     REQUIRE(decryptedDataStr == originalDataStr);
 }
@@ -174,7 +174,7 @@ TEST_CASE("test005_DecryptThenVerifyMultipleRecipients_ShouldDecryptAndVerify", 
     std::vector<json> privateKeysJson = dict["private_keys"];
 
     for (const std::string &privateKeyStr : privateKeysJson) {
-        auto privateKeyData = VirgilBase64::decode(privateKeyStr);
+        auto privateKeyData = Base64::decode(privateKeyStr);
 
         auto privateKey = crypto.importPrivateKey(privateKeyData);
 
@@ -186,13 +186,13 @@ TEST_CASE("test005_DecryptThenVerifyMultipleRecipients_ShouldDecryptAndVerify", 
     std::string originalDataStr = dict["original_data"];
 
     std::string cipherDataStr = dict["cipher_data"];
-    auto cipherData = VirgilBase64::decode(cipherDataStr);
+    auto cipherData = Base64::decode(cipherDataStr);
 
     auto signerPublicKey = crypto.extractPublicKeyFromPrivateKey(privateKeys[0]);
 
     for (auto& privateKey : privateKeys) {
         auto decryptedData = crypto.decryptThenVerify(cipherData, privateKey, signerPublicKey);
-        auto decryptedDataStr = VirgilBase64::encode(decryptedData);
+        auto decryptedDataStr = Base64::encode(decryptedData);
 
         REQUIRE(decryptedDataStr == originalDataStr);
     }
@@ -211,13 +211,13 @@ TEST_CASE("test006_GenerateSignature_ShouldBeEqual", "[compatibility]") {
     json dict = j["generate_signature"];
 
     std::string privateKeyStr = dict["private_key"];
-    auto privateKey = crypto.importPrivateKey(VirgilBase64::decode(privateKeyStr));
+    auto privateKey = crypto.importPrivateKey(Base64::decode(privateKeyStr));
 
     std::string originalDataStr = dict["original_data"];
-    auto originalData = VirgilBase64::decode(originalDataStr);
+    auto originalData = Base64::decode(originalDataStr);
 
     auto signature = crypto.generateSignature(originalData, privateKey);
-    auto signatureStr = VirgilBase64::encode(signature);
+    auto signatureStr = Base64::encode(signature);
 
     std::string originalSignatureStr = dict["signature"];
 

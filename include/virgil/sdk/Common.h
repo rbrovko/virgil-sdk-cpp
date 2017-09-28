@@ -34,21 +34,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_COMMON_H
-#define VIRGIL_SDK_COMMON_H
+#ifndef VIRGIL_SDK_COMON_H
+#define VIRGIL_SDK_COMON_H
 
-#include <virgil/crypto/VirgilByteArray.h>
-#include <virgil/crypto/VirgilByteArrayUtils.h>
-#include <virgil/crypto/foundation/VirgilBase64.h>
-#include <virgil/crypto/foundation/VirgilHash.h>
+#include <virgil/sdk/util/ByteArrayUtils.h>
+#include <virgil/sdk/util/Base64.h>
 
 namespace virgil {
-namespace sdk {
-    using VirgilByteArray = virgil::crypto::VirgilByteArray;
-    using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
-    using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
-    using VirgilHashAlgorithm = virgil::crypto::foundation::VirgilHash::Algorithm;
-}
+    namespace sdk {
+        using ByteArray = virgil::sdk::util::ByteArray;
+        using ByteArrayUtils = virgil::sdk::util::ByteArrayUtils;
+        using Base64 = virgil::sdk::util::Base64;
+    }
 }
 
-#endif //VIRGIL_SDK_COMMON_H
+#endif //VIRGIL_SDK_COMON_H

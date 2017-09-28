@@ -40,13 +40,14 @@
 #include <memory>
 #include <TestConst.h>
 #include <TestUtils.h>
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/util/Memory.h>
 #include <virgil/sdk/CardManager.h>
 #include <virgil/sdk/validation/ExtendedValidator.h>
 #include <virgil/sdk/CardIdGenerator.h>
 #include <helpers.h>
 #include <virgil/sdk/CSRParams.h>
+
+using virgil::sdk::util::Base64;
 
 using virgil::sdk::CSRParams;
 using virgil::sdk::web::ServiceConfig;
@@ -58,7 +59,6 @@ using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
 using virgil::sdk::CardSigner;
 using virgil::sdk::test::Utils;
-using virgil::sdk::VirgilBase64;
 using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::CardIdGenerator;
 using virgil::sdk::web::SignType;
@@ -79,7 +79,7 @@ TEST_CASE("test000_Create_and_Sign_CSR", "[CardManager]") {
     );
     CardManager manager(managerParams);
 
-    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
+    auto privateAppKeyData = Base64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
     auto identity = Utils::generateRandomStr(40);
 

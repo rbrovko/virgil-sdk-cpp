@@ -37,13 +37,12 @@
 #ifndef VIRGIL_SDK_TESTKEYS_H
 #define VIRGIL_SDK_TESTKEYS_H
 #include <KeyPairInterface.h>
-#include <virgil/sdk/Common.h>
+#include <virgil/sdk/util/ByteArrayUtils.h>
 
+using virgil::sdk::util::ByteArrayUtils;
 using virgil::cryptointerfaces::PublicKeyInterface;
 using virgil::cryptointerfaces::PrivateKeyInterface;
 using virgil::cryptointerfaces::KeyPairInterface;
-
-using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 
 namespace virgil {
     namespace sdk {
@@ -66,10 +65,10 @@ namespace virgil {
                  * @brief constructor which creates same key each time it called
                  */
                 PublicKeyTest()
-                        : key_(VirgilByteArrayUtils::stringToBytes("-----BEGIN PUBLIC KEY-----\n"
+                        : key_(ByteArrayUtils::stringToBytes("-----BEGIN PUBLIC KEY-----\n"
                                                                            "MCowBQYDK2VwAyEAedVKLoHYlzZBGhsR3I9TlI8pXwAYCDnRRs7d+j3vKxk=\n"
                                                                            "-----END PUBLIC KEY-----\n")),
-                          identifier_(VirgilByteArrayUtils::stringToBytes(
+                          identifier_(ByteArrayUtils::stringToBytes(
                                   "\u0018\u0003��i�\u001D�Ǻtj+��Ɣ��Z ��$���p}E��")) {}
 
             private:
@@ -96,10 +95,10 @@ namespace virgil {
                  * @brief constructor which creates same key each time it called
                  */
                 PrivateKeyTest()
-                        : key_(VirgilByteArrayUtils::stringToBytes("-----BEGIN PRIVATE KEY-----\n"
+                        : key_(ByteArrayUtils::stringToBytes("-----BEGIN PRIVATE KEY-----\n"
                                                                            "MC4CAQAwBQYDK2VwBCIEIJTTFL3mtd5HXMCzJYG/WmLbey9LsOfqGFkoGV/QzbdI\n"
                                                                            "-----END PRIVATE KEY-----\n")),
-                          identifier_(VirgilByteArrayUtils::stringToBytes(
+                          identifier_(ByteArrayUtils::stringToBytes(
                                   "\u0018\u0003��i�\u001D�Ǻtj+��Ɣ��Z ��$���p}E��")) {}
 
             private:

@@ -42,12 +42,13 @@
 #include <virgil/sdk/util/JsonKey.h>
 #include <virgil/sdk/util/JsonUtils.h>
 
+
 using json = nlohmann::json;
 
+using virgil::sdk::util::ByteArray;
 using virgil::sdk::util::JsonKey;
 using virgil::sdk::util::JsonUtils;
 using virgil::sdk::web::CSRSnapshotModel;
-using virgil::sdk::VirgilByteArray;
 
 namespace virgil {
     namespace sdk {
@@ -59,7 +60,7 @@ namespace virgil {
                 static std::string toJson(const CSRSnapshotModel &model) {
                     try {
                         json j = {
-                                {JsonKey::PublicKey, VirgilBase64::encode(model.publicKeyData())},
+                                {JsonKey::PublicKey, Base64::encode(model.publicKeyData())},
                                 {JsonKey::Identity, model.identity()},
                         };
 
@@ -83,7 +84,7 @@ namespace virgil {
                         std::unordered_map<std::string, std::string> data;
 
                         return CSRSnapshotModel::createModel(j[JsonKey::Identity],
-                                                             VirgilBase64::decode(j[JsonKey::PublicKey]));
+                                                             Base64::decode(j[JsonKey::PublicKey]));
                     } catch (std::exception &exception) {
                         throw std::logic_error(
                                 std::string("virgil-sdk:\n JsonDeserializer<CreateCardSnapshotModel>::fromJson ")
@@ -98,9 +99,9 @@ namespace virgil {
             class CanonicalSerializer<CSRSnapshotModel> {
             public:
                 template<int INDENT = -1>
-                static VirgilByteArray toCanonicalForm(const CSRSnapshotModel &model) {
+                static ByteArray toCanonicalForm(const CSRSnapshotModel &model) {
                     try {
-                        return VirgilByteArrayUtils::stringToBytes(
+                        return ByteArrayUtils::stringToBytes(
                                 JsonSerializer<CSRSnapshotModel>::toJson<INDENT>(model));
                     } catch (std::exception &exception) {
                         throw std::logic_error(
@@ -110,10 +111,10 @@ namespace virgil {
                 }
 
                 template<int FAKE = 0>
-                static CSRSnapshotModel fromCanonicalForm(const VirgilByteArray &data) {
+                static CSRSnapshotModel fromCanonicalForm(const ByteArray &data) {
                     try {
                         return JsonDeserializerBase<CSRSnapshotModel>::fromJsonString(
-                                VirgilByteArrayUtils::bytesToString(data));
+                                ByteArrayUtils::bytesToString(data));
                     } catch (std::exception &exception) {
                         throw std::logic_error(
                                 std::string("virgil-sdk:\n CanonicalSerializer<CreateCardSnapshotModel>::fromCanonicalForm ")
@@ -142,14 +143,14 @@ virgil::sdk::serialization::JsonSerializer<CSRSnapshotModel>::toJson<4>(const CS
 template CSRSnapshotModel
 virgil::sdk::serialization::JsonDeserializer<CSRSnapshotModel>::fromJson(const json&);
 
-template VirgilByteArray
+template ByteArray
 virgil::sdk::serialization::CanonicalSerializer<CSRSnapshotModel>::toCanonicalForm(const CSRSnapshotModel&);
 
-template VirgilByteArray
+template ByteArray
 virgil::sdk::serialization::CanonicalSerializer<CSRSnapshotModel>::toCanonicalForm<2>(const CSRSnapshotModel&);
 
-template VirgilByteArray
+template ByteArray
 virgil::sdk::serialization::CanonicalSerializer<CSRSnapshotModel>::toCanonicalForm<4>(const CSRSnapshotModel&);
 
 template CSRSnapshotModel
-virgil::sdk::serialization::CanonicalSerializer<CSRSnapshotModel>::fromCanonicalForm(const VirgilByteArray&);
+virgil::sdk::serialization::CanonicalSerializer<CSRSnapshotModel>::fromCanonicalForm(const ByteArray&);

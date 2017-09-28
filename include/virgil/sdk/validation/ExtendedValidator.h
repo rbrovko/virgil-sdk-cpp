@@ -40,7 +40,6 @@
 #include <virgil/sdk/interfaces/CardValidatorInterface.h>
 #include <virgil/sdk/interfaces/ValidationRuleInterface.h>
 #include <list>
-#include <PublicKeyInterface.h>
 #include <virgil/sdk/validation/SignerInfo.h>
 
 using virgil::sdk::interfaces::ValidationRuleInterface;

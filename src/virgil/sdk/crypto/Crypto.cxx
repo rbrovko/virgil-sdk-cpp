@@ -51,8 +51,8 @@ static_assert(!std::is_abstract<virgil::sdk::crypto::Crypto>(), "Crypto must not
 
 using virgil::sdk::make_error;
 using virgil::sdk::crypto::Crypto;
-using virgil::sdk::VirgilByteArray;
-using virgil::sdk::VirgilByteArrayUtils;
+using virgil::sdk::crypto::VirgilByteArray;
+using virgil::sdk::crypto::VirgilByteArrayUtils;
 using virgil::crypto::VirgilKeyPair;
 using virgil::crypto::VirgilSigner;
 using virgil::crypto::VirgilCipher;
@@ -64,7 +64,7 @@ using virgil::crypto::stream::VirgilStreamDataSink;
 using virgil::sdk::crypto::keys::PrivateKey;
 using virgil::sdk::crypto::keys::PublicKey;
 using virgil::sdk::crypto::keys::KeyPair;
-using virgil::sdk::VirgilHashAlgorithm;
+using virgil::sdk::crypto::VirgilHashAlgorithm;
 using virgil::cryptointerfaces::PublicKeyInterface;
 
 const auto CustomParamKeySignature = VirgilByteArrayUtils::stringToBytes("VIRGIL-DATA-SIGNATURE");

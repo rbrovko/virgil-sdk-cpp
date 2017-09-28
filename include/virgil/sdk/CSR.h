@@ -41,7 +41,6 @@
 #include <unordered_map>
 #include <string>
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/interfaces/Exportable.h>
 #include <virgil/sdk/interfaces/Importable.h>
 #include <virgil/sdk/serialization/CanonicalSerializer.h>
@@ -50,6 +49,7 @@
 #include <CryptoInterface.h>
 #include <virgil/sdk/CardSigner.h>
 #include <virgil/sdk/CSRParams.h>
+#include <virgil/sdk/Common.h>
 
 namespace virgil {
     namespace sdk {
@@ -63,9 +63,8 @@ namespace virgil {
                                 public interfaces::Importable<CSR> {
         public:
 
-            static CSR generate(
-                    const std::string &identity,
-                    const VirgilByteArray &publicKeyData);
+            static CSR generate(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                                const CSRParams &csrParams);
 
             /*!
              * @brief Getter.
@@ -77,7 +76,7 @@ namespace virgil {
              * @brief Getter.
              * @return Snapshot of data to be signed
              */
-            const VirgilByteArray& snapshot() const override { return snapshot_; }
+            const ByteArray& snapshot() const override { return snapshot_; }
 
             /*!
              * @brief Getter.
@@ -108,7 +107,7 @@ namespace virgil {
             //For deserialization reason
             // This is private API
             //! @cond Doxygen_Suppress
-            CSR(const VirgilByteArray &snapshot,
+            CSR(const ByteArray &snapshot,
                 const std::unordered_map<std::string, web::RawCardSignatureInfo> &signatures
                 = std::unordered_map<std::string, web::RawCardSignatureInfo>());
             //! @endcond
@@ -119,12 +118,12 @@ namespace virgil {
                 const std::unordered_map<std::string, web::RawCardSignatureInfo> &signatures
                     = std::unordered_map<std::string, web::RawCardSignatureInfo>());
 
-            CSR(VirgilByteArray snapshot,
+            CSR(ByteArray snapshot,
                 web::CSRSnapshotModel snapshotModel,
                 std::unordered_map<std::string, web::RawCardSignatureInfo> signatures);
             //! @endcond
 
-            VirgilByteArray snapshot_;
+            ByteArray snapshot_;
             web::CSRSnapshotModel snapshotModel_;
             std::unordered_map<std::string, web::RawCardSignatureInfo> signatures_;
         };

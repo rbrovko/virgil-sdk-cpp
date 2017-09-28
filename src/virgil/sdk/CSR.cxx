@@ -37,8 +37,7 @@
 #include <virgil/sdk/CSR.h>
 #include <virgil/sdk/CardIdGenerator.h>
 #include <virgil/sdk/util/JsonUtils.h>
-#include <virgil/sdk/interfaces/SignableRequestInterface.h>
-#include <virgil/sdk/serialization/JsonSerializer.h>
+#include <virgil/sdk/VirgilSdkError.h>
 
 using virgil::sdk::CSR;
 using virgil::sdk::util::JsonUtils;
@@ -49,24 +48,36 @@ using virgil::sdk::serialization::CanonicalSerializer;
 using virgil::sdk::CardIdGenerator;
 using virgil::sdk::web::RawCardSignatureInfo;
 using virgil::sdk::web::SignType;
+using virgil::sdk::make_error;
 
-CSR CSR::generate(
-        const std::string &identity,
-        const VirgilByteArray &publicKeyData)
-{ return CSR(web::CSRSnapshotModel::createModel(identity, publicKeyData)); }
+CSR CSR::generate(const std::shared_ptr<virgil::cryptointerfaces::CryptoInterface> &crypto,
+                  const CSRParams &csrParams) {
+
+    if (csrParams.identity().empty())
+        throw make_error(VirgilSdkError::CreateRequestFailed, "Identity property is mandatory");
+
+    auto exportedPublicKey = crypto->exportPublicKey(csrParams.publicKey());
+
+    auto csr = CSR(web::CSRSnapshotModel::createModel(csrParams.identity(), exportedPublicKey));
+
+    if (csrParams.privateKey() != nullptr)
+        csr.sign(crypto, *csrParams.privateKey().get());
+
+    return csr;
+}
 
 CSR::CSR(const web::CSRSnapshotModel &snapshotModel,
          const std::unordered_map<std::string, RawCardSignatureInfo> &signatures)
         : CSR(serialization::CanonicalSerializer<web::CSRSnapshotModel>::toCanonicalForm(snapshotModel),
               snapshotModel, signatures) { };
 
-CSR::CSR(const VirgilByteArray &snapshot,
+CSR::CSR(const ByteArray &snapshot,
          const std::unordered_map<std::string, RawCardSignatureInfo> &signatures)
         : CSR(snapshot,
               serialization::CanonicalSerializer<web::CSRSnapshotModel>::fromCanonicalForm(snapshot),
               signatures) {}
 
-CSR::CSR(VirgilByteArray snapshot, web::CSRSnapshotModel snapshotModel,
+CSR::CSR(ByteArray snapshot, web::CSRSnapshotModel snapshotModel,
          std::unordered_map<std::string, RawCardSignatureInfo> signatures)
 : snapshot_(std::move(snapshot)), snapshotModel_(std::move(snapshotModel)), signatures_(std::move(signatures)) { };
 
@@ -92,10 +103,10 @@ void CSR::sign(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto,
                const CardSigner &cardSigner,
                const SignType &signType) {
 
-    auto extraDataSnapshot = (!cardSigner.extraData().empty()) ? VirgilByteArrayUtils::stringToBytes(JsonUtils::unorderedMapToJson(cardSigner.extraData()).dump()) : std::vector<unsigned char>();
+    auto extraDataSnapshot = (!cardSigner.extraData().empty()) ? ByteArrayUtils::stringToBytes(JsonUtils::unorderedMapToJson(cardSigner.extraData()).dump()) : std::vector<unsigned char>();
 
     auto combinedSnapshot = snapshot();
-    VirgilByteArrayUtils::append(combinedSnapshot, extraDataSnapshot);
+    ByteArrayUtils::append(combinedSnapshot, extraDataSnapshot);
 
     auto fingerprint = crypto->calculateFingerprint(combinedSnapshot);
     auto signatureInfo = RawCardSignatureInfo(
@@ -110,6 +121,6 @@ void CSR::sign(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto,
 std::string CSR::exportAsString() const {
     auto json = serialization::JsonSerializer<SignableRequestInterface>::toJson(*this);
 
-    return VirgilBase64::encode(VirgilByteArrayUtils::stringToBytes(json));
+    return Base64::encode(ByteArrayUtils::stringToBytes(json));
 }
 

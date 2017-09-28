@@ -36,7 +36,7 @@
 
 #include <virgil/sdk/crypto/keys/PrivateKey.h>
 
-using virgil::sdk::VirgilByteArray;
+using virgil::sdk::crypto::VirgilByteArray;
 using virgil::sdk::crypto::keys::PrivateKey;
 
 PrivateKey::PrivateKey(VirgilByteArray key, VirgilByteArray identifier)

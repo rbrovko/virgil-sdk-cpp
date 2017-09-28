@@ -42,6 +42,9 @@
 namespace virgil {
     namespace sdk {
 
+        /*!
+         * @brief represents parameters for generating CSR instance
+         */
         class CSRParams {
         public:
             CSRParams() = default;
@@ -51,10 +54,22 @@ namespace virgil {
                       const std::shared_ptr<cryptointerfaces::PrivateKeyInterface> &privateKey = nullptr)
                     : identity_(identity), publicKey_(publicKey), privateKey_(privateKey) {};
 
+            /*!
+             * @brief Getter.
+             * @return string with identity
+             */
             const std::string& identity() const { return identity_; }
 
+            /*!
+             * @brief Getter.
+             * @return public key instance
+             */
             const cryptointerfaces::PublicKeyInterface& publicKey() const { return publicKey_; }
 
+            /*!
+             * @brief Getter.
+             * @return shared_ptr with private key
+             */
             const std::shared_ptr<cryptointerfaces::PrivateKeyInterface>& privateKey() const { return privateKey_; }
 
         private:

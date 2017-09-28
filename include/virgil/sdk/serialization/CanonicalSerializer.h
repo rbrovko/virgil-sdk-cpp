@@ -40,8 +40,8 @@
 #include <string>
 #include <vector>
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/serialization/JsonSerializer.h>
+#include <virgil/sdk/util/ByteArrayUtils.h>
 
 namespace virgil {
     namespace sdk {
@@ -61,7 +61,7 @@ namespace virgil {
                  * @return serialized representation of model
                  */
                 template<int INDENT = -1>
-                static VirgilByteArray toCanonicalForm(const T &model) ;
+                static util::ByteArray toCanonicalForm(const T &model) ;
 
                 /*!
                  * @brief Constructs object from its Canonical Form representation.
@@ -70,7 +70,7 @@ namespace virgil {
                  * @return Constructed object
                  */
                 template<int FAKE = 0>
-                static T fromCanonicalForm(const VirgilByteArray &data);
+                static T fromCanonicalForm(const util::ByteArray &data);
 
                 /*!
                  * @brief Forbid instantiation.

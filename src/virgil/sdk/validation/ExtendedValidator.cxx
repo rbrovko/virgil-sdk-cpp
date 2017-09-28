@@ -38,8 +38,6 @@
 #include <virgil/sdk/validation/SelfValidationRule.h>
 #include <virgil/sdk/validation/VirgilValidationRule.h>
 #include <virgil/sdk/validation/WhitelistValidationRule.h>
-#include <string>
-#include <virgil/sdk/validation/ValidationResult.h>
 
 using virgil::sdk::validation::ExtendedValidator;
 using virgil::sdk::validation::SelfValidationRule;
@@ -67,7 +65,7 @@ void ExtendedValidator::initialize(const std::shared_ptr<virgil::cryptointerface
         rules_.push_back(std::make_shared<SelfValidationRule>());
 
     if (!ignoreVirgilSignature_) {
-        auto virgilPublickey = crypto->importPublicKey(VirgilBase64::decode(kServicePublicKey));
+        auto virgilPublickey = crypto->importPublicKey(Base64::decode(kServicePublicKey));
         rules_.push_back(std::make_shared<VirgilValidationRule>(std::make_pair(kServiceCardId, virgilPublickey)));
     }
 
@@ -75,7 +73,7 @@ void ExtendedValidator::initialize(const std::shared_ptr<virgil::cryptointerface
         std::unordered_map<std::string, PublicKeyInterface*> registeredVerifiers_;
 
         for (const auto& verifier : whitelist_)
-            registeredVerifiers_[verifier.cardId()] = crypto->importPublicKey(VirgilBase64::decode(verifier.publicKey()));
+            registeredVerifiers_[verifier.cardId()] = crypto->importPublicKey(Base64::decode(verifier.publicKey()));
 
         rules_.push_back(std::make_shared<WhitelistValidationRule>(registeredVerifiers_));
     }

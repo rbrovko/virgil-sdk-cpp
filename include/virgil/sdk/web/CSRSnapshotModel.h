@@ -40,9 +40,9 @@
 #include <string>
 #include <unordered_map>
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/web/ClientCommon.h>
 #include <virgil/sdk/serialization/JsonSerializer.h>
+#include <virgil/sdk/util/ByteArrayUtils.h>
 
 namespace virgil {
     namespace sdk {
@@ -64,7 +64,7 @@ namespace virgil {
                  * @return initialized CSRSnapshotModel instance
                  */
                 static CSRSnapshotModel createModel(const std::string &identity,
-                                                    const VirgilByteArray &publicKeyData);
+                                                    const util::ByteArray &publicKeyData);
 
                 /*!
                  * @brief Getter.
@@ -76,14 +76,14 @@ namespace virgil {
                  * @brief Getter.
                  * @return raw representation of Card's public key
                  */
-                const VirgilByteArray & publicKeyData() const { return publicKeyData_; }
+                const util::ByteArray & publicKeyData() const { return publicKeyData_; }
 
 
             private:
-                CSRSnapshotModel(std::string identity, VirgilByteArray publicKeyData);
+                CSRSnapshotModel(std::string identity, util::ByteArray publicKeyData);
 
                 std::string identity_;
-                VirgilByteArray publicKeyData_;
+                util::ByteArray publicKeyData_;
             };
         }
     }

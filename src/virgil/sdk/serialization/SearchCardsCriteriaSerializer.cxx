@@ -47,7 +47,6 @@ using json = nlohmann::json;
 
 using virgil::sdk::util::JsonKey;
 using virgil::sdk::util::JsonUtils;
-using virgil::sdk::VirgilBase64;
 using virgil::sdk::web::SearchCardsCriteria;
 
 namespace virgil {

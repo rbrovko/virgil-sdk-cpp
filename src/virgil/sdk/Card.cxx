@@ -35,7 +35,6 @@
  */
 
 #include <virgil/sdk/Card.h>
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/serialization/JsonSerializer.h>
 #include <virgil/sdk/serialization/JsonDeserializer.h>
 #include <virgil/sdk/serialization/CanonicalSerializer.h>
@@ -44,10 +43,10 @@
 
 static_assert(!std::is_abstract<virgil::sdk::Card>(), "Card must not be abstract.");
 
+using virgil::sdk::util::ByteArrayUtils;
 using virgil::sdk::Card;
 using virgil::sdk::serialization::JsonDeserializer;
 using virgil::sdk::serialization::JsonSerializer;
-using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::util::JsonUtils;
 using virgil::sdk::serialization::CanonicalSerializer;
 
@@ -65,7 +64,7 @@ Card Card::parse(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypt
     std::unordered_map<std::string, CardSignatureInfo> signatures;
     for (const auto& signature : cardRaw.signatures()) {
 
-        auto extraData = JsonUtils::jsonToUnorderedMap((VirgilByteArrayUtils::bytesToString(signature.second.extraData())));
+        auto extraData = JsonUtils::jsonToUnorderedMap((ByteArrayUtils::bytesToString(signature.second.extraData())));
         CardSignatureInfo signatureInfo(
                 signature.second.sign(),
                 signature.second.signType(),
@@ -78,7 +77,7 @@ Card Card::parse(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypt
                 cardRaw.createdAt(), cardRaw.cardVersion(), signatures);
 }
 
-Card::Card(web::RawCard cardRaw, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identity,
+Card::Card(web::RawCard cardRaw, ByteArray fingerprint, ByteArray snapshot, std::string identity,
            std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey,
            std::string createdAt, std::string cardVersion, std::unordered_map<std::string, CardSignatureInfo> signatures)
         : cardRaw_(cardRaw), fingerprint_(fingerprint), snapshot_(std::move(snapshot)), identity_(std::move(identity)),
@@ -88,11 +87,11 @@ Card::Card(web::RawCard cardRaw, VirgilByteArray fingerprint, VirgilByteArray sn
 
 std::string Card::exportAsString() const {
     auto json = JsonSerializer<web::RawCard>::toJson(cardRaw_);
-    return VirgilBase64::encode(VirgilByteArrayUtils::stringToBytes(json));
+    return Base64::encode(ByteArrayUtils::stringToBytes(json));
 }
 
 Card Card::importFromString(const std::shared_ptr<cryptointerfaces::CryptoInterface> &crypto, const std::string &data) {
-    auto jsonStr = VirgilByteArrayUtils::bytesToString(VirgilBase64::decode(data));
+    auto jsonStr = ByteArrayUtils::bytesToString(Base64::decode(data));
     auto cardRaw = JsonDeserializer<web::RawCard>::fromJsonString(jsonStr);
 
     return Card::parse(crypto, cardRaw);

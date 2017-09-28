@@ -49,7 +49,6 @@ using json = nlohmann::json;
 
 using virgil::sdk::util::JsonKey;
 using virgil::sdk::util::JsonUtils;
-using virgil::sdk::VirgilBase64;
 using virgil::sdk::CSR;
 using virgil::sdk::interfaces::SignableRequestInterface;
 
@@ -66,7 +65,7 @@ namespace virgil {
                 static std::string toJson(const SignableRequestInterface &request) {
                     try {
                         json j = {
-                                {JsonKey::ContentSnapshot, VirgilBase64::encode(request.snapshot())}
+                                {JsonKey::ContentSnapshot, Base64::encode(request.snapshot())}
                         };
 
                         j[JsonKey::Meta][JsonKey::Signs] = JsonUtils::unorderedMapofSignsToJson(
@@ -91,7 +90,7 @@ namespace virgil {
                     try {
                         std::string snapshotStr = j[JsonKey::ContentSnapshot];
 
-                        auto snapshot = VirgilBase64::decode(snapshotStr);
+                        auto snapshot = Base64::decode(snapshotStr);
 
                         auto signatures = JsonUtils::jsonToUnorderedBinaryMapOfSigns(j[JsonKey::Meta][JsonKey::Signs]);
 

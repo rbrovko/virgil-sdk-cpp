@@ -42,19 +42,17 @@
 #include <TestUtils.h>
 
 #include <virgil/sdk/web/CardsClient.h>
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/web/ClientCommon.h>
 
 #include <virgil/sdk/util/Memory.h>
 #include <virgil/sdk/validation/ExtendedValidator.h>
 
 using virgil::sdk::CSR;
-using virgil::sdk::VirgilBase64;
 using virgil::sdk::crypto::Crypto;
 using virgil::sdk::test::TestUtils;
 using virgil::sdk::validation::ExtendedValidator;
 
-TEST_CASE("test001_CardImportExport", "[models]") {
+TEST_CASE("test001_CRSImportExport", "[models]") {
     TestUtils utils((TestConst()));
 
     std::unordered_map<std::string, std::string> data;
@@ -69,6 +67,7 @@ TEST_CASE("test001_CardImportExport", "[models]") {
 
     REQUIRE(utils.checkCreateCardRequestEquality(createCardRequest, importedRequest));
 }
+
 /*
 TEST_CASE("test003_CardImportExport", "[models]") {
     TestConst consts;

@@ -58,7 +58,7 @@ namespace sdk {
             //! @cond Doxygen_Suppress
             static std::unordered_map<std::string, std::string> jsonToUnorderedMap(const nlohmann::json &jsonObj);
 
-            static std::unordered_map<std::string, VirgilByteArray> jsonToUnorderedBinaryMap(
+            static std::unordered_map<std::string, ByteArray> jsonToUnorderedBinaryMap(
                     const nlohmann::json &jsonObj);
 
             static std::unordered_map<std::string, web::RawCardSignatureInfo> jsonToUnorderedBinaryMapOfSigns(
@@ -68,7 +68,7 @@ namespace sdk {
 
             static nlohmann::json unorderedMapofSignsToJson(const std::unordered_map<std::string, web::RawCardSignatureInfo> &map);
 
-            static nlohmann::json unorderedBinaryMapToJson(const std::unordered_map<std::string, VirgilByteArray> &map);
+            static nlohmann::json unorderedBinaryMapToJson(const std::unordered_map<std::string, ByteArray> &map);
             //! @endcond
 
             /*!

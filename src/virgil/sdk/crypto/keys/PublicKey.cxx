@@ -36,7 +36,7 @@
 
 #include <virgil/sdk/crypto/keys/PublicKey.h>
 
-using virgil::sdk::VirgilByteArray;
+using virgil::sdk::crypto::VirgilByteArray;
 using virgil::sdk::crypto::keys::PublicKey;
 
 PublicKey::PublicKey(VirgilByteArray key, VirgilByteArray identifier)

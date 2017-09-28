@@ -64,20 +64,7 @@ CardManager::CardManager(const CardManagerParams &cardManagerParams)
 }
 
 const CSR CardManager::generateCSR(const CSRParams &csrParams) const {
-    if (csrParams.identity().empty())
-        throw make_error(VirgilSdkError::CreateRequestFailed, "Identity property is mandatory");
-
-
-    auto exportedPublicKey = crypto_->exportPublicKey(csrParams.publicKey());
-    auto request = CSR::generate(
-            csrParams.identity(),
-            exportedPublicKey
-    );
-
-    if (csrParams.privateKey() != nullptr)
-        request.sign(crypto_, *csrParams.privateKey().get());
-
-    return request;
+    return CSR::generate(crypto_, csrParams);
 }
 
 void CardManager::signCSR(CSR &request, const std::list<CardSigner> &signers,

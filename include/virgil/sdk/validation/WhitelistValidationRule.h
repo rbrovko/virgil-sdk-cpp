@@ -38,7 +38,6 @@
 #define VIRGIL_SDK_APPLICATIONINTEGRITYPOLICY_H
 
 
-#include <virgil/sdk/interfaces/ValidationRuleInterface.h>
 #include <virgil/sdk/validation/ExtendedValidator.h>
 
 namespace virgil {

@@ -86,11 +86,11 @@ const std::string& TestConst::applicationPublicKeyBase64() const {
     /*  Getting Public appkey from private one
      crypto::Crypto crypto_;
 
-     auto privateAppKeyData = VirgilBase64::decode(this->applicationPrivateKeyBase64());
+     auto privateAppKeyData = Base64::decode(this->applicationPrivateKeyBase64());
      auto appPrivateKey = crypto_.importPrivateKey(privateAppKeyData, this->applicationPrivateKeyPassword());
 
      auto appPublicKey = crypto_.extractPublicKeyFromPrivateKey(appPrivateKey);
-     return VirgilBase64::encode(crypto_.exportPublicKey(appPublicKey));
+     return Base64::encode(crypto_.exportPublicKey(appPublicKey));
      */
     return applicationPublicKeyBase64_;
 }

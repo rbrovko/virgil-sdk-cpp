@@ -37,7 +37,6 @@
 #ifndef VIRGIL_SDK_SELFINTEGRITYPOLICY_H
 #define VIRGIL_SDK_SELFINTEGRITYPOLICY_H
 
-#include <virgil/sdk/interfaces/ValidationRuleInterface.h>
 #include <virgil/sdk/validation/ExtendedValidator.h>
 
 namespace virgil {

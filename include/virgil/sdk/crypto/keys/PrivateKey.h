@@ -37,7 +37,7 @@
 #ifndef VIRGIL_SDK_PRIVATEKEY_H
 #define VIRGIL_SDK_PRIVATEKEY_H
 
-#include <virgil/sdk/Common.h>
+#include <virgil/sdk/crypto/VirgilCommon.h>
 #include <PrivateKeyInterface.h>
 
 /// forward decl

@@ -41,7 +41,6 @@
 #include <unordered_map>
 #include <string>
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/web/ClientCommon.h>
 #include <virgil/sdk/interfaces/Exportable.h>
 #include <virgil/sdk/interfaces/Importable.h>
@@ -85,13 +84,13 @@ namespace virgil {
              * @brief Getter.
              * @return byteArray with snapshot
              */
-            const VirgilByteArray& snapshot() const override { return snapshot_; }
+            const ByteArray& snapshot() const override { return snapshot_; }
 
             /*!
              * @brief Getter.
              * @return byteArray with fingerprint
              */
-            const VirgilByteArray& fingerprint() const override { return fingerprint_; }
+            const ByteArray& fingerprint() const override { return fingerprint_; }
 
             /*!
              * @brief Getter.
@@ -124,14 +123,14 @@ namespace virgil {
             const std::unordered_map<std::string, CardSignatureInfo>& signatures() const override { return signatures_; }
 
         private:
-            Card(web::RawCard rawCard, VirgilByteArray fingerprint, VirgilByteArray snapshot, std::string identity,
+            Card(web::RawCard rawCard, ByteArray fingerprint, ByteArray snapshot, std::string identity,
                  std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey,
                  std::string createdAt, std::string cardVersion,
                  std::unordered_map<std::string, CardSignatureInfo> signatures);
 
             web::RawCard cardRaw_;
-            VirgilByteArray fingerprint_;
-            VirgilByteArray snapshot_;
+            ByteArray fingerprint_;
+            ByteArray snapshot_;
             std::string identity_;
             std::shared_ptr<cryptointerfaces::PublicKeyInterface> publicKey_;
             std::string createdAt_;

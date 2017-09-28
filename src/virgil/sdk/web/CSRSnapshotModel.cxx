@@ -37,16 +37,15 @@
 #include <virgil/sdk/web/CSRSnapshotModel.h>
 
 using virgil::sdk::web::CSRSnapshotModel;
-using virgil::sdk::VirgilByteArray;
 using virgil::sdk::serialization::JsonSerializer;
 
 CSRSnapshotModel CSRSnapshotModel::createModel(
         const std::string &identity,
-        const VirgilByteArray &publicKeyData) {
+        const util::ByteArray &publicKeyData) {
     return CSRSnapshotModel(identity, publicKeyData);
 }
 
 CSRSnapshotModel::CSRSnapshotModel(std::string identity,
-                                   VirgilByteArray publicKeyData)
+                                   util::ByteArray publicKeyData)
         : identity_(std::move(identity)), publicKeyData_(std::move(publicKeyData)) {
 }

@@ -39,8 +39,6 @@
 
 #include <virgil/sdk/interfaces/CardInterface.h>
 #include <virgil/sdk/interfaces/CardValidatorInterface.h>
-#include <CryptoInterface.h>
-#include <virgil/sdk/validation/ValidationResult.h>
 
 using virgil::sdk::interfaces::CardInterface;
 using virgil::sdk::interfaces::CardValidatorInterface;
@@ -49,7 +47,7 @@ namespace virgil {
     namespace sdk {
         namespace interfaces {
             /*!
-             * @brief base class for validation policy implamantations
+             * @brief base class for validation policy implementations
              */
             class ValidationRuleInterface {
             public:

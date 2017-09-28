@@ -48,10 +48,8 @@ using virgil::sdk::CardManagerParams;
 using virgil::sdk::crypto::keys::PublicKey;
 
 using virgil::sdk::crypto::keys::PrivateKey;
-using virgil::sdk::VirgilByteArrayUtils;
 using virgil::sdk::test::Utils;
 using virgil::sdk::test::TestUtils;
-using virgil::sdk::VirgilBase64;
 using virgil::sdk::serialization::JsonDeserializer;
 using virgil::sdk::CardIdGenerator;
 
@@ -74,7 +72,7 @@ CSR TestUtils::instantiateCreateCardRequest(
 
     auto keyPair = crypto_->generateKeyPair();
 
-    auto privateAppKeyData = VirgilBase64::decode(consts.applicationPrivateKeyBase64());
+    auto privateAppKeyData = Base64::decode(consts.applicationPrivateKeyBase64());
     auto appPrivateKey = crypto_->importPrivateKey(privateAppKeyData, consts.applicationPrivateKeyPassword());
 
     auto identity = Utils::generateRandomStr(40);

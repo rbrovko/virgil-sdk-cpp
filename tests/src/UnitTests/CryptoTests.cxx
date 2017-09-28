@@ -40,11 +40,11 @@
 #include <catch.hpp>
 #include <helpers.h>
 
-#include <virgil/sdk/Common.h>
+#include <virgil/sdk/crypto/VirgilCommon.h>
 #include <virgil/sdk/crypto/Crypto.h>
 
 using virgil::sdk::crypto::Crypto;
-using virgil::sdk::VirgilByteArrayUtils;
+using virgil::sdk::crypto::VirgilByteArrayUtils;
 using virgil::sdk::test::Utils;
 
 TEST_CASE("testED001_EncryptRandomData_SingleCorrectKey_ShouldDecrypt", "[crypto]") {

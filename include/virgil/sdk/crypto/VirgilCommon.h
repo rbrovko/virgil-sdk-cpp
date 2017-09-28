@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 Virgil Security Inc.
+ * Copyright (C) 2016 Virgil Security Inc.
  *
  * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
  *
@@ -34,46 +34,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef VIRGIL_SDK_SIGNABLEREQUESTTEST_H
-#define VIRGIL_SDK_SIGNABLEREQUESTTEST_H
+#ifndef VIRGIL_SDK_COMMON_H
+#define VIRGIL_SDK_COMMON_H
 
-#include <virgil/sdk/client/models/interfaces/SignableRequestInterface.h>
-#include <unordered_map>
-#include <virgil/sdk/client/models/SignatureInfo.h>
-#include <virgil/sdk/util/ByteArrayUtils.h>
-
-using virgil::sdk::util::ByteArrayUtils;
-using virgil::sdk::client::models::SignatureInfo;
-using virgil::sdk::client::models::interfaces::SignableRequestInterface;
+#include <virgil/crypto/VirgilByteArray.h>
+#include <virgil/crypto/VirgilByteArrayUtils.h>
+#include <virgil/crypto/foundation/VirgilBase64.h>
+#include <virgil/crypto/foundation/VirgilHash.h>
 
 namespace virgil {
-    namespace sdk {
-        namespace test {
-            /*!
-             * @brief signable request implementation
-             */
-            class SignableTest : public SignableRequestInterface {
-            public:
-                /*!
-                 * @brief default constructor
-                 */
-                SignableTest() = default;
-
-                const ByteArray& snapshot() const override { return snapshot_; }
-
-                const std::unordered_map<std::string, SignatureInfo>& signatures() const override
-                { return signatures_; };
-
-                void addSignature(SignatureInfo signature, std::string fingerprint) override {
-                    signatures_[std::move(fingerprint)] = std::move(signature);
-                };
-
-            private:
-                std::unordered_map<std::string, SignatureInfo> signatures_;
-                ByteArray snapshot_;
-            };
-        }
+namespace sdk {
+    namespace crypto {
+        using VirgilByteArray = virgil::crypto::VirgilByteArray;
+        using VirgilBase64 = virgil::crypto::foundation::VirgilBase64;
+        using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
+        using VirgilHashAlgorithm = virgil::crypto::foundation::VirgilHash::Algorithm;
     }
 }
+}
 
-#endif //VIRGIL_SDK_SIGNABLEREQUESTTEST_H
+#endif //VIRGIL_SDK_COMMON_H

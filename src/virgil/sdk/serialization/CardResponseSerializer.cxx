@@ -67,7 +67,7 @@ namespace virgil {
                     try {
                         std::string snapshotStr = j[JsonKey::ContentSnapshot];
 
-                        VirgilByteArray snapshot = VirgilBase64::decode(snapshotStr);
+                        util::ByteArray snapshot = Base64::decode(snapshotStr);
 
                         json meta = j[JsonKey::Meta];
 
@@ -103,7 +103,7 @@ namespace virgil {
                 static std::string toJson(const RawCard &cardRaw) {
                     try {
                         json j = {
-                                {JsonKey::ContentSnapshot, VirgilBase64::encode(cardRaw.contentSnapshot())}
+                                {JsonKey::ContentSnapshot, Base64::encode(cardRaw.contentSnapshot())}
                         };
 
                         j[JsonKey::Meta][JsonKey::Signs] = JsonUtils::unorderedMapofSignsToJson(

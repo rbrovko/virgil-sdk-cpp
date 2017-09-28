@@ -37,11 +37,10 @@
 #ifndef VIRGIL_SDK_CARDIDGENERATOR_H
 #define VIRGIL_SDK_CARDIDGENERATOR_H
 
-#include <string>
-#include <vector>
+#include <virgil/sdk/util/ByteArrayUtils.h>
 
+using virgil::sdk::util::ByteArrayUtils;
 using virgil::cryptointerfaces::CryptoInterface;
-using byteArray = std::vector<unsigned char>;
 
 namespace virgil {
     namespace sdk {
@@ -69,7 +68,7 @@ namespace virgil {
              * @return generated Card id
              */
             static std::string generate(const byteArray &fingerprint) {
-                auto id = VirgilByteArrayUtils::bytesToHex(fingerprint);
+                auto id = ByteArrayUtils::bytesToHex(fingerprint);
                 return id;
             }
         };

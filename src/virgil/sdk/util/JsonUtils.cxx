@@ -35,14 +35,14 @@
  */
 
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/util/JsonUtils.h>
 #include <virgil/sdk/web/ClientCommon.h>
+
 using nlohmann::json;
 
 using virgil::sdk::util::JsonUtils;
-using virgil::sdk::VirgilByteArray;
 using virgil::sdk::web::RawCardSignatureInfo;
+using virgil::sdk::ByteArray;
 
 std::unordered_map<std::string, std::string> JsonUtils::jsonToUnorderedMap(const json &jsonObj) {
     std::unordered_map<std::string, std::string> res;
@@ -54,11 +54,11 @@ std::unordered_map<std::string, std::string> JsonUtils::jsonToUnorderedMap(const
     return res;
 };
 
-std::unordered_map<std::string, VirgilByteArray> JsonUtils::jsonToUnorderedBinaryMap(const json &jsonObj) {
-    std::unordered_map<std::string, VirgilByteArray > res;
+std::unordered_map<std::string, ByteArray> JsonUtils::jsonToUnorderedBinaryMap(const json &jsonObj) {
+    std::unordered_map<std::string, ByteArray > res;
 
     for (auto it = jsonObj.begin(); it != jsonObj.end(); ++it) {
-        res[it.key()] = VirgilBase64::decode(it.value());
+        res[it.key()] = Base64::decode(it.value());
     }
 
     return res;
@@ -73,9 +73,9 @@ std::unordered_map<std::string, RawCardSignatureInfo> JsonUtils::jsonToUnordered
 
     for (auto it = jsonObj.begin(); it != jsonObj.end(); ++it) {
         res[it.key()] = RawCardSignatureInfo(
-                VirgilBase64::decode(it.value()["sign"]),
+                Base64::decode(it.value()["sign"]),
                 web::strToSignType(it.value()["signType"]),
-                VirgilBase64::decode(it.value()["signType"])
+                Base64::decode(it.value()["signType"])
         );
     }
 
@@ -96,19 +96,19 @@ json JsonUtils::unorderedMapofSignsToJson(const std::unordered_map<std::string, 
     json j;
 
     for (auto it = map.begin(); it != map.end(); ++it) {
-        j[it->first]["sign"] = VirgilBase64::encode(it->second.sign());
+        j[it->first]["sign"] = Base64::encode(it->second.sign());
         j[it->first]["signType"] = signTypeToStr(it->second.signType());
-        j[it->first]["extraData"] = VirgilBase64::encode(it->second.extraData());
+        j[it->first]["extraData"] = Base64::encode(it->second.extraData());
     }
 
     return j;
 }
 
-json JsonUtils::unorderedBinaryMapToJson(const std::unordered_map<std::string, VirgilByteArray> &map) {
+json JsonUtils::unorderedBinaryMapToJson(const std::unordered_map<std::string, ByteArray> &map) {
     json j;
 
     for (auto it = map.begin(); it != map.end(); ++it) {
-        j[it->first] = VirgilBase64::encode(it->second);
+        j[it->first] = Base64::encode(it->second);
     }
 
     return j;

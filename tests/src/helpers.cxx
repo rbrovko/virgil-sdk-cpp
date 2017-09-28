@@ -34,6 +34,5 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/Common.h>
 #include <helpers.h>
 

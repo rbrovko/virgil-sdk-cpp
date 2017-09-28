@@ -44,9 +44,9 @@
 #include <virgil/sdk/web/ClientCommon.h>
 #include <virgil/sdk/interfaces/Exportable.h>
 #include <virgil/sdk/interfaces/Importable.h>
+#include <CryptoInterface.h>
 
 #include <virgil/sdk/web/RawCard.h>
-#include <virgil/sdk/crypto/Crypto.h>
 #include <virgil/sdk/CardSignatureInfo.h>
 
 namespace virgil {
@@ -67,13 +67,13 @@ namespace virgil {
                  * @brief Getter.
                  * @return byteArray with snapshot
                  */
-                virtual const VirgilByteArray &snapshot() const = 0;
+                virtual const ByteArray &snapshot() const = 0;
 
                 /*!
                  * @brief Getter.
                  * @return byteArray with fingerprint
                  */
-                virtual const VirgilByteArray &fingerprint() const = 0;
+                virtual const ByteArray &fingerprint() const = 0;
 
                 /*!
                  * @brief Getter.

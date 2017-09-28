@@ -36,7 +36,9 @@
 
 #include <virgil/sdk/validation/WhitelistValidationRule.h>
 #include <virgil/sdk/util/JsonUtils.h>
+#include <virgil/sdk/util/ByteArrayUtils.h>
 
+using virgil::sdk::util::ByteArrayUtils;
 using virgil::sdk::validation::WhitelistValidationRule;
 using virgil::sdk::util::JsonUtils;
 
@@ -57,9 +59,9 @@ void WhitelistValidationRule::check(const std::shared_ptr<virgil::cryptointerfac
 
             auto signature = card.signatures().at(verifier.first);
 
-            auto extraDataSnapshot = (signature.extraData().empty()) ? VirgilByteArrayUtils::stringToBytes(JsonUtils::unorderedMapToJson(signature.extraData()).dump()) : std::vector<unsigned char>();
+            auto extraDataSnapshot = (signature.extraData().empty()) ? ByteArrayUtils::stringToBytes(JsonUtils::unorderedMapToJson(signature.extraData()).dump()) : std::vector<unsigned char>();
             auto combinedSnapshot = card.snapshot();
-            VirgilByteArrayUtils::append(combinedSnapshot, extraDataSnapshot);
+            ByteArrayUtils::append(combinedSnapshot, extraDataSnapshot);
 
             auto fingerprint = crypto->calculateFingerprint(combinedSnapshot);
 

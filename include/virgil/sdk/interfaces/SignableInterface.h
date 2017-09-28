@@ -39,7 +39,6 @@
 
 #include <string>
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/web/RawCardSignatureInfo.h>
 
 namespace virgil {
@@ -55,7 +54,7 @@ namespace virgil {
                  * @brief Getter.
                  * @return Snapshot of data to be signed
                  */
-                virtual const VirgilByteArray& snapshot() const = 0;
+                virtual const util::ByteArray& snapshot() const = 0;
 
                 /*!
                  * @brief Adds signature.

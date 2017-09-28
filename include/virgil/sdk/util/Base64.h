@@ -33,58 +33,36 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-/*
-#include <catch.hpp>
-#include <Mocks/SignableTest.h>
-#include <Mocks/CryptoTest.h>
-#include <virgil/sdk/web/models/CardSigner.h>
 
-using virgil::sdk::web::models::SignType;
-using virgil::sdk::test::CryptoTest;
-using virgil::sdk::test::SignableTest;
-using virgil::sdk::test::KeyPairTest;
-using virgil::sdk::web::models::CardSigner;
+#ifndef VIRGIL_SDK_BASE64_H
+#define VIRGIL_SDK_BASE64_H
 
-TEST_CASE("test_001_AutoritySign", "[RequestSigner]") {
-    auto crypto = std::make_shared<CryptoTest>();
-    auto signer = RequestSigner(crypto);
+#include <virgil/sdk/util/ByteArrayUtils.h>
 
-    KeyPairTest keyPair;
-    SignableTest request;
-    auto appId = "appId";
+namespace virgil {
+    namespace sdk {
+        namespace util {
 
-    CardSigner cardSigner(
-        appId,
-        keyPair.privateKey()
-    );
+            /*!
+             * @brief Provides base64 encoding / decoding.
+             */
+            class Base64 {
+            public:
 
-    signer.authoritySign(
-            request,
-            cardSigner
-    );
+                /**
+                 * @brief Transform given bytes to the base64 string.
+                 */
+                static std::string encode(const ByteArray &bytes);
+                /**
+                 * @brief Transform given base64 string to the bytes.
+                 */
+                static ByteArray decode(const std::string &encoded_string);
 
-    auto signatures = request.signatures();
-    REQUIRE(signatures.size() == 1);
-    REQUIRE(signatures[appId].signType() == SignType::application);
-    REQUIRE(signatures[appId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
+            private:
+                static inline bool is_base64(unsigned char c);
+            };
+        }
+    }
 }
 
-TEST_CASE("test_002_SelfSign", "[RequestSigner]") {
-    auto crypto = std::make_shared<CryptoTest>();
-    auto signer = RequestSigner(crypto);
-
-    KeyPairTest keyPair;
-    SignableTest request;
-    auto randData = VirgilByteArrayUtils::stringToBytes("data");
-    auto cardId = VirgilByteArrayUtils::bytesToHex(crypto->calculateFingerprint(randData));
-
-    signer.selfSign(
-            request,
-            keyPair.privateKey()
-    );
-
-    auto signatures = request.signatures();
-    REQUIRE(signatures.size() == 1);
-    REQUIRE(signatures[cardId].sign() == VirgilByteArrayUtils::stringToBytes("signature"));
-    REQUIRE(signatures[cardId].signType() == SignType::self);
-}*/
+#endif //VIRGIL_SDK_BASE64_H

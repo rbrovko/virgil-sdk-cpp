@@ -39,32 +39,52 @@
 #define VIRGIL_SDK_SIGNATURE_H
 
 #include <string>
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/web/ClientCommon.h>
+#include <virgil/sdk/Common.h>
 
 namespace virgil {
     namespace sdk {
         namespace web {
-
+            /*!
+             * @brief represents signature info's structure for RawCard - with extra data in byte array
+             */
             class RawCardSignatureInfo {
             public:
                 RawCardSignatureInfo() = default;
 
-                RawCardSignatureInfo(const VirgilByteArray& sign,
+                /*!
+                 * @brief constructor
+                 * @param sign VirgilByteArray with sign
+                 * @param signType enum SignType with type of signature
+                 * @param extraData VirgilByteArray with extra data
+                 */
+                RawCardSignatureInfo(const util::ByteArray& sign,
                               const SignType& signType = SignType::application,
-                              const VirgilByteArray& extraData = std::vector<unsigned char>())
+                              const util::ByteArray& extraData = std::vector<unsigned char>())
                         : sign_(sign), signType_(signType), extraData_(extraData) {};
 
-                const VirgilByteArray& sign() const { return sign_; }
+                /*!
+                 * @brief Getter.
+                 * @return VirgilByteArray with sign
+                 */
+                const ByteArray& sign() const { return sign_; }
 
+                /*!
+                 * @brief Getter.
+                 * @return enum SignType with type of signature
+                 */
                 const SignType& signType() const { return signType_; }
 
-                const VirgilByteArray& extraData() const { return extraData_; }
+                /*!
+                 * @brief Getter.
+                 * @return extraData VirgilByteArray with extra data
+                 */
+                const ByteArray& extraData() const { return extraData_; }
 
             private:
-                VirgilByteArray sign_;
+                ByteArray sign_;
                 SignType signType_;
-                VirgilByteArray extraData_;
+                ByteArray extraData_;
             };
 
         }

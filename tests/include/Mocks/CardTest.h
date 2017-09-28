@@ -40,7 +40,6 @@
 #include <unordered_map>
 #include <string>
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/web/ClientCommon.h>
 #include <virgil/sdk/interfaces/Exportable.h>
 #include <virgil/sdk/interfaces/Importable.h>
@@ -50,8 +49,6 @@
 #include <virgil/sdk/crypto/Crypto.h>
 #include <vector>
 #include <virgil/sdk/web/ClientCommon.h>
-
-using byteArray = std::vector<unsigned char>;
 
 namespace virgil {
     namespace sdk {
@@ -67,13 +64,13 @@ namespace virgil {
                  * @brief Getter.
                  * @return byteArray with snapshot
                  */
-                const byteArray &snapshot() const override { return snapshot_; }
+                const ByteArray &snapshot() const override { return snapshot_; }
 
                 /*!
                  * @brief Getter.
                  * @return byteArray with fingerprint
                  */
-                const VirgilByteArray& fingerprint() const override { return fingerprint_; }
+                const ByteArray& fingerprint() const override { return fingerprint_; }
 
 
                 /*!
@@ -108,8 +105,8 @@ namespace virgil {
                 const std::unordered_map<std::string, CardSignatureInfo> &signatures() const override { return signatures_; }
 
             public:
-                byteArray snapshot_;
-                byteArray fingerprint_;
+                ByteArray snapshot_;
+                ByteArray fingerprint_;
                 std::string identity_;
                 std::shared_ptr<virgil::cryptointerfaces::PublicKeyInterface> publicKey_;
                 std::string createdAt_;

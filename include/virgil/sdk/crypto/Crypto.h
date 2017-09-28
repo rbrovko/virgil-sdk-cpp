@@ -37,7 +37,7 @@
 #ifndef VIRGIL_SDK_CRYPTO_H
 #define VIRGIL_SDK_CRYPTO_H
 
-#include <virgil/sdk/Common.h>
+#include <virgil/sdk/crypto/VirgilCommon.h>
 #include <CryptoInterface.h>
 #include <virgil/sdk/crypto/keys/KeyPair.h>
 

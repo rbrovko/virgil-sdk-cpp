@@ -6,7 +6,7 @@
 
 using virgil::sdk::web::RawCard;
 
-RawCard::RawCard(VirgilByteArray snapshot,
+RawCard::RawCard(util::ByteArray snapshot,
                  std::unordered_map<std::string, RawCardSignatureInfo> signatures,
                  std::string createdAt,
                  std::string cardVersion)

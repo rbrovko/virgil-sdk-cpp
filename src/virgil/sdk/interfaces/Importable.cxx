@@ -34,19 +34,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/interfaces/Importable.h>
 #include <virgil/sdk/interfaces/SignableRequestInterface.h>
 #include <virgil/sdk/serialization/JsonTemplatedDeserializer.h>
 #include <virgil/sdk/CSR.h>
 
+using virgil::sdk::util::ByteArrayUtils;
 using virgil::sdk::interfaces::Importable;
 using virgil::sdk::interfaces::SignableRequestInterface;
 using virgil::sdk::CSR;
 
 template<typename DerivedClass>
 DerivedClass Importable<DerivedClass>::importFromString(const std::string &data) {
-    auto jsonStr = VirgilByteArrayUtils::bytesToString(VirgilBase64::decode(data));
+    auto jsonStr = ByteArrayUtils::bytesToString(Base64::decode(data));
     return serialization::JsonTemplatedDeserializer<SignableRequestInterface>::fromJsonString<DerivedClass>(jsonStr);
 }
 

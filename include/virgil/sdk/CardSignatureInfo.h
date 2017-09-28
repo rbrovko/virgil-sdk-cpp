@@ -44,24 +44,39 @@
 namespace virgil {
     namespace sdk {
 
+        /*!
+         * @brief represents signature info's structure for Card - with extra data in unordered map of strings
+         */
         class CardSignatureInfo {
         public:
             CardSignatureInfo() = default;
 
-            CardSignatureInfo(const VirgilByteArray& sign,
+            CardSignatureInfo(const ByteArray& sign,
                               const web::SignType& signType = web::SignType::application,
                               const std::unordered_map<std::string, std::string> &extraData
                               = std::unordered_map<std::string, std::string>())
                     : sign_(sign), signType_(signType), extraData_(extraData) {};
 
-            const VirgilByteArray& sign() const { return sign_; }
+            /*!
+             * @brief Getter.
+             * @return VirgilByteArray with sign
+             */
+            const ByteArray& sign() const { return sign_; }
 
+            /*!
+             * @brief Getter.
+             * @return enum SignType with type of signature
+             */
             const web::SignType& signType() const { return signType_; }
 
+            /*!
+             * @brief Getter.
+             * @return unordered map of strings with extra data
+             */
             const std::unordered_map<std::string, std::string>& extraData() const { return extraData_; }
 
         private:
-            VirgilByteArray sign_;
+            ByteArray sign_;
             web::SignType signType_;
             std::unordered_map<std::string, std::string> extraData_;
         };

@@ -41,11 +41,9 @@
 #include <CryptoInterface.h>
 #include "KeysTest.h"
 
-using byteArray = std::vector<unsigned char>;
 using virgil::cryptointerfaces::CryptoInterface;
 using virgil::cryptointerfaces::PrivateKeyInterface;
 using virgil::cryptointerfaces::PublicKeyInterface;
-using VirgilByteArrayUtils = virgil::crypto::VirgilByteArrayUtils;
 
 namespace virgil {
     namespace sdk {
@@ -59,20 +57,20 @@ namespace virgil {
 
                 /// Implementation of CryptoInterface member functions
 
-                byteArray exportPublicKey(const PublicKeyInterface &privateKey) const override {
-                    return VirgilByteArrayUtils::stringToBytes("test");
+                ByteArray exportPublicKey(const PublicKeyInterface &privateKey) const override {
+                    return ByteArrayUtils::stringToBytes("test");
                 }
 
-                byteArray generateSignature(const byteArray &data,
+                ByteArray generateSignature(const byteArray &data,
                                             const PrivateKeyInterface &privateKey) const override {
-                    return VirgilByteArrayUtils::stringToBytes("signature");
+                    return ByteArrayUtils::stringToBytes("signature");
                 }
 
                 bool verify(const byteArray &data, const byteArray &signature,
                             const PublicKeyInterface &signerPublicKey) const override { return true; }
 
-                byteArray calculateFingerprint(const byteArray &data) const override {
-                    return VirgilByteArrayUtils::stringToBytes("fingerprint");
+                ByteArray calculateFingerprint(const byteArray &data) const override {
+                    return ByteArrayUtils::stringToBytes("fingerprint");
                 }
 
                 PublicKeyInterface* importPublicKey(const byteArray &data) const override {

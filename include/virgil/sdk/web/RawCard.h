@@ -38,8 +38,8 @@
 #define VIRGIL_SDK_CARDRAW_H
 
 #include <unordered_map>
-#include <virgil/sdk/Common.h>
 #include <virgil/sdk/web/RawCardSignatureInfo.h>
+#include <virgil/sdk/Common.h>
 
 namespace virgil {
     namespace sdk {
@@ -58,7 +58,7 @@ namespace virgil {
                  * @brief Getter.
                  * @return snapshot
                  */
-                const VirgilByteArray& contentSnapshot() const { return snapshot_; };
+                const ByteArray& contentSnapshot() const { return snapshot_; };
 
                 /*!
                  * @brief Getter.
@@ -80,14 +80,14 @@ namespace virgil {
 
                 // This is private API
                 //! @cond Doxygen_Suppress
-                RawCard(VirgilByteArray snapshot,
+                RawCard(ByteArray snapshot,
                         std::unordered_map<std::string, RawCardSignatureInfo> signatures,
                         std::string createdAt,
                         std::string cardVersion);
                 //! @endcond
 
             private:
-                VirgilByteArray snapshot_;
+                ByteArray snapshot_;
                 std::unordered_map<std::string, RawCardSignatureInfo> signatures_;
                 std::string createdAt_;
                 std::string cardVersion_;
